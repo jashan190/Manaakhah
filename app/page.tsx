@@ -4,7 +4,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { BusinessMap } from "@/components/map/BusinessMap";
-import { PrayerTimeWidget } from "@/components/prayer-times/PrayerTimeWidget";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, MapPin, Users, Sparkles, Calendar, Heart, Building2, Star } from "lucide-react";
 
@@ -62,26 +61,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Map & Prayer Times Section */}
+      {/* Map Section */}
       <section className="py-12 px-4 bg-white">
         <div className="container mx-auto">
-          <div className="grid lg:grid-cols-4 gap-6">
-            {/* Prayer Times Sidebar */}
-            <div className="lg:col-span-1">
-              <PrayerTimeWidget />
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <MapPin className="w-6 h-6 text-green-600" />
+              <h2 className="text-2xl font-bold">Businesses Near You</h2>
             </div>
-
-            {/* Map */}
-            <div className="lg:col-span-3">
-              <div className="flex items-center gap-2 mb-4">
-                <MapPin className="w-6 h-6 text-green-600" />
-                <h2 className="text-2xl font-bold">Businesses Near You</h2>
-              </div>
-              <p className="text-gray-600 mb-6">
-                Explore Muslim-owned businesses in Fremont and surrounding areas
-              </p>
-              <BusinessMap />
-            </div>
+            <p className="text-gray-600 mb-6">
+              Explore Muslim-owned businesses in Fremont and surrounding areas
+            </p>
+            <BusinessMap />
           </div>
         </div>
       </section>
@@ -270,7 +261,6 @@ export default function Home() {
             <div>
               <h4 className="font-semibold mb-4">Community</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="/prayer-times" className="hover:text-white">Prayer Times</Link></li>
                 <li><Link href="/community-impact" className="hover:text-white">Economic Impact</Link></li>
                 <li><Link href="/forum" className="hover:text-white">Forum</Link></li>
               </ul>

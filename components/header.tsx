@@ -127,10 +127,6 @@ export function Header() {
                         <div className="text-xs text-gray-500">Join discussions</div>
                       </div>
                     </Link>
-                    <Link href="/prayer-times" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50">
-                      <img src="/icons/mosque.png" alt="Prayer Times" className="w-4 h-4" />
-                      <span>Prayer Times</span>
-                    </Link>
                     <Link href="/trends" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50">
                       <TrendingUp className="w-4 h-4 text-gray-500" />
                       <span>Trend Reports</span>
@@ -391,9 +387,6 @@ export function Header() {
                   </Link>
                   <Link href="/forum" className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
                     Community Forum
-                  </Link>
-                  <Link href="/prayer-times" className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
-                    Prayer Times
                   </Link>
                 </div>
               </div>

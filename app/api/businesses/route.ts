@@ -35,8 +35,6 @@ const createBusinessSchema = z.object({
   services: z.array(z.string()).default([]),
   tags: z.array(z.string()).default([]),
   hours: z.record(z.string(), z.any()).optional(),
-  prayerTimes: z.record(z.string(), z.any()).optional(),
-  jummahTime: z.string().optional(),
   aidServices: z.array(z.string()).default([]),
   externalUrl: z.string().url().optional().or(z.literal("")),
 });
@@ -404,8 +402,6 @@ export async function POST(req: Request) {
         website: validatedData.website || null,
         serviceList: validatedData.services,
         hours: validatedData.hours || null,
-        prayerTimes: validatedData.prayerTimes || null,
-        jummahTime: validatedData.jummahTime || null,
         aidServices: validatedData.aidServices,
         externalUrl: validatedData.externalUrl || null,
         status: "PENDING_REVIEW",
