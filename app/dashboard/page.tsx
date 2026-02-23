@@ -42,8 +42,9 @@ export default function DashboardPage() {
       const response = await fetch("/api/businesses");
       if (response.ok) {
         const data = await response.json();
+        const allBusinesses = Array.isArray(data) ? data : data.businesses || [];
         // Filter businesses owned by current user
-        const myBusinesses = data.filter(
+        const myBusinesses = allBusinesses.filter(
           (b: any) => b.owner.id === session?.user.id
         );
         setBusinesses(myBusinesses);

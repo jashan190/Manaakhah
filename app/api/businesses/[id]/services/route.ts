@@ -10,6 +10,11 @@ export async function GET(
     const { id: businessId } = await params;
     const { searchParams } = new URL(req.url);
     const activeOnly = searchParams.get("active") !== "false";
+    const cursor = searchParams.get("cursor");
+    const limit = Math.min(
+      Math.max(parseInt(searchParams.get("limit") || "20", 10), 1),
+      50
+    );
 
     const services = await db.service.findMany({
       where: {
@@ -17,9 +22,27 @@ export async function GET(
         ...(activeOnly ? { isActive: true } : {}),
       },
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+      take: limit + 1,
+      ...(cursor
+        ? {
+            cursor: { id: cursor },
+            skip: 1,
+          }
+        : {}),
     });
 
-    return NextResponse.json({ services });
+    const hasMore = services.length > limit;
+    const items = hasMore ? services.slice(0, limit) : services;
+    const nextCursor = hasMore ? items[items.length - 1].id : null;
+
+    return NextResponse.json({
+      services: items,
+      pagination: {
+        limit,
+        nextCursor,
+        hasMore,
+      },
+    });
   } catch (error) {
     console.error("Error fetching services:", error);
     return NextResponse.json({ error: "Failed to fetch services" }, { status: 500 });

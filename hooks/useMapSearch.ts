@@ -47,6 +47,10 @@ export interface Business {
   distance?: number;
 }
 
+interface SearchResponse {
+  businesses: Business[];
+}
+
 export function useMapSearch(
   userLocation: { lat: number; lng: number } | null
 ) {
@@ -148,6 +152,7 @@ export function useMapSearch(
       if (filters.tags.length) params.set("tags", filters.tags.join(","));
       if (filters.priceRange) params.set("priceRange", filters.priceRange);
       if (filters.minRating) params.set("minRating", filters.minRating);
+      if (filters.sort) params.set("sort", filters.sort);
 
       // Use bounds if available, otherwise use radius
       if (filters.ne_lat && filters.sw_lat) {
@@ -163,7 +168,8 @@ export function useMapSearch(
 
       const res = await fetch(`/api/businesses?${params.toString()}`);
       if (!res.ok) throw new Error("Failed to fetch businesses");
-      return res.json();
+      const data = (await res.json()) as SearchResponse | Business[];
+      return Array.isArray(data) ? data : data.businesses || [];
     },
     enabled: !!(userLocation || (filters.ne_lat && filters.sw_lat)),
     staleTime: 30000,

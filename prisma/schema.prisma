@@ -304,6 +304,26 @@ enum SubscriptionTier {
   ENTERPRISE
 }
 
+enum BillingCycle {
+  MONTHLY
+  YEARLY
+}
+
+enum BusinessSubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  TRIALING
+}
+
+enum PaymentMethodType {
+  CARD
+  BANK_TRANSFER
+  ZELLE
+  CASH_APP
+  MANUAL
+}
+
 // =============================================================================
 // USER & AUTHENTICATION MODELS
 // =============================================================================
@@ -405,6 +425,8 @@ model User {
   postReports         PostReport[]
   pendingAccountLinks PendingAccountLink[]
   spendingEntries     SpendingEntry[]
+  paymentMethods      PaymentMethod[]
+  createdSubscriptions BusinessSubscription[] @relation("SubscriptionCreatedBy")
 
   @@index([email])
   @@index([trustScore])
@@ -632,6 +654,8 @@ model Business {
   messageTemplates       MessageTemplate[]
   analyticsSnapshots     AnalyticsSnapshot[]
   spendingEntries        SpendingEntry[]
+  subscriptions          BusinessSubscription[]
+  subscriptionInvoices   SubscriptionInvoice[]
 
   @@index([ownerId])
   @@index([slug])
@@ -1178,6 +1202,100 @@ model Service {
 
   @@index([businessId])
   @@index([businessId, isActive])
+  @@index([isActive, name])
+  @@index([category, isActive])
+}
+
+model SubscriptionPlan {
+  id          String           @id @default(cuid())
+  code        String           @unique
+  name        String
+  description String?          @db.Text
+  tier        SubscriptionTier
+  amount      Float
+  currency    String           @default("USD")
+  billingCycle BillingCycle    @default(MONTHLY)
+  features    Json?
+  isActive    Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  subscriptions BusinessSubscription[]
+
+  @@index([tier, isActive])
+  @@index([billingCycle, isActive])
+}
+
+model PaymentMethod {
+  id         String            @id @default(cuid())
+  userId     String
+  type       PaymentMethodType
+  label      String?
+  brand      String?
+  last4      String?
+  expMonth   Int?
+  expYear    Int?
+  accountHint String?
+  isDefault  Boolean           @default(false)
+  isActive   Boolean           @default(true)
+  metadata   Json?
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+
+  user          User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscriptions BusinessSubscription[]
+  invoices      SubscriptionInvoice[]
+
+  @@index([userId, isActive])
+}
+
+model BusinessSubscription {
+  id                String                     @id @default(cuid())
+  businessId        String
+  planId            String
+  paymentMethodId   String?
+  status            BusinessSubscriptionStatus @default(ACTIVE)
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd Boolean                    @default(false)
+  canceledAt        DateTime?
+  createdById       String?
+  createdAt         DateTime                   @default(now())
+  updatedAt         DateTime                   @updatedAt
+
+  business      Business       @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  plan          SubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Restrict)
+  paymentMethod PaymentMethod? @relation(fields: [paymentMethodId], references: [id], onDelete: SetNull)
+  createdBy     User?          @relation("SubscriptionCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  invoices      SubscriptionInvoice[]
+
+  @@index([businessId, status])
+  @@index([planId])
+  @@index([paymentMethodId])
+}
+
+model SubscriptionInvoice {
+  id              String        @id @default(cuid())
+  subscriptionId  String
+  businessId      String
+  paymentMethodId String?
+  amount          Float
+  currency        String        @default("USD")
+  status          PaymentStatus @default(PAID)
+  periodStart     DateTime
+  periodEnd       DateTime
+  dueDate         DateTime?
+  paidAt          DateTime?
+  paymentReference String?
+  createdAt       DateTime      @default(now())
+
+  subscription BusinessSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  business     Business             @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  paymentMethod PaymentMethod?      @relation(fields: [paymentMethodId], references: [id], onDelete: SetNull)
+
+  @@index([subscriptionId])
+  @@index([businessId, createdAt])
+  @@index([status])
 }
 
 model Waitlist {

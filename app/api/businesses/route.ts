@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { db, isMockMode } from "@/lib/db";
-import { getMockSession } from "@/lib/mock-auth";
 import { z } from "zod";
 
 const createBusinessSchema = z.object({
@@ -62,13 +61,57 @@ function calculateDistance(
   return R * c;
 }
 
+function scoreRelevance(business: any, search: string | null, distance?: number): number {
+  let score = 0;
+
+  if (business.verificationStatus === "APPROVED") score += 2;
+  score += Math.min((business.averageRating || 0) * 0.5, 2.5);
+  score += Math.min((business.totalReviews || 0) / 20, 2);
+
+  if (typeof distance === "number" && Number.isFinite(distance)) {
+    score += Math.max(0, 2 - distance / 25);
+  }
+
+  if (!search) return score;
+
+  const query = search.toLowerCase().trim();
+  const name = (business.name || "").toLowerCase();
+  const description = (business.description || "").toLowerCase();
+  const serviceList = (business.serviceList || []).map((s: string) =>
+    String(s).toLowerCase()
+  );
+  const services = (business.serviceDetails || []).map((s: any) => ({
+    name: String(s.name || "").toLowerCase(),
+    description: String(s.description || "").toLowerCase(),
+  }));
+
+  if (name.includes(query)) score += 5;
+  if (description.includes(query)) score += 2;
+  if (serviceList.some((s: string) => s.includes(query))) score += 4;
+  if (services.some((s: any) => s.name.includes(query))) score += 6;
+  if (services.some((s: any) => s.description.includes(query))) score += 2;
+
+  return score;
+}
+
 // GET /api/businesses - List all businesses with filters
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const category = searchParams.get("category");
     const search = searchParams.get("search");
+    const city = searchParams.get("city");
+    const state = searchParams.get("state");
+    const service = searchParams.get("service");
     const tags = searchParams.get("tags")?.split(",") || [];
+    const minRating = searchParams.get("minRating");
+    const priceRange = searchParams.get("priceRange");
+    const sort = searchParams.get("sort") || "relevance";
+    const page = Math.max(parseInt(searchParams.get("page") || "1", 10), 1);
+    const limit = Math.min(
+      Math.max(parseInt(searchParams.get("limit") || "20", 10), 1),
+      50
+    );
     const status = searchParams.get("status") || "PUBLISHED";
 
     // Location-based filtering
@@ -94,7 +137,38 @@ export async function GET(req: Request) {
       where.OR = [
         { name: { contains: search, mode: "insensitive" } },
         { description: { contains: search, mode: "insensitive" } },
+        { serviceList: { hasSome: [search] } },
+        {
+          services: {
+            some: {
+              OR: [
+                { name: { contains: search, mode: "insensitive" } },
+                { description: { contains: search, mode: "insensitive" } },
+              ],
+            },
+          },
+        },
       ];
+    }
+
+    if (service) {
+      where.services = {
+        some: {
+          isActive: true,
+          OR: [
+            { name: { contains: service, mode: "insensitive" } },
+            { description: { contains: service, mode: "insensitive" } },
+          ],
+        },
+      };
+    }
+
+    if (city) {
+      where.city = { equals: city, mode: "insensitive" };
+    }
+
+    if (state) {
+      where.state = { equals: state, mode: "insensitive" };
     }
 
     if (tags.length > 0) {
@@ -105,6 +179,19 @@ export async function GET(req: Request) {
           },
         },
       };
+    }
+
+    if (priceRange) {
+      where.priceRange = priceRange;
+    }
+
+    if (minRating) {
+      const minRatingValue = parseFloat(minRating);
+      if (!Number.isNaN(minRatingValue)) {
+        where.averageRating = {
+          gte: minRatingValue,
+        };
+      }
     }
 
     // Bounds-based filtering (takes precedence over radius if all 4 params present)
@@ -134,30 +221,35 @@ export async function GET(req: Request) {
           take: 1,
         },
         tags: true,
-        reviews: {
+        services: {
+          where: { isActive: true },
           select: {
-            rating: true,
+            id: true,
+            name: true,
+            description: true,
+            price: true,
+            priceType: true,
+            duration: true,
+            category: true,
+            isFeatured: true,
           },
+          orderBy: [{ isFeatured: "desc" }, { sortOrder: "asc" }, { name: "asc" }],
+          take: 6,
         },
       },
-      orderBy: {
-        createdAt: "desc",
-      },
-      take: 100,
+      take: 300,
     });
 
-    // Calculate average rating and distance for each business
+    // Calculate distance for each business
     let businessesWithRating = businesses.map((business: any) => {
-      const avgRating =
-        business.reviews.length > 0
-          ? business.reviews.reduce((sum: number, r: any) => sum + r.rating, 0) /
-            business.reviews.length
-          : 0;
-
+      const serviceDetails = business.services || [];
+      const serviceNames = serviceDetails.map((service: any) => service.name);
       const businessData: any = {
         ...business,
-        averageRating: avgRating,
-        reviewCount: business.reviews.length,
+        services: serviceNames,
+        serviceDetails,
+        averageRating: business.averageRating || 0,
+        reviewCount: business.totalReviews || 0,
       };
 
       // Add distance if location params provided
@@ -182,16 +274,48 @@ export async function GET(req: Request) {
       );
     }
 
-    // Sort by distance if location provided
-    if (lat && lng) {
+    if (sort === "distance" && lat && lng) {
       businessesWithRating.sort((a: any, b: any) => {
         const distA = a.distance || Infinity;
         const distB = b.distance || Infinity;
         return distA - distB;
       });
+    } else if (sort === "rating") {
+      businessesWithRating.sort(
+        (a: any, b: any) =>
+          (b.averageRating || 0) - (a.averageRating || 0) ||
+          (b.reviewCount || 0) - (a.reviewCount || 0)
+      );
+    } else if (sort === "reviews") {
+      businessesWithRating.sort(
+        (a: any, b: any) => (b.reviewCount || 0) - (a.reviewCount || 0)
+      );
+    } else if (sort === "newest") {
+      businessesWithRating.sort(
+        (a: any, b: any) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+    } else {
+      businessesWithRating.sort((a: any, b: any) => {
+        const scoreA = scoreRelevance(a, search, a.distance);
+        const scoreB = scoreRelevance(b, search, b.distance);
+        return scoreB - scoreA;
+      });
     }
 
-    return NextResponse.json(businessesWithRating);
+    const total = businessesWithRating.length;
+    const start = (page - 1) * limit;
+    const paginatedBusinesses = businessesWithRating.slice(start, start + limit);
+
+    return NextResponse.json({
+      businesses: paginatedBusinesses,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
   } catch (error) {
     console.error("Error fetching businesses:", error);
     return NextResponse.json(

@@ -119,7 +119,8 @@ export default function ComparePage() {
       const response = await fetch(`/api/businesses?search=${encodeURIComponent(searchQuery)}&status=PUBLISHED`);
       if (response.ok) {
         const data = await response.json();
-        setSearchResults(data.slice(0, 5));
+        const businesses = Array.isArray(data) ? data : data.businesses || [];
+        setSearchResults(businesses.slice(0, 5));
       }
     } catch (error) {
       console.error("Error searching:", error);

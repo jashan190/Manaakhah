@@ -48,7 +48,8 @@ export default function FavoritesPage() {
     try {
       const response = await fetch("/api/businesses?status=PUBLISHED");
       if (response.ok) {
-        const allBusinesses = await response.json();
+        const data = await response.json();
+        const allBusinesses = Array.isArray(data) ? data : data.businesses || [];
 
         const favBusinesses = allBusinesses.filter((b: Business) => favoriteIds.includes(b.id));
         const recentBusinesses = recentIds
