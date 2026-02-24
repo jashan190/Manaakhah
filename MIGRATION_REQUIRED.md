@@ -1,7 +1,17 @@
 # Database Migration Required
 
 ## Overview
-A new `SpendingEntry` model has been added to the Prisma schema to enable spending insights tracking.
+Prisma schema has changed beyond the original spending-only update.
+
+As of 2026-02-23, you need to apply migrations/push for:
+- `SpendingEntry` (existing note below)
+- Service discovery indexes
+- Subscription/payment models:
+  - `SubscriptionPlan`
+  - `PaymentMethod`
+  - `BusinessSubscription`
+  - `SubscriptionInvoice`
+  - New enums for billing cycle and payment method/subscription status
 
 ## What Was Added
 
@@ -9,6 +19,8 @@ A new `SpendingEntry` model has been added to the Prisma schema to enable spendi
 - New `SpendingEntry` model to track user spending at businesses
 - Added `spendingEntries` relation to `User` model
 - Added `spendingEntries` relation to `Business` model
+- Added subscription/payment schema and relations
+- Added additional indexes for service discovery
 
 ### API Endpoints Created
 - `POST /api/spending` - Create a spending entry
@@ -26,7 +38,7 @@ A new `SpendingEntry` model has been added to the Prisma schema to enable spendi
 ### Option 1: Using Prisma Migrate (Recommended for Production)
 ```bash
 # Generate and apply migration
-npx prisma migrate dev --name add_spending_entry_model
+npx prisma migrate dev --name app_schema_updates_2026_02_23
 
 # This will:
 # 1. Create a new migration file in prisma/migrations/
@@ -85,6 +97,19 @@ CREATE INDEX IF NOT EXISTS "SpendingEntry_category_idx"
 Then regenerate Prisma Client:
 ```bash
 npx prisma generate
+```
+
+## Recommended Current Command Sequence
+
+```bash
+npx prisma db push
+npx prisma generate
+```
+
+Then restart:
+
+```bash
+npm run dev
 ```
 
 ## After Migration

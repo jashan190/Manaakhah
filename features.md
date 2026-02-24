@@ -4,6 +4,22 @@
 
 Manaakhah is a directory platform for Muslim-owned and halal-certified businesses. The platform includes web scraping capabilities to automatically discover and import businesses from various halal certification directories.
 
+## Current Platform State (2026-02-23)
+
+- Primary focus is business discovery and service offerings.
+- Prayer-times feature has been removed from user-facing routes and APIs.
+- Service discovery backend now supports:
+  - service-aware filtering,
+  - richer sorting,
+  - pagination metadata,
+  - service suggestion endpoint (`/api/services/suggest`).
+- Subscription/payment backend exists without paid processor dependency:
+  - plan catalog,
+  - payment method storage,
+  - business subscription lifecycle APIs,
+  - invoice records.
+- Next major step is UI integration for subscription management and cleanup of remaining localStorage/mock fallbacks.
+
 ---
 
 ## Scraper System

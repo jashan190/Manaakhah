@@ -3,6 +3,33 @@
 **Project:** Manaakhah - Muslim-owned Business Directory
 **Generated:** 2026-02-03
 
+## Status Update (2026-02-23)
+
+This file contains historical planning notes from early February. Some items below are now outdated.
+Use this section as the current source of truth.
+
+### Completed Since Original Plan
+- Prayer times feature removed from app UX and API surface.
+  - Removed: `app/prayer-times/page.tsx`, `components/prayer-times/PrayerTimeWidget.tsx`, `app/api/prayer-times/route.ts`, `app/api/islamic/prayer-times/route.ts`
+- Service discovery backend upgraded:
+  - `/api/businesses` now supports service-aware search, additional filters, sorting, and pagination metadata.
+  - Added `/api/services/suggest` for service typeahead.
+  - Added cursor pagination to `/api/businesses/[id]/services`.
+- Subscription/payment backend (no paid infra) implemented:
+  - Added `SubscriptionPlan`, `PaymentMethod`, `BusinessSubscription`, `SubscriptionInvoice` models.
+  - Added APIs under `/api/subscriptions/*` and `/api/payment-methods/*`.
+
+### Highest Priority Remaining Work
+1. Apply Prisma schema updates to database and validate runtime:
+   - `npx prisma db push`
+   - `npx prisma generate`
+2. Build owner-facing subscription management UI to use new subscription APIs.
+3. Remove remaining localStorage/mock fallbacks in core user flows:
+   - messages, referrals, saved searches, lists, claim-business.
+4. Finish auth email and recovery testing:
+   - verification, reset password, 2FA end-to-end with real env vars.
+5. Replace remaining upload placeholder behavior with full Cloudinary path.
+
 ---
 
 ## Critical (Must Fix Before Launch)
