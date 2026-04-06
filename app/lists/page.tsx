@@ -11,28 +11,13 @@ import Link from "next/link";
 interface BusinessList {
   id: string;
   name: string;
-  description: string;
-  authorId: string;
-  authorName: string;
+  description: string | null;
   isPublic: boolean;
-  businessIds: string[];
-  coverImage?: string;
   createdAt: string;
   updatedAt: string;
-  likeCount: number;
-  viewCount: number;
-  tags: string[];
+  businessCount: number;
+  authorName?: string;
 }
-
-interface ListBusiness {
-  id: string;
-  name: string;
-  category: string;
-  city: string;
-  averageRating: number;
-}
-
-const STORAGE_KEY = "manakhaah-user-lists";
 
 export default function ListsPage() {
   const { data: session } = useMockSession();
@@ -41,93 +26,95 @@ export default function ListsPage() {
   const [activeTab, setActiveTab] = useState<"my" | "discover">(session ? "my" : "discover");
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
   const [newList, setNewList] = useState({
     name: "",
     description: "",
     isPublic: false,
-    tags: "",
   });
 
   useEffect(() => {
     loadLists();
-  }, [session?.user?.id]);
+  }, [session?.user?.id, activeTab]);
 
-  const loadLists = () => {
+  const loadLists = async () => {
+    setLoading(true);
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const allLists: BusinessList[] = JSON.parse(stored);
-        if (session?.user?.id) {
-          setMyLists(allLists.filter((l) => l.authorId === session.user.id));
+      if (activeTab === "my" && session?.user?.id) {
+        const res = await fetch("/api/lists?tab=my");
+        if (res.ok) {
+          const data = await res.json();
+          setMyLists(data.myLists || []);
         }
-        setPublicLists(allLists.filter((l) => l.isPublic && l.authorId !== session?.user?.id));
-      } else {
-        setPublicLists([]);
+      }
+      if (activeTab === "discover") {
+        const res = await fetch("/api/lists?tab=discover");
+        if (res.ok) {
+          const data = await res.json();
+          setPublicLists(data.publicLists || []);
+        }
       }
     } catch (error) {
       console.error("Error loading lists:", error);
-      setPublicLists([]);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const saveLists = (lists: BusinessList[]) => {
+  const handleCreateList = async () => {
+    if (!newList.name.trim()) return;
+
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      const allLists: BusinessList[] = stored ? JSON.parse(stored) : [];
-
-      // Update or add user's lists
-      const otherLists = allLists.filter((l) => l.authorId !== session?.user?.id);
-      const updatedLists = [...otherLists, ...lists];
-
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedLists));
-      setMyLists(lists);
-
-      // Update public lists
-      setPublicLists(updatedLists.filter((l) => l.isPublic && l.authorId !== session?.user?.id));
+      const res = await fetch("/api/lists", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newList),
+      });
+      if (res.ok) {
+        await loadLists();
+        setNewList({ name: "", description: "", isPublic: false });
+        setShowCreateForm(false);
+      }
     } catch (error) {
-      console.error("Error saving lists:", error);
+      console.error("Error creating list:", error);
     }
   };
 
-  const handleCreateList = () => {
-    if (!newList.name.trim() || !session?.user) return;
-
-    const list: BusinessList = {
-      id: Date.now().toString(),
-      name: newList.name,
-      description: newList.description,
-      authorId: session.user.id,
-      authorName: session.user.name || "Anonymous",
-      isPublic: newList.isPublic,
-      businessIds: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      likeCount: 0,
-      viewCount: 0,
-      tags: newList.tags.split(",").map((t) => t.trim()).filter(Boolean),
-    };
-
-    saveLists([list, ...myLists]);
-    setNewList({ name: "", description: "", isPublic: false, tags: "" });
-    setShowCreateForm(false);
-  };
-
-  const handleDeleteList = (id: string) => {
+  const handleDeleteList = async (id: string) => {
     if (!confirm("Are you sure you want to delete this list?")) return;
-    saveLists(myLists.filter((l) => l.id !== id));
+    try {
+      const res = await fetch(`/api/lists/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setMyLists(myLists.filter((l) => l.id !== id));
+      }
+    } catch (error) {
+      console.error("Error deleting list:", error);
+    }
   };
 
-  const handleToggleVisibility = (id: string) => {
-    const updated = myLists.map((l) =>
-      l.id === id ? { ...l, isPublic: !l.isPublic, updatedAt: new Date().toISOString() } : l
-    );
-    saveLists(updated);
+  const handleToggleVisibility = async (id: string) => {
+    const list = myLists.find((l) => l.id === id);
+    if (!list) return;
+
+    try {
+      const res = await fetch(`/api/lists/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isPublic: !list.isPublic }),
+      });
+      if (res.ok) {
+        setMyLists(myLists.map((l) =>
+          l.id === id ? { ...l, isPublic: !l.isPublic } : l
+        ));
+      }
+    } catch (error) {
+      console.error("Error updating list:", error);
+    }
   };
 
   const filteredPublicLists = publicLists.filter((list) =>
     list.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    list.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    list.tags.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()))
+    (list.description || "").toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const formatTimeAgo = (dateString: string) => {
@@ -186,15 +173,6 @@ export default function ListsPage() {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">Tags (comma separated)</label>
-                <Input
-                  value={newList.tags}
-                  onChange={(e) => setNewList({ ...newList, tags: e.target.value })}
-                  placeholder="e.g., halal, restaurants, family"
-                />
-              </div>
-
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -246,155 +224,114 @@ export default function ListsPage() {
           </button>
         </div>
 
-        {/* My Lists */}
-        {activeTab === "my" && session && (
-          <div>
-            {myLists.length === 0 ? (
-              <Card>
-                <CardContent className="py-12 text-center">
-                  <div className="text-6xl mb-4">📋</div>
-                  <h3 className="text-xl font-semibold mb-2">No Lists Yet</h3>
-                  <p className="text-gray-600 mb-4">
-                    Create your first list to organize your favorite businesses.
-                  </p>
-                  <Button onClick={() => setShowCreateForm(true)}>Create Your First List</Button>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid md:grid-cols-2 gap-4">
-                {myLists.map((list) => (
-                  <Card key={list.id} className="hover:shadow-md transition-shadow">
-                    <CardContent className="p-4">
-                      <div className="flex items-start justify-between mb-2">
-                        <Link
-                          href={`/lists/${list.id}`}
-                          className="font-semibold text-lg hover:text-primary"
-                        >
-                          {list.name}
-                        </Link>
-                        <Badge variant={list.isPublic ? "default" : "secondary"}>
-                          {list.isPublic ? "🌐 Public" : "🔒 Private"}
-                        </Badge>
-                      </div>
-
-                      <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                        {list.description || "No description"}
+        {loading ? (
+          <div className="text-center py-8">Loading...</div>
+        ) : (
+          <>
+            {/* My Lists */}
+            {activeTab === "my" && session && (
+              <div>
+                {myLists.length === 0 ? (
+                  <Card>
+                    <CardContent className="py-12 text-center">
+                      <h3 className="text-xl font-semibold mb-2">No Lists Yet</h3>
+                      <p className="text-gray-600 mb-4">
+                        Create your first list to organize your favorite businesses.
                       </p>
-
-                      <div className="flex items-center gap-3 text-sm text-gray-500 mb-3">
-                        <span>{list.businessIds.length} businesses</span>
-                        <span>•</span>
-                        <span>Updated {formatTimeAgo(list.updatedAt)}</span>
-                      </div>
-
-                      {list.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mb-3">
-                          {list.tags.map((tag) => (
-                            <Badge key={tag} variant="outline" className="text-xs">
-                              #{tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      )}
-
-                      <div className="flex gap-2">
-                        <Link href={`/lists/${list.id}`} className="flex-1">
-                          <Button size="sm" variant="outline" className="w-full">
-                            View
-                          </Button>
-                        </Link>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleToggleVisibility(list.id)}
-                        >
-                          {list.isPublic ? "Make Private" : "Make Public"}
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleDeleteList(list.id)}
-                          className="text-red-600 hover:bg-red-50"
-                        >
-                          Delete
-                        </Button>
-                      </div>
+                      <Button onClick={() => setShowCreateForm(true)}>Create Your First List</Button>
                     </CardContent>
                   </Card>
-                ))}
+                ) : (
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {myLists.map((list) => (
+                      <Card key={list.id} className="hover:shadow-md transition-shadow">
+                        <CardContent className="p-4">
+                          <div className="flex items-start justify-between mb-2">
+                            <h3 className="font-semibold text-lg">{list.name}</h3>
+                            <Badge variant={list.isPublic ? "default" : "secondary"}>
+                              {list.isPublic ? "Public" : "Private"}
+                            </Badge>
+                          </div>
+
+                          <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                            {list.description || "No description"}
+                          </p>
+
+                          <div className="flex items-center gap-3 text-sm text-gray-500 mb-3">
+                            <span>{list.businessCount} businesses</span>
+                            <span>Updated {formatTimeAgo(list.updatedAt)}</span>
+                          </div>
+
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleToggleVisibility(list.id)}
+                            >
+                              {list.isPublic ? "Make Private" : "Make Public"}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleDeleteList(list.id)}
+                              className="text-red-600 hover:bg-red-50"
+                            >
+                              Delete
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
-          </div>
-        )}
 
-        {/* Discover Lists */}
-        {activeTab === "discover" && (
-          <div>
-            <div className="mb-4">
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search lists..."
-              />
-            </div>
+            {/* Discover Lists */}
+            {activeTab === "discover" && (
+              <div>
+                <div className="mb-4">
+                  <Input
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search lists..."
+                  />
+                </div>
 
-            {filteredPublicLists.length === 0 ? (
-              <Card>
-                <CardContent className="py-12 text-center">
-                  <div className="text-6xl mb-4">🔍</div>
-                  <h3 className="text-xl font-semibold mb-2">No Lists Found</h3>
-                  <p className="text-gray-600">
-                    {searchQuery
-                      ? "Try adjusting your search terms"
-                      : "Be the first to create a public list!"}
-                  </p>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid md:grid-cols-2 gap-4">
-                {filteredPublicLists.map((list) => (
-                  <Card key={list.id} className="hover:shadow-md transition-shadow">
-                    <CardContent className="p-4">
-                      <Link
-                        href={`/lists/${list.id}`}
-                        className="font-semibold text-lg hover:text-primary block mb-1"
-                      >
-                        {list.name}
-                      </Link>
-
-                      <p className="text-sm text-gray-500 mb-2">
-                        by {list.authorName}
+                {filteredPublicLists.length === 0 ? (
+                  <Card>
+                    <CardContent className="py-12 text-center">
+                      <h3 className="text-xl font-semibold mb-2">No Lists Found</h3>
+                      <p className="text-gray-600">
+                        {searchQuery
+                          ? "Try adjusting your search terms"
+                          : "Be the first to create a public list!"}
                       </p>
-
-                      <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                        {list.description}
-                      </p>
-
-                      <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                        <span>{list.businessIds.length} businesses</span>
-                        <span>❤️ {list.likeCount}</span>
-                        <span>👁️ {list.viewCount}</span>
-                      </div>
-
-                      {list.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mb-3">
-                          {list.tags.map((tag) => (
-                            <Badge key={tag} variant="outline" className="text-xs">
-                              #{tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      )}
-
-                      <Link href={`/lists/${list.id}`}>
-                        <Button size="sm" className="w-full">View List</Button>
-                      </Link>
                     </CardContent>
                   </Card>
-                ))}
+                ) : (
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {filteredPublicLists.map((list) => (
+                      <Card key={list.id} className="hover:shadow-md transition-shadow">
+                        <CardContent className="p-4">
+                          <h3 className="font-semibold text-lg mb-1">{list.name}</h3>
+                          <p className="text-sm text-gray-500 mb-2">
+                            by {list.authorName}
+                          </p>
+                          <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                            {list.description}
+                          </p>
+                          <div className="flex items-center gap-4 text-sm text-gray-500">
+                            <span>{list.businessCount} businesses</span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
-          </div>
+          </>
         )}
       </div>
     </div>
