@@ -61,14 +61,6 @@
 ### Codebase Cleanup - Complete
 - Removed empty dirs, unused components, debug scripts
 
-## Remaining Tasks
-
-### Prisma Migration - Manual Step Required
-```bash
-npx prisma db push
-npx prisma generate
-```
-
 ### Error Boundaries - Complete
 - `app/error.tsx` — catches errors in all routes
 - `app/global-error.tsx` — catches root layout errors
@@ -76,6 +68,14 @@ npx prisma generate
 - `app/dashboard/error.tsx` — dashboard-specific
 - `app/business/error.tsx` — business page-specific
 - `app/not-found.tsx` — custom 404 page
+
+## Remaining Tasks
+
+### Prisma Migration - Manual Step Required
+```bash
+npx prisma db push
+npx prisma generate
+```
 
 ### Auth Email Flows - Untested
 - Verification, reset, 2FA require Resend API key

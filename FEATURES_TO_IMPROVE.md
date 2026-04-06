@@ -23,12 +23,12 @@
 - ✅ **Cloudinary upload** — placeholder URL removed, returns clear 503 when not configured.
 - ✅ **Admin analytics** — growth trends wired to real database data.
 - ✅ **Business owner analytics** — mock random data replaced with empty state (ready for event tracking).
+- ✅ **Error boundaries** — React error boundaries added (global, admin, dashboard, business, 404).
 
 ### Remaining Work
 1. Apply pending Prisma schema migration: `npx prisma db push && npx prisma generate`
-2. ~~Add React error boundaries for graceful error handling.~~ **DONE**
-3. Test auth email flows end-to-end (verification, reset, 2FA) — requires Resend API key.
-4. Integrate event tracking for business owner analytics (views, calls, directions).
+2. Test auth email flows end-to-end (verification, reset, 2FA) — requires Resend API key.
+3. Integrate event tracking for business owner analytics (views, calls, directions).
 
 ---
 
@@ -144,7 +144,6 @@ Cloudinary integration is complete. Returns 503 with setup instructions when not
 
 **Next Steps:**
 1. Apply pending Prisma migration
-2. Add error boundaries
-3. Test auth email flows with Resend API key
-4. Build verification workflow UI
-5. Add event tracking for business analytics
+2. Test auth email flows with Resend API key
+3. Build verification workflow UI
+4. Add event tracking for business analytics

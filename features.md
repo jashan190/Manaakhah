@@ -16,6 +16,7 @@ Manaakhah is a directory platform for Muslim-owned and halal-certified businesse
 - **All localStorage fallbacks removed** — messages, referrals, saved searches, lists, and claim-business all use database APIs.
 - Admin analytics wired to real database data (growth trends, breakdowns).
 - Cloudinary upload returns clear error when not configured (no placeholder URLs).
+- **Error boundaries** added at global, admin, dashboard, and business route levels plus custom 404.
 - **Deployment: Docker-based (self-hosted).** No Vercel dependency.
 
 ### Remaining Work
@@ -389,19 +390,29 @@ lib/scraper/
 └── import.ts            # CSV/JSON import
 
 scripts/
-├── scrape-hfsaa.ts      # HFSAA CLI
-├── scrape-hms.ts        # HMS CLI
-├── scrape-zabihah.ts    # Zabihah CLI
-├── scrape-all.ts        # All scrapers
-├── check-status.ts      # Database status
+├── scrape-hfsaa.ts        # HFSAA CLI
+├── scrape-hms.ts          # HMS CLI
+├── scrape-zabihah.ts      # Zabihah CLI
+├── scrape-all.ts          # All scrapers
+├── geocode-scraped.ts     # Geocode addresses
+├── check-status.ts        # Database status
 └── batch-approve-reject.ts # Batch operations
 
-app/admin/
-├── page.tsx                      # Dashboard
-├── businesses/
-│   ├── page.tsx                  # Business list
-│   ├── review-queue/page.tsx     # Scraped review
-│   └── scraper/page.tsx          # Scraper UI
+app/
+├── error.tsx                     # Global error boundary
+├── global-error.tsx              # Root layout error boundary
+├── not-found.tsx                 # Custom 404
+├── admin/
+│   ├── error.tsx                 # Admin error boundary
+│   ├── page.tsx                  # Dashboard
+│   └── businesses/
+│       ├── page.tsx              # Business list
+│       ├── review-queue/page.tsx # Scraped review
+│       └── scraper/page.tsx      # Scraper UI
+├── business/
+│   └── error.tsx                 # Business error boundary
+├── dashboard/
+│   └── error.tsx                 # Dashboard error boundary
 └── ...
 
 app/api/admin/
