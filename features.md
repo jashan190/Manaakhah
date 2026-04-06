@@ -4,21 +4,55 @@
 
 Manaakhah is a directory platform for Muslim-owned and halal-certified businesses. The platform includes web scraping capabilities to automatically discover and import businesses from various halal certification directories.
 
-## Current Platform State (2026-02-23)
+## Current Platform State (2026-04-05)
 
 - Primary focus is business discovery and service offerings.
-- Prayer-times feature has been removed from user-facing routes and APIs.
-- Service discovery backend now supports:
-  - service-aware filtering,
-  - richer sorting,
-  - pagination metadata,
-  - service suggestion endpoint (`/api/services/suggest`).
-- Subscription/payment backend exists without paid processor dependency:
-  - plan catalog,
-  - payment method storage,
-  - business subscription lifecycle APIs,
-  - invoice records.
-- Next major step is UI integration for subscription management and cleanup of remaining localStorage/mock fallbacks.
+- Prayer-times feature fully removed from user-facing routes, APIs, and filesystem.
+- Service discovery backend supports service-aware filtering, richer sorting, pagination metadata, and `/api/services/suggest`.
+- Subscription/payment backend live with owner-facing UI at `/dashboard/subscription`.
+- Community impact and spending insights pages use real database data.
+- Forum posts and events system persist in PostgreSQL.
+- Authentication runs on real NextAuth + Neon PostgreSQL (`USE_MOCK_DATA=false`).
+- **All localStorage fallbacks removed** — messages, referrals, saved searches, lists, and claim-business all use database APIs.
+- Admin analytics wired to real database data (growth trends, breakdowns).
+- Cloudinary upload returns clear error when not configured (no placeholder URLs).
+- **Deployment: Docker-based (self-hosted).** No Vercel dependency.
+
+### Remaining Work
+- Apply pending Prisma schema migration (`npx prisma db push`).
+- Add React error boundaries.
+- Test auth email flows end-to-end (verification, reset, 2FA) — requires Resend API key.
+- Integrate event tracking for business owner analytics.
+
+---
+
+## Deployment
+
+### Docker (Recommended)
+
+The app ships with a `Dockerfile` and `docker-compose.yml` for self-hosted deployment on any VPS or container platform (Railway, Fly.io, DigitalOcean, Render, AWS ECS, etc.).
+
+```bash
+# Build and run with Docker Compose
+docker compose up --build
+
+# Or build the image directly
+docker build -t manaakhah .
+docker run -p 3000:3000 --env-file .env manaakhah
+```
+
+The Docker image uses a multi-stage build (deps → build → runtime) for minimal image size. It runs `prisma generate` at build time and starts the Next.js standalone server.
+
+### Self-Hosted Node.js
+
+```bash
+npm install
+npx prisma generate
+npm run build
+npm start   # Starts on port 3000
+```
+
+Set `output: "standalone"` in `next.config.mjs` for optimized production builds.
 
 ---
 
@@ -35,11 +69,11 @@ The scraper system consists of:
 
 ### Implemented Scrapers
 
-| Source | Type | Vercel Compatible | Description |
+| Source | Type | Server Compatible | Description |
 |--------|------|-------------------|-------------|
-| **HFSAA** | Puppeteer (Browser) | No | Halal Food Standards Alliance of America |
-| **HMS** | Puppeteer (Browser) | No | Halal Monitoring Services USA |
-| **Zabihah** | Puppeteer (Browser) | No | Zabihah.com restaurant directory |
+| **HFSAA** | Puppeteer (Browser) | Requires Chromium | Halal Food Standards Alliance of America |
+| **HMS** | Puppeteer (Browser) | Requires Chromium | Halal Monitoring Services USA |
+| **Zabihah** | Puppeteer (Browser) | Requires Chromium | Zabihah.com restaurant directory |
 | **IFANCA** | Cheerio (Static) | Yes | IFANCA certified manufacturers |
 
 ### Scraper Types
@@ -47,7 +81,7 @@ The scraper system consists of:
 #### BrowserScraperSource (Puppeteer)
 - Used when JavaScript execution is required
 - Supports lazy loading, infinite scroll, button clicks
-- **Cannot run on Vercel** due to Chromium binary size (~130MB)
+- Requires a server with Chromium installed (included in Docker image, or run locally)
 
 ```typescript
 // Example: lib/scraper/sources/hfsaa.ts
@@ -61,7 +95,7 @@ export class HFSAAScraperSource extends BrowserScraperSource {
 #### StaticScraperSource (Cheerio)
 - Used for static HTML parsing
 - No JavaScript execution needed
-- **Works on Vercel**
+- Works everywhere
 
 ```typescript
 // Example: lib/scraper/sources/ifanca.ts
@@ -74,7 +108,7 @@ export class IFANCAScraperSource extends StaticScraperSource {
 
 ### CLI Scripts
 
-Run scrapers locally (required for browser-based scrapers):
+Run scrapers locally (required for browser-based scrapers unless Chromium is on the server):
 
 ```bash
 # HFSAA - All regions
@@ -198,9 +232,8 @@ PENDING_REVIEW → REJECTED → No Business created
 ### 2. Scraper UI (`/admin/businesses/scraper`)
 
 - Shows available data sources with implementation status
-- IFANCA marked as "Ready" (works on Vercel)
-- HFSAA, HMS, Zabihah marked as "Local CLI" (require local execution)
-- Warning about Vercel limitations
+- IFANCA: runs directly from the web UI
+- HFSAA, HMS, Zabihah: require local CLI execution (Puppeteer-based)
 
 ### 3. Dashboard (`/admin`)
 
@@ -211,16 +244,16 @@ PENDING_REVIEW → REJECTED → No Business created
 
 ---
 
-## Vercel Limitations
+## Scraper Limitations (Browser-Based)
 
 ### Problem
-Puppeteer-based scrapers don't work on Vercel serverless functions:
-1. Chromium binary is ~130MB (exceeds function size limits)
-2. Function timeout limits (10-60 seconds)
-3. Missing system dependencies
+Puppeteer-based scrapers need Chromium installed:
+1. Chromium binary is ~130MB
+2. Long-running scrapes may exceed API route timeouts
+3. Requires system dependencies (libX11, etc.)
 
 ### Solution
-Run browser-based scrapers locally using CLI scripts:
+Run browser-based scrapers locally or on a server with Chromium:
 
 ```bash
 # On your local machine with .env configured
@@ -284,6 +317,9 @@ Before saving, scrapers check for duplicates by:
 - Name similarity
 - Address matching
 - Phone number matching
+
+### 5. Docker Deployment
+Self-hosted via Docker with multi-stage builds. No dependency on any specific hosting platform.
 
 ---
 
@@ -359,8 +395,7 @@ scripts/
 ├── scrape-zabihah.ts    # Zabihah CLI
 ├── scrape-all.ts        # All scrapers
 ├── check-status.ts      # Database status
-├── batch-approve-reject.ts # Batch operations
-└── debug/               # Debug scripts
+└── batch-approve-reject.ts # Batch operations
 
 app/admin/
 ├── page.tsx                      # Dashboard

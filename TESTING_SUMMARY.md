@@ -1,129 +1,101 @@
-# Testing Summary - Manaakhah Fixes
+# Testing Summary - Manaakhah
 
-**Date:** 2026-02-23
-**Status:** Needs Focused Verification
+**Updated:** 2026-04-05
+**Status:** All localStorage removed. Backend stable. UI complete for core flows.
+**Deployment:** Docker (self-hosted)
 
-## ✅ Completed Fixes
+## Completed Work
 
-### 1. Authentication System
-- **Status:** ✅ Complete
-- **Changes:**
-  - Configured `.env.local` with real Neon database
-  - Set `USE_MOCK_DATA=false`
-  - Generated secure `NEXTAUTH_SECRET`
-  - Verified NextAuth configuration
-- **Files Modified:**
-  - `.env.local` (created)
-- **Testing:** Login at http://localhost:3000/login with `saeedqazi2003@gmail.com`
+### Authentication System - Complete
+- Real NextAuth with Neon PostgreSQL
+- `USE_MOCK_DATA=false`
+- Email verification/reset requires Resend API key
 
-### 2. Forum/Community Posts
-- **Status:** ✅ Complete
-- **Changes:**
-  - Added NextAuth session support to API endpoints
-  - Updated POST, comment, and like endpoints
-  - Now uses database instead of localStorage
-- **Files Modified:**
-  - `app/api/community/posts/route.ts`
-  - `app/api/community/posts/[id]/comments/route.ts`
-  - `app/api/community/posts/[id]/like/route.ts`
-- **Testing:**
-  1. Go to http://localhost:3000/forum
-  2. Create a post
-  3. Refresh page - post should persist
+### Forum/Community Posts - Complete
+- Database-backed via `CommunityPost` and `PostComment` models
+- NextAuth session support on all API endpoints
 
-### 3. Events System
-- **Status:** ✅ Complete
-- **Changes:**
-  - Created new API endpoints for events
-  - Added RSVP functionality with authentication
-  - Updated events page to use API
-  - Removed localStorage dependency
-- **Files Created:**
-  - `app/api/events/route.ts`
-  - `app/api/events/[id]/rsvp/route.ts`
-- **Files Modified:**
-  - `app/events/page.tsx`
-- **Testing:**
-  1. Go to http://localhost:3000/events
-  2. Should see "Community Iftar Gathering" event
-  3. Click "Register"
-  4. Attendee count should update and persist
+### Events System - Complete
+- Database-backed with RSVP tracking
+- API at `/api/events` and `/api/events/[id]/rsvp`
 
-### 4. Prayer Times Feature Removal
-- **Status:** ✅ Complete
-- **Changes:**
-  - Removed prayer-times page, widget, and related API routes
-  - Removed prayer-times links from homepage/header
-  - Removed prayer-times fields from business create API payload handling
-- **Testing:**
-  1. Verify there is no `/prayer-times` navigation entry
-  2. Verify homepage renders without prayer widget
-  3. Verify no runtime calls to removed prayer APIs
+### Prayer Times - Fully Removed
+- All routes, components, and API endpoints deleted
 
-## 📋 Remaining Tasks
+### Service Discovery - Backend Complete
+- Service-aware search, sorting, filtering, pagination
+- `/api/services/suggest` endpoint live
 
-### 5. Service Discovery Backend
-- **Status:** ✅ Backend Complete, UI verification pending
-- **Needs verification:**
-  - `/api/businesses` sorting/filtering/pagination behavior
-  - `/api/services/suggest` response quality
-  - `/api/businesses/[id]/services` cursor pagination
+### Subscription Management - Complete
+- Backend APIs: `/api/subscriptions`, `/api/payment-methods`
+- Owner-facing UI at `/dashboard/subscription`
+- Subscribe, cancel, reactivate, payment method management
 
-### 6. Subscription/Payment Backend (No Paid Infra)
-- **Status:** ✅ Backend Complete, UI missing
-- **Needs:**
-  - Build owner-facing UI for plan selection/payment method management
-  - End-to-end tests for subscribe/cancel/reactivate flows
-  - Verify invoice history visibility and correctness
+### Messages - localStorage Removed
+- API-only data flow via `/api/messages/conversations`
 
-### 7. Referral Program
-- **Status:** ⏳ Pending
-- **Needs:** API endpoints, database integration, email invites
+### Referrals - Backend Built, localStorage Removed
+- API at `/api/referrals` (GET list+stats, POST invite)
+- Uses Prisma `Referral` model
 
-### 8. Vercel Environment Variables
-- **Status:** ⏳ Manual Step Required
-- **Action:** Update on Vercel dashboard:
-  ```
-  USE_MOCK_DATA=false
-  NEXT_PUBLIC_USE_MOCK_DATA=false
-  ```
+### Saved Searches - Backend Built, localStorage Removed
+- CRUD API at `/api/saved-searches`
+- Uses Prisma `SavedSearch` model
 
-## 🧪 Quick Test Commands
+### Lists - Backend Built, localStorage Removed
+- CRUD API at `/api/lists`
+- Uses Prisma `BusinessList` model
 
-### Start Server
+### Claim Business - Backend Built, localStorage Removed
+- API at `/api/claims` (GET user claims, POST submit claim)
+- Uses `Business.claimStatus` field
+
+### Cloudinary Upload - Fixed
+- Placeholder URL removed
+- Returns 503 with clear setup instructions when not configured
+
+### Admin Analytics - Real Data
+- Growth trends from actual database timestamps
+- User/business/review/booking breakdowns are live
+
+### Codebase Cleanup - Complete
+- Removed empty dirs, unused components, debug scripts
+
+## Remaining Tasks
+
+### Prisma Migration - Manual Step Required
 ```bash
-npm run dev
+npx prisma db push
+npx prisma generate
 ```
 
-### Test APIs (once server is running)
+### Error Boundaries - Pending
+- Add React error boundaries for graceful error handling
+
+### Auth Email Flows - Untested
+- Verification, reset, 2FA require Resend API key
+
+## Quick Test Commands
+
 ```bash
+# Development
+npm run dev
+
+# Docker
+docker compose up --build
+
+# Test APIs
 ./test-apis.sh
 ```
 
-## 📊 Database Status
-
+## Database Status
 - **Users:** 1 (admin account)
 - **Businesses:** 182 (populated)
 - **Posts:** 0 (test by creating)
 - **Events:** 1 (test event created)
 
-## ✨ Key Improvements
-
-1. **No more localStorage** - All data persists in PostgreSQL
-2. **Real authentication** - Uses NextAuth with database sessions
-3. **Production ready** - Mock mode disabled
-4. **Session management** - Proper user authentication for all actions
-5. **Services discovery backend upgraded** - service-aware search and suggestions
-6. **Subscription/payment backend added** - no paid infra required for internal plan tracking
-
-## 🐛 Known Issues
-
-- Some app surfaces still use localStorage/mock fallbacks (messages/referrals/saved-searches/lists/claim flow).
-- Subscription UI is not yet built (backend APIs available).
-
-## 📝 Notes
-
-- Email verification requires Resend API key configuration
-- OAuth (Google/Apple) requires provider credentials
-- Referral program still needs backend implementation
-- Prayer-times feature intentionally removed from product scope
+## Known Issues
+- Subscription UI not tested end-to-end (requires applying Prisma migration first)
+- Auth email flows untested (requires Resend API key)
+- Business owner analytics shows empty state (event tracking not yet integrated)
+- Booking system not tested end-to-end
