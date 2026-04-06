@@ -101,15 +101,7 @@ export default function AnalyticsPage() {
     { name: "Rejected", count: stats.bookingsByStatus?.REJECTED || 0, color: "#ef4444" },
   ];
 
-  // Mock time series data for engagement trends
-  const engagementTrendData = [
-    { month: "Jan", users: 45, businesses: 12, reviews: 34 },
-    { month: "Feb", users: 52, businesses: 15, reviews: 45 },
-    { month: "Mar", users: 61, businesses: 18, reviews: 58 },
-    { month: "Apr", users: 70, businesses: 22, reviews: 72 },
-    { month: "May", users: 85, businesses: 28, reviews: 91 },
-    { month: "Jun", users: 95, businesses: 32, reviews: 108 },
-  ];
+  const engagementTrendData = stats.monthlyGrowth || [];
 
   const COLORS = ["#3b82f6", "#10b981", "#8b5cf6", "#f59e0b", "#ef4444", "#6b7280"];
 

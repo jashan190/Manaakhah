@@ -21,8 +21,8 @@ interface AnalyticsData {
   };
 }
 
-// Generate mock analytics data
-const generateMockData = (): AnalyticsData => {
+// Generate empty analytics placeholder - real analytics require event tracking integration
+function generateEmptyData(): AnalyticsData {
   const last30Days = Array.from({ length: 30 }, (_, i) => {
     const date = new Date();
     date.setDate(date.getDate() - (29 - i));
@@ -30,48 +30,20 @@ const generateMockData = (): AnalyticsData => {
   });
 
   return {
-    views: last30Days.map((date) => ({
-      date,
-      count: Math.floor(Math.random() * 50) + 10,
-    })),
-    searches: last30Days.map((date) => ({
-      date,
-      count: Math.floor(Math.random() * 30) + 5,
-    })),
-    calls: last30Days.map((date) => ({
-      date,
-      count: Math.floor(Math.random() * 10) + 1,
-    })),
-    directions: last30Days.map((date) => ({
-      date,
-      count: Math.floor(Math.random() * 15) + 2,
-    })),
-    websiteClicks: last30Days.map((date) => ({
-      date,
-      count: Math.floor(Math.random() * 20) + 3,
-    })),
-    reviews: last30Days.map((date) => ({
-      date,
-      count: Math.floor(Math.random() * 3),
-      avgRating: 4 + Math.random(),
-    })),
-    topSearchTerms: [
-      { term: "halal restaurant", count: 145 },
-      { term: "halal food fremont", count: 98 },
-      { term: "muslim owned business", count: 67 },
-      { term: "halal meat", count: 54 },
-      { term: "islamic center", count: 43 },
-    ],
-    peakHours: Array.from({ length: 24 }, (_, hour) => ({
-      hour,
-      count: hour >= 11 && hour <= 21 ? Math.floor(Math.random() * 50) + 20 : Math.floor(Math.random() * 10) + 1,
-    })),
+    views: last30Days.map((date) => ({ date, count: 0 })),
+    searches: last30Days.map((date) => ({ date, count: 0 })),
+    calls: last30Days.map((date) => ({ date, count: 0 })),
+    directions: last30Days.map((date) => ({ date, count: 0 })),
+    websiteClicks: last30Days.map((date) => ({ date, count: 0 })),
+    reviews: last30Days.map((date) => ({ date, count: 0, avgRating: 0 })),
+    topSearchTerms: [],
+    peakHours: Array.from({ length: 24 }, (_, hour) => ({ hour, count: 0 })),
     demographics: {
-      newVsReturning: { new: 65, returning: 35 },
-      deviceTypes: { mobile: 58, desktop: 32, tablet: 10 },
+      newVsReturning: { new: 0, returning: 0 },
+      deviceTypes: { mobile: 0, desktop: 0, tablet: 0 },
     },
   };
-};
+}
 
 export default function BusinessAnalyticsPage() {
   const { data: session } = useMockSession();
@@ -83,13 +55,22 @@ export default function BusinessAnalyticsPage() {
     loadAnalytics();
   }, [timeRange]);
 
-  const loadAnalytics = () => {
+  const loadAnalytics = async () => {
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setAnalytics(generateMockData());
+    try {
+      const res = await fetch(`/api/user/analytics?range=${timeRange}`);
+      if (res.ok) {
+        const data = await res.json();
+        setAnalytics(data);
+      } else {
+        // No analytics endpoint yet — show empty state
+        setAnalytics(generateEmptyData());
+      }
+    } catch {
+      setAnalytics(generateEmptyData());
+    } finally {
       setLoading(false);
-    }, 500);
+    }
   };
 
   const getTotalViews = () => {

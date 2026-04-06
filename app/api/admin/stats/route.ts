@@ -21,6 +21,21 @@ export async function GET(req: Request) {
     const posts = await db.communityPost.findMany({});
     const scrapedBusinesses = await db.scrapedBusiness.findMany({});
 
+    // Build monthly growth data from createdAt timestamps
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const now = new Date();
+    const monthlyGrowth = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const nextMonth = new Date(d.getFullYear(), d.getMonth() + 1, 1);
+      monthlyGrowth.push({
+        month: monthNames[d.getMonth()],
+        users: users.filter((u: any) => new Date(u.createdAt) < nextMonth).length,
+        businesses: businesses.filter((b: any) => new Date(b.createdAt) < nextMonth).length,
+        reviews: reviews.filter((r: any) => new Date(r.createdAt) < nextMonth).length,
+      });
+    }
+
     const stats = {
       totalBusinesses: businesses.length,
       pendingBusinesses: scrapedBusinesses.filter((b: any) => b.claimStatus === "PENDING_REVIEW").length,
@@ -31,6 +46,7 @@ export async function GET(req: Request) {
       totalMessages: messages.length,
       communityPosts: posts.length,
       flaggedPosts: posts.filter((p: any) => p.status === "FLAGGED").length,
+      monthlyGrowth,
       usersByRole: {
         CONSUMER: users.filter((u: any) => u.role === "CONSUMER").length,
         BUSINESS_OWNER: users.filter((u: any) => u.role === "BUSINESS_OWNER").length,
