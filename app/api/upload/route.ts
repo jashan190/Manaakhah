@@ -45,21 +45,12 @@ export async function POST(req: Request) {
       );
     }
 
-    // Mock mode response
-    if (isMockMode()) {
-      return NextResponse.json({
-        url: `https://via.placeholder.com/800x600?text=Uploaded+Image`,
-        publicId: `mock_${Date.now()}`,
-        width: 800,
-        height: 600,
-        format: "jpg",
-      });
-    }
-
     // Check if Cloudinary is configured
-    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY) {
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
       return NextResponse.json(
-        { error: "Image upload service is not configured" },
+        {
+          error: "Image upload is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in your environment.",
+        },
         { status: 503 }
       );
     }
