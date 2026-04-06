@@ -2,7 +2,7 @@
  * Lazy-loaded Prisma client
  *
  * IMPORTANT: PrismaClient is NOT imported at the top level.
- * This prevents database connections during Vercel build time.
+ * This prevents database connections during build time.
  */
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

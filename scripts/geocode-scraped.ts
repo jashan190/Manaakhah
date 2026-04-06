@@ -24,7 +24,7 @@ const prisma = new PrismaClient();
 const RATE_LIMIT_MS = 1100;
 
 // User-Agent is required by Nominatim
-const USER_AGENT = "Manaakhah/1.0 (Muslim business directory - manaakhah.vercel.app)";
+const USER_AGENT = "Manaakhah/1.0 (Muslim business directory)";
 
 // =============================================================================
 // HELPER FUNCTIONS

@@ -69,8 +69,13 @@ npx prisma db push
 npx prisma generate
 ```
 
-### Error Boundaries - Pending
-- Add React error boundaries for graceful error handling
+### Error Boundaries - Complete
+- `app/error.tsx` — catches errors in all routes
+- `app/global-error.tsx` — catches root layout errors
+- `app/admin/error.tsx` — admin-specific with dashboard link
+- `app/dashboard/error.tsx` — dashboard-specific
+- `app/business/error.tsx` — business page-specific
+- `app/not-found.tsx` — custom 404 page
 
 ### Auth Email Flows - Untested
 - Verification, reset, 2FA require Resend API key

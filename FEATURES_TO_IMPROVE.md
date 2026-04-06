@@ -26,7 +26,7 @@
 
 ### Remaining Work
 1. Apply pending Prisma schema migration: `npx prisma db push && npx prisma generate`
-2. Add React error boundaries for graceful error handling.
+2. ~~Add React error boundaries for graceful error handling.~~ **DONE**
 3. Test auth email flows end-to-end (verification, reset, 2FA) — requires Resend API key.
 4. Integrate event tracking for business owner analytics (views, calls, directions).
 
@@ -117,7 +117,7 @@ Cloudinary integration is complete. Returns 503 with setup instructions when not
 ## Technical Debt
 
 ### 22. Error Handling
-- [ ] Add React error boundaries (next task)
+- [x] Add React error boundaries (global, admin, dashboard, business, not-found)
 - [ ] Add error logging/monitoring
 
 ### 23. Performance

@@ -28,7 +28,7 @@ function getDb() {
 }
 
 // Proxy that lazily initializes the database client on first property access
-// This prevents any database connection during Vercel build time
+// This prevents any database connection during build time
 export const db = new Proxy({} as any, {
   get(_, prop) {
     const client = getDb();

@@ -20,7 +20,6 @@ Manaakhah is a directory platform for Muslim-owned and halal-certified businesse
 
 ### Remaining Work
 - Apply pending Prisma schema migration (`npx prisma db push`).
-- Add React error boundaries.
 - Test auth email flows end-to-end (verification, reset, 2FA) — requires Resend API key.
 - Integrate event tracking for business owner analytics.
 

@@ -12,15 +12,13 @@ import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
 // Determine validation mode
-// Check multiple ways mock mode can be enabled - environment variables may not be
-// consistently available during Vercel build vs runtime
 const isMockMode =
   process.env.USE_MOCK_DATA === "true" ||
   process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true";
 
 // For demo/mock deployments, skip strict validation entirely
 // This allows deploying without database or email service
-const skipStrictValidation = isMockMode || process.env.VERCEL === "1";
+const skipStrictValidation = isMockMode;
 
 export const env = createEnv({
   server: {
@@ -101,10 +99,8 @@ export const env = createEnv({
     NEXT_PUBLIC_DEFAULT_CITY: process.env.NEXT_PUBLIC_DEFAULT_CITY,
   },
 
-  // Skip validation on Vercel builds or when explicitly requested
-  // Vercel sets VERCEL=1 during builds - we validate at runtime instead
-  skipValidation:
-    process.env.SKIP_ENV_VALIDATION === "true" || process.env.VERCEL === "1",
+  // Skip validation when explicitly requested (e.g. during Docker builds)
+  skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
 
   // Called when validation fails
   onValidationError: (error) => {

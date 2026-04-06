@@ -29,10 +29,11 @@ yarn-error.log*
 .env*.local
 .env
 
-# vercel
+# deployment
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 
+# auth

@@ -246,7 +246,7 @@ const FILTER_PRESETS: FilterPreset[] = [
 ];
 
 // All available sources with implementation status
-// Note: "requiresBrowser" means it uses Puppeteer and won't work on Vercel serverless
+// Note: "requiresBrowser" means it uses Puppeteer and needs Chromium installed on the server
 const ALL_SOURCES: { id: DataSource; name: string; description: string; implemented: boolean; requiresBrowser: boolean }[] = [
   // IMPLEMENTED - Halal certification directories
   { id: "ifanca", name: "IFANCA", description: "IFANCA certified manufacturers & processors", implemented: true, requiresBrowser: false },
@@ -355,7 +355,7 @@ export default function EnhancedScraperPage() {
     radius: "10",
     categories: [],
     tags: [],
-    sources: ["ifanca"], // Default to IFANCA (only one that works on Vercel)
+    sources: ["ifanca"], // Default to IFANCA (only one that doesn't need Chromium)
     minConfidence: "50",
     maxResultsPerSource: "20",
     verificationLevel: [],
@@ -743,8 +743,8 @@ export default function EnhancedScraperPage() {
                     <div className="space-y-4">
                       <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
                         <p className="text-sm text-amber-800">
-                          <strong>Vercel Limitation:</strong> Most scrapers require browser automation (Puppeteer)
-                          which doesn&apos;t work on Vercel serverless. Only <strong>IFANCA</strong> works here.
+                          <strong>Note:</strong> Most scrapers require browser automation (Puppeteer + Chromium).
+                          Only <strong>IFANCA</strong> works without Chromium.
                           For HFSAA, HMS, and Zabihah, run the CLI locally:
                         </p>
                         <code className="block mt-2 text-xs bg-amber-100 p-2 rounded">
