@@ -10,87 +10,57 @@ import Link from "next/link";
 interface Referral {
   id: string;
   referrerId: string;
-  referredEmail: string;
-  status: "pending" | "signed_up" | "completed";
+  referredId: string;
+  code: string;
+  status: string;
+  rewardAmount: number | null;
+  rewardedAt: string | null;
   createdAt: string;
-  completedAt?: string;
-  reward?: number;
+  referred?: {
+    id: string;
+    name: string | null;
+    email: string | null;
+  };
 }
 
-interface ReferralReward {
-  id: string;
-  userId: string;
-  amount: number;
-  type: "referral_bonus" | "signup_bonus";
-  status: "pending" | "claimed";
-  createdAt: string;
-  claimedAt?: string;
+interface ReferralStats {
+  total: number;
+  completed: number;
+  totalEarned: number;
 }
 
 export default function ReferralProgramPage() {
   const { data: session } = useMockSession();
   const [referrals, setReferrals] = useState<Referral[]>([]);
-  const [rewards, setRewards] = useState<ReferralReward[]>([]);
   const [referralCode, setReferralCode] = useState("");
+  const [stats, setStats] = useState<ReferralStats>({ total: 0, completed: 0, totalEarned: 0 });
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteSent, setInviteSent] = useState(false);
+  const [inviteStatus, setInviteStatus] = useState<string | null>(null);
 
   useEffect(() => {
-    if (session?.user?.id) {
-      loadData();
-      generateReferralCode();
-    }
+    if (session?.user?.id) loadData();
   }, [session?.user?.id]);
 
-  const generateReferralCode = () => {
-    // Generate a unique referral code based on user ID
-    const userId = session?.user?.id || "";
-    const code = `MANA-${userId.slice(0, 4).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
-
-    // Check if user already has a code
-    const savedCode = localStorage.getItem(`referralCode-${userId}`);
-    if (savedCode) {
-      setReferralCode(savedCode);
-    } else {
-      localStorage.setItem(`referralCode-${userId}`, code);
-      setReferralCode(code);
-    }
-  };
-
-  const loadData = () => {
-    const userId = session?.user?.id;
-
-    // Load referrals
-    const savedReferrals = localStorage.getItem("referrals");
-    if (savedReferrals) {
-      try {
-        const allReferrals = JSON.parse(savedReferrals);
-        const userReferrals = allReferrals.filter((r: Referral) => r.referrerId === userId);
-        setReferrals(userReferrals);
-      } catch {
-        setReferrals([]);
+  const loadData = async () => {
+    try {
+      const res = await fetch("/api/referrals");
+      if (res.ok) {
+        const data = await res.json();
+        setReferrals(data.referrals || []);
+        setReferralCode(data.code || "");
+        setStats(data.stats || { total: 0, completed: 0, totalEarned: 0 });
       }
+    } catch (err) {
+      console.error("Error loading referrals:", err);
+    } finally {
+      setLoading(false);
     }
-
-    // Load rewards
-    const savedRewards = localStorage.getItem("referralRewards");
-    if (savedRewards) {
-      try {
-        const allRewards = JSON.parse(savedRewards);
-        const userRewards = allRewards.filter((r: ReferralReward) => r.userId === userId);
-        setRewards(userRewards);
-      } catch {
-        setRewards([]);
-      }
-    }
-
-    setLoading(false);
   };
 
   const getReferralLink = () => {
-    return `${typeof window !== "undefined" ? window.location.origin : ""}/signup?ref=${referralCode}`;
+    return `${typeof window !== "undefined" ? window.location.origin : ""}/register?ref=${referralCode}`;
   };
 
   const handleCopyLink = async () => {
@@ -113,42 +83,28 @@ export default function ReferralProgramPage() {
     }
   };
 
-  const handleSendInvite = (e: React.FormEvent) => {
+  const handleSendInvite = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inviteEmail) return;
 
-    // Create a new referral
-    const newReferral: Referral = {
-      id: Date.now().toString(),
-      referrerId: session?.user?.id || "",
-      referredEmail: inviteEmail,
-      status: "pending",
-      createdAt: new Date().toISOString(),
-    };
-
-    const savedReferrals = localStorage.getItem("referrals");
-    const allReferrals = savedReferrals ? JSON.parse(savedReferrals) : [];
-    allReferrals.push(newReferral);
-    localStorage.setItem("referrals", JSON.stringify(allReferrals));
-
-    setReferrals([...referrals, newReferral]);
-    setInviteEmail("");
-    setInviteSent(true);
-    setTimeout(() => setInviteSent(false), 3000);
-  };
-
-  const handleClaimReward = (rewardId: string) => {
-    const savedRewards = localStorage.getItem("referralRewards");
-    let allRewards = savedRewards ? JSON.parse(savedRewards) : [];
-
-    allRewards = allRewards.map((r: ReferralReward) =>
-      r.id === rewardId ? { ...r, status: "claimed", claimedAt: new Date().toISOString() } : r
-    );
-
-    localStorage.setItem("referralRewards", JSON.stringify(allRewards));
-    setRewards(allRewards.filter((r: ReferralReward) => r.userId === session?.user?.id));
-
-    alert("Reward claimed! Credits have been added to your account.");
+    setInviteStatus(null);
+    try {
+      const res = await fetch("/api/referrals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: inviteEmail }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setInviteStatus(data.message || "Invite sent!");
+        setInviteEmail("");
+        await loadData();
+      } else {
+        setInviteStatus(data.error || "Failed to send invite");
+      }
+    } catch {
+      setInviteStatus("Network error");
+    }
   };
 
   const handleShare = (platform: string) => {
@@ -171,25 +127,13 @@ export default function ReferralProgramPage() {
     }
   };
 
-  const getTotalEarnings = () => {
-    return rewards.reduce((acc, r) => acc + r.amount, 0);
-  };
-
-  const getPendingRewards = () => {
-    return rewards.filter((r) => r.status === "pending").reduce((acc, r) => acc + r.amount, 0);
-  };
-
-  const getSuccessfulReferrals = () => {
-    return referrals.filter((r) => r.status === "completed").length;
-  };
-
   if (!session?.user) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card>
           <CardContent className="p-8 text-center">
             <p className="text-gray-600">Please log in to view your referrals.</p>
-            <Link href="/auth/signin">
+            <Link href="/login">
               <Button className="mt-4">Sign In</Button>
             </Link>
           </CardContent>
@@ -277,16 +221,16 @@ export default function ReferralProgramPage() {
           <div className="flex flex-wrap gap-2">
             <span className="text-sm text-gray-500 mr-2">Share via:</span>
             <Button variant="outline" size="sm" onClick={() => handleShare("whatsapp")}>
-              💬 WhatsApp
+              WhatsApp
             </Button>
             <Button variant="outline" size="sm" onClick={() => handleShare("twitter")}>
-              🐦 Twitter
+              Twitter
             </Button>
             <Button variant="outline" size="sm" onClick={() => handleShare("facebook")}>
-              📘 Facebook
+              Facebook
             </Button>
             <Button variant="outline" size="sm" onClick={() => handleShare("email")}>
-              ✉️ Email
+              Email
             </Button>
           </div>
         </CardContent>
@@ -308,36 +252,26 @@ export default function ReferralProgramPage() {
             />
             <Button type="submit">Send Invite</Button>
           </form>
-          {inviteSent && (
-            <p className="text-green-600 text-sm mt-2">
-              Invitation sent successfully!
-            </p>
+          {inviteStatus && (
+            <p className="text-sm mt-2 text-green-600">{inviteStatus}</p>
           )}
         </CardContent>
       </Card>
 
       {/* Stats */}
-      <div className="grid md:grid-cols-4 gap-4 mb-6">
+      <div className="grid md:grid-cols-3 gap-4 mb-6">
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-3xl font-bold text-green-600">
-              ${getTotalEarnings().toFixed(2)}
+              ${stats.totalEarned.toFixed(2)}
             </div>
             <div className="text-sm text-gray-600">Total Earned</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <div className="text-3xl font-bold text-blue-600">
-              ${getPendingRewards().toFixed(2)}
-            </div>
-            <div className="text-sm text-gray-600">Pending Rewards</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
             <div className="text-3xl font-bold text-purple-600">
-              {getSuccessfulReferrals()}
+              {stats.completed}
             </div>
             <div className="text-sm text-gray-600">Successful Referrals</div>
           </CardContent>
@@ -345,43 +279,12 @@ export default function ReferralProgramPage() {
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-3xl font-bold text-orange-600">
-              {referrals.length}
+              {stats.total}
             </div>
-            <div className="text-sm text-gray-600">Total Invites Sent</div>
+            <div className="text-sm text-gray-600">Total Invites</div>
           </CardContent>
         </Card>
       </div>
-
-      {/* Pending Rewards */}
-      {rewards.filter((r) => r.status === "pending").length > 0 && (
-        <Card className="mb-6 border-green-200 bg-green-50">
-          <CardHeader>
-            <CardTitle className="text-green-700">Claim Your Rewards</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {rewards
-                .filter((r) => r.status === "pending")
-                .map((reward) => (
-                  <div
-                    key={reward.id}
-                    className="flex items-center justify-between p-3 bg-white rounded-lg border border-green-200"
-                  >
-                    <div>
-                      <span className="font-semibold">${reward.amount.toFixed(2)}</span>
-                      <span className="text-gray-500 ml-2">
-                        {reward.type === "referral_bonus" ? "Referral Bonus" : "Signup Bonus"}
-                      </span>
-                    </div>
-                    <Button size="sm" onClick={() => handleClaimReward(reward.id)}>
-                      Claim
-                    </Button>
-                  </div>
-                ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Referral History */}
       <Card>
@@ -403,7 +306,9 @@ export default function ReferralProgramPage() {
                   className="flex items-center justify-between p-3 border rounded-lg"
                 >
                   <div>
-                    <p className="font-medium">{referral.referredEmail}</p>
+                    <p className="font-medium">
+                      {referral.referred?.name || referral.referred?.email || "User"}
+                    </p>
                     <p className="text-sm text-gray-500">
                       Invited on {new Date(referral.createdAt).toLocaleDateString()}
                     </p>
@@ -411,22 +316,16 @@ export default function ReferralProgramPage() {
                   <div className="text-right">
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        referral.status === "completed"
+                        referral.status === "completed" || referral.status === "rewarded"
                           ? "bg-green-100 text-green-700"
-                          : referral.status === "signed_up"
-                          ? "bg-blue-100 text-blue-700"
                           : "bg-yellow-100 text-yellow-700"
                       }`}
                     >
-                      {referral.status === "completed"
-                        ? "Completed"
-                        : referral.status === "signed_up"
-                        ? "Signed Up"
-                        : "Pending"}
+                      {referral.status.charAt(0).toUpperCase() + referral.status.slice(1)}
                     </span>
-                    {referral.reward && (
+                    {referral.rewardAmount && (
                       <p className="text-sm text-green-600 mt-1">
-                        +${referral.reward.toFixed(2)}
+                        +${referral.rewardAmount.toFixed(2)}
                       </p>
                     )}
                   </div>
