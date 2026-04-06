@@ -83,163 +83,72 @@ function MessagesContent() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const loadConversations = () => {
-    // Try API first, fall back to localStorage
-    fetchConversationsFromAPI().then(apiConvs => {
-      if (apiConvs && apiConvs.length > 0) {
-        setConversations(apiConvs);
-      } else {
-        // Load from localStorage
-        const saved = localStorage.getItem("conversations");
-        if (saved) {
-          try {
-            const all: Conversation[] = JSON.parse(saved);
-            const userConvs = all.filter(c =>
-              c.participants?.includes(session?.user?.id || "") ||
-              c.customer?.id === session?.user?.id ||
-              c.business?.id === session?.user?.id
-            );
-            setConversations(userConvs.sort((a, b) =>
-              new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime()
-            ));
-          } catch {
-            setConversations([]);
-          }
-        }
-      }
-      setLoading(false);
-    });
-  };
-
-  const fetchConversationsFromAPI = async (): Promise<Conversation[] | null> => {
-    if (!session?.user?.id) return null;
+  const loadConversations = async () => {
     try {
-      const response = await fetch("/api/messages/conversations", {
-        headers: {
-          "x-user-id": session.user.id,
-          "x-user-role": session.user.role,
-        },
-      });
+      const response = await fetch("/api/messages/conversations");
       if (response.ok) {
         const data = await response.json();
-        return data.conversations;
+        setConversations(data.conversations || []);
+      } else {
+        setConversations([]);
       }
     } catch (error) {
       console.error("Error fetching conversations:", error);
+      setConversations([]);
+    } finally {
+      setLoading(false);
     }
-    return null;
   };
 
-  const startOrOpenConversation = (otherUserId: string, businessId?: string) => {
-    const saved = localStorage.getItem("conversations");
-    let all: Conversation[] = saved ? JSON.parse(saved) : [];
-
-    // Check if conversation exists
-    let existing = all.find(c =>
-      c.participants?.includes(session?.user?.id || "") &&
-      c.participants?.includes(otherUserId)
-    );
-
-    if (!existing) {
-      // Create new conversation
-      const newConv: Conversation = {
-        id: `conv_${Date.now()}`,
-        status: "active",
-        lastMessageAt: new Date().toISOString(),
-        unreadCount: 0,
-        participants: [session?.user?.id || "", otherUserId],
-        participantNames: {
-          [session?.user?.id || ""]: session?.user?.name || "You",
-          [otherUserId]: "User",
-        },
-        business: businessId ? { id: businessId, name: "Business" } : undefined,
-        customer: { id: session?.user?.id || "", name: session?.user?.name || "You" },
-      };
-      all.push(newConv);
-      localStorage.setItem("conversations", JSON.stringify(all));
-      existing = newConv;
-    }
-
-    setConversations(all.filter(c =>
-      c.participants?.includes(session?.user?.id || "") ||
-      c.customer?.id === session?.user?.id
-    ));
-    setSelectedConversation(existing.id);
-  };
-
-  const loadMessages = (conversationId: string) => {
-    // Try API first
-    fetchMessagesFromAPI(conversationId).then(apiMsgs => {
-      if (apiMsgs && apiMsgs.length > 0) {
-        setMessages(apiMsgs);
-      } else {
-        // Load from localStorage
-        const saved = localStorage.getItem("messages");
-        if (saved) {
-          try {
-            const all: Message[] = JSON.parse(saved);
-            const convMsgs = all
-              .filter(m => m.conversationId === conversationId)
-              .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-            setMessages(convMsgs);
-          } catch {
-            setMessages([]);
-          }
-        } else {
-          setMessages([]);
-        }
+  const startOrOpenConversation = async (otherUserId: string, businessId?: string) => {
+    try {
+      const response = await fetch("/api/messages/conversations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ participantId: otherUserId, businessId }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        await loadConversations();
+        setSelectedConversation(data.conversation?.id || data.id);
       }
-      markAsRead(conversationId);
-    });
+    } catch (error) {
+      console.error("Error creating conversation:", error);
+    }
   };
 
-  const fetchMessagesFromAPI = async (conversationId: string): Promise<Message[] | null> => {
-    if (!session?.user?.id) return null;
+  const loadMessages = async (conversationId: string) => {
     try {
       const response = await fetch(
-        `/api/messages/conversations/${conversationId}/messages`,
-        {
-          headers: {
-            "x-user-id": session.user.id,
-            "x-user-role": session.user.role,
-          },
-        }
+        `/api/messages/conversations/${conversationId}/messages`
       );
       if (response.ok) {
         const data = await response.json();
-        return data.messages;
+        setMessages(data.messages || []);
+      } else {
+        setMessages([]);
       }
     } catch (error) {
       console.error("Error fetching messages:", error);
+      setMessages([]);
     }
-    return null;
+    markAsRead(conversationId);
   };
 
-  const markAsRead = (conversationId: string) => {
-    // Update messages
-    const savedMsgs = localStorage.getItem("messages");
-    if (savedMsgs) {
-      const allMsgs: Message[] = JSON.parse(savedMsgs);
-      const updated = allMsgs.map(m =>
-        m.conversationId === conversationId && m.senderId !== session?.user?.id
-          ? { ...m, isRead: true }
-          : m
+  const markAsRead = async (conversationId: string) => {
+    try {
+      await fetch(`/api/messages/conversations/${conversationId}/messages`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ markRead: true }),
+      });
+      setConversations((prev) =>
+        prev.map((c) =>
+          c.id === conversationId ? { ...c, unreadCount: 0 } : c
+        )
       );
-      localStorage.setItem("messages", JSON.stringify(updated));
-    }
-
-    // Update conversation unread count
-    const savedConvs = localStorage.getItem("conversations");
-    if (savedConvs) {
-      const allConvs: Conversation[] = JSON.parse(savedConvs);
-      const updated = allConvs.map(c =>
-        c.id === conversationId ? { ...c, unreadCount: 0 } : c
-      );
-      localStorage.setItem("conversations", JSON.stringify(updated));
-      setConversations(updated.filter(c =>
-        c.participants?.includes(session?.user?.id || "") ||
-        c.customer?.id === session?.user?.id
-      ));
+    } catch {
+      // silently fail read receipts
     }
   };
 
@@ -249,84 +158,34 @@ function MessagesContent() {
 
     setSending(true);
 
-    const conv = conversations.find(c => c.id === selectedConversation);
-    const otherUserId = conv?.participants?.find(p => p !== session.user.id) ||
-                        (conv?.business?.id !== session.user.id ? conv?.business?.id : conv?.customer?.id) || "";
-
-    const message: Message = {
-      id: `msg_${Date.now()}`,
-      conversationId: selectedConversation,
-      content: newMessage.trim(),
-      createdAt: new Date().toISOString(),
-      isRead: false,
-      senderId: session.user.id,
-      sender: {
-        id: session.user.id,
-        name: session.user.name || "You",
-        role: session.user.role,
-      },
-    };
-
-    // Try API first
     try {
       const response = await fetch(
         `/api/messages/conversations/${selectedConversation}/messages`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-user-id": session.user.id,
-            "x-user-role": session.user.role,
-          },
-          body: JSON.stringify({ content: newMessage }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: newMessage.trim() }),
         }
       );
 
       if (response.ok) {
         setNewMessage("");
-        loadMessages(selectedConversation);
-        loadConversations();
-        setSending(false);
-        return;
+        await loadMessages(selectedConversation);
+        await loadConversations();
+      } else {
+        alert("Failed to send message");
       }
     } catch (error) {
-      console.error("API error, falling back to localStorage:", error);
+      console.error("Error sending message:", error);
+      alert("Failed to send message");
+    } finally {
+      setSending(false);
     }
-
-    // Fallback to localStorage
-    const savedMsgs = localStorage.getItem("messages");
-    const allMsgs: Message[] = savedMsgs ? JSON.parse(savedMsgs) : [];
-    allMsgs.push(message);
-    localStorage.setItem("messages", JSON.stringify(allMsgs));
-
-    // Update conversation
-    const savedConvs = localStorage.getItem("conversations");
-    const allConvs: Conversation[] = savedConvs ? JSON.parse(savedConvs) : [];
-    const updatedConvs = allConvs.map(c =>
-      c.id === selectedConversation
-        ? {
-            ...c,
-            lastMessage: { content: newMessage.trim(), createdAt: new Date().toISOString() },
-            lastMessageAt: new Date().toISOString(),
-          }
-        : c
-    );
-    localStorage.setItem("conversations", JSON.stringify(updatedConvs));
-
-    setMessages([...messages, message]);
-    setConversations(updatedConvs.filter(c =>
-      c.participants?.includes(session.user.id) ||
-      c.customer?.id === session.user.id
-    ).sort((a, b) =>
-      new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime()
-    ));
-    setNewMessage("");
-    setSending(false);
   };
 
   const getOtherParty = (conv: Conversation) => {
     if (conv.participantNames) {
-      const otherId = conv.participants?.find(p => p !== session?.user?.id);
+      const otherId = conv.participants?.find((p) => p !== session?.user?.id);
       if (otherId && conv.participantNames[otherId]) {
         return conv.participantNames[otherId];
       }
@@ -352,7 +211,7 @@ function MessagesContent() {
     return date.toLocaleDateString([], { month: "short", day: "numeric" });
   };
 
-  const filteredConversations = conversations.filter(c => {
+  const filteredConversations = conversations.filter((c) => {
     if (!searchQuery) return true;
     const name = getOtherParty(c).toLowerCase();
     return name.includes(searchQuery.toLowerCase());
@@ -452,7 +311,7 @@ function MessagesContent() {
                 {!selectedConversation ? (
                   <div className="flex-1 flex items-center justify-center text-gray-500">
                     <div className="text-center">
-                      <span className="text-4xl block mb-4">💬</span>
+                      <span className="text-4xl block mb-4">&#128172;</span>
                       <p>Select a conversation to view messages</p>
                     </div>
                   </div>
@@ -461,7 +320,7 @@ function MessagesContent() {
                     {/* Header */}
                     <div className="p-4 border-b flex items-center gap-3">
                       {(() => {
-                        const conv = conversations.find(c => c.id === selectedConversation);
+                        const conv = conversations.find((c) => c.id === selectedConversation);
                         if (!conv) return null;
                         return (
                           <>
@@ -508,7 +367,7 @@ function MessagesContent() {
                                 <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                                 <p className={`text-xs mt-1 ${isOwn ? "text-green-100" : "text-gray-500"}`}>
                                   {formatTime(message.createdAt)}
-                                  {isOwn && <span className="ml-2">{message.isRead ? "✓✓" : "✓"}</span>}
+                                  {isOwn && <span className="ml-2">{message.isRead ? "&#10003;&#10003;" : "&#10003;"}</span>}
                                 </p>
                               </div>
                             </div>
