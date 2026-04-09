@@ -50,6 +50,21 @@ export async function PATCH(
       });
     }
 
+    if (input.isActive === false) {
+      const activeSubscription = await db.businessSubscription.findFirst({
+        where: {
+          paymentMethodId: id,
+          status: { in: ["ACTIVE", "TRIALING", "PAST_DUE"] },
+        },
+      });
+      if (activeSubscription) {
+        return NextResponse.json(
+          { error: "Cannot deactivate payment method used by an active subscription" },
+          { status: 409 }
+        );
+      }
+    }
+
     const method = await db.paymentMethod.update({
       where: { id },
       data: {
