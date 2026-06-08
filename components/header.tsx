@@ -12,13 +12,13 @@ type Tab = { l: string; href: string };
 
 const SIGNED_OUT: Tab[] = [
   { l: "Home", href: "/" },
-  { l: "About", href: "/about" },
+  { l: "Browse", href: "/search" },
   { l: "For businesses", href: "/for-business" },
-  { l: "Help", href: "/help" },
+  { l: "About", href: "/about" },
 ];
 const CONSUMER: Tab[] = [
   { l: "Home", href: "/" },
-  { l: "Discover", href: "/search" },
+  { l: "Browse", href: "/search" },
   { l: "Account", href: "/account" },
 ];
 // Business owners navigate via the OwnerShell sidebar — no top-nav tabs needed.
