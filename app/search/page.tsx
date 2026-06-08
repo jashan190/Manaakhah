@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 
@@ -9,12 +10,12 @@ const MapLibreMap = dynamic(() => import("@/components/map/MapLibreMap"), {
   ssr: false,
   loading: () => (
     <div className="h-[600px] bg-gray-100 rounded-lg flex items-center justify-center">
-      <p className="text-gray-500">Loading map...</p>
+      <p className="text-muted-foreground">Loading map...</p>
     </div>
   ),
 });
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import { Select } from "@/components/man/Select";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -29,15 +30,28 @@ import {
 import { useMockSession } from "@/components/mock-session-provider";
 import { useMapSearch, type Business, type MapBounds } from "@/hooks/useMapSearch";
 import { ViewToggle, type ViewMode } from "@/components/search/ViewToggle";
+import { FilterSheet } from "@/components/search/FilterSheet";
+import { FilterRail } from "@/components/search/FilterRail";
+import { categoriesForGroup } from "@/lib/category-groups";
+import { Bookmark, MessageCircle, Heart, Star, Check, Store } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 function SearchContent() {
   const { data: session } = useMockSession();
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
-  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  // Default to the service-area center so nearest businesses show immediately
+  // (refined to the user's real location if geolocation is granted).
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>({
+    lat: DEFAULT_LOCATION.latitude,
+    lng: DEFAULT_LOCATION.longitude,
+  });
   const [favorites, setFavorites] = useState<string[]>([]);
   const [recentlyViewed, setRecentlyViewed] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
+
+  // Read the ?group= URL param for grouped-category filtering
+  const searchParams = useSearchParams();
+  const groupKey = searchParams.get("group") || "";
 
   // Use the useMapSearch hook for URL-first state management
   const { filters, setFilters, businesses, isLoading, isStale, setIsStale, searchBounds } = useMapSearch(userLocation);
@@ -75,10 +89,17 @@ function SearchContent() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          // Data is Sacramento-only — only adopt the device location if it's
+          // within the service area, otherwise stay centered on Sacramento so
+          // results still show. (Remove the radius check once data is multi-city.)
+          const toRad = (d: number) => (d * Math.PI) / 180;
+          const dLat = toRad(lat - DEFAULT_LOCATION.latitude);
+          const dLng = toRad(lng - DEFAULT_LOCATION.longitude);
+          const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(DEFAULT_LOCATION.latitude)) * Math.cos(toRad(lat)) * Math.sin(dLng / 2) ** 2;
+          const miles = 2 * 3959 * Math.asin(Math.sqrt(a));
+          if (miles <= 75) setUserLocation({ lat, lng });
         },
         () => {
           setUserLocation({
@@ -148,15 +169,19 @@ function SearchContent() {
 
   // Sort businesses client-side based on filter selection
   const sortedBusinesses = useMemo(() => {
-    const sorted = [...businesses];
+    let sorted = [...businesses];
     if (filters.sort === "rating") {
       sorted.sort((a, b) => b.averageRating - a.averageRating);
     } else if (filters.sort === "reviews") {
       sorted.sort((a, b) => b.reviewCount - a.reviewCount);
     }
     // distance sort is default from API
+    if (groupKey) {
+      const cats = categoriesForGroup(groupKey);
+      sorted = sorted.filter((b) => cats.includes(b.category as any));
+    }
     return sorted;
-  }, [businesses, filters.sort]);
+  }, [businesses, filters.sort, groupKey]);
 
   // Transform businesses for map component (needs latitude/longitude)
   const businessesForMap = useMemo(() => {
@@ -174,119 +199,99 @@ function SearchContent() {
         reviewCount: b.reviewCount,
         distance: b.distance,
         tags: b.tags?.map((t) => t.tag) || [],
-        imageUrl: b.photos?.[0]?.url,
+        imageUrl: b.coverImage || (typeof b.photos?.[0] === "string" ? b.photos[0] : b.photos?.[0]?.url),
         description: b.description,
       }));
   }, [sortedBusinesses]);
 
   // Render business card
-  const renderBusinessCard = (business: Business, compact: boolean = false) => (
-    <Link
-      href={`/business/${business.id}`}
-      key={business.id}
-      onClick={() => addToRecentlyViewed(business.id)}
-    >
-      <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer group">
-        <CardContent className="p-0">
-          <div className="relative">
-            {business.photos.length > 0 ? (
-              <div className={`${compact ? 'aspect-[16/9]' : 'aspect-video'} bg-gray-200 rounded-t-lg`} />
-            ) : (
-              <div className={`${compact ? 'aspect-[16/9]' : 'aspect-video'} bg-gradient-to-br from-green-100 to-green-200 rounded-t-lg flex items-center justify-center`}>
-                <span className={compact ? 'text-2xl' : 'text-4xl'}>
-                  {business.category === "MASJID" ? "🕌" : "🏪"}
-                </span>
-              </div>
-            )}
+  const renderBusinessCard = (business: Business, compact: boolean = false) => {
+    const img = (business as any).coverImage || (typeof (business as any).photos?.[0] === "string" ? (business as any).photos[0] : (business as any).photos?.[0]?.url);
+    const cat = BUSINESS_CATEGORIES.find((c) => c.value === business.category)?.label;
+    const price = PRICE_RANGES.find((p) => p.value === business.priceRange)?.label;
+    const fav = favorites.includes(business.id);
+    return (
+    <Link href={`/business/${business.id}`} key={business.id} onClick={() => addToRecentlyViewed(business.id)}>
+      <div className="h-full overflow-hidden rounded-[14px] transition-shadow hover:shadow-[var(--shadow-lift)]"
+        style={{ background: "var(--card)", border: "1px solid var(--card-edge)" }}>
+        <div className="relative">
+          {img ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={img} alt={business.name} loading="lazy" className={`${compact ? 'aspect-[16/9]' : 'aspect-video'} w-full object-cover`} />
+          ) : (
+            <div className={`${compact ? 'aspect-[16/9]' : 'aspect-video'} flex items-center justify-center`}
+              style={{ background: "linear-gradient(135deg, var(--moss-100), var(--moss-200))" }}>
+              <Store size={26} style={{ color: "var(--moss-700)" }} />
+            </div>
+          )}
 
-            <button
-              onClick={(e) => toggleFavorite(business.id, e)}
-              className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:scale-110 transition-transform"
-            >
-              {favorites.includes(business.id) ? "❤️" : "🤍"}
-            </button>
+          <button onClick={(e) => toggleFavorite(business.id, e)} aria-label="Save"
+            className="absolute right-2.5 top-2.5 flex h-8 w-8 items-center justify-center rounded-full shadow-md transition-transform hover:scale-110"
+            style={{ background: "var(--card)" }}>
+            <Heart size={15} fill={fav ? "var(--clay-500)" : "none"} stroke={fav ? "var(--clay-500)" : "var(--ink-500)"} />
+          </button>
 
-            {business.verificationStatus === "APPROVED" && (
-              <div className="absolute top-2 left-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
-                ✓ Verified
-              </div>
-            )}
+          {business.verificationStatus === "APPROVED" && (
+            <div className="absolute left-2.5 top-2.5 inline-flex items-center gap-1 rounded-full px-2 py-1"
+              style={{ background: "var(--moss-700)", color: "var(--bone)", fontSize: 11, fontWeight: 600 }}>
+              <Check size={11} /> Verified
+            </div>
+          )}
 
-            {business.priceRange && (
-              <div className="absolute bottom-2 left-2 bg-black/70 text-white px-2 py-1 rounded text-xs">
-                {PRICE_RANGES.find((p) => p.value === business.priceRange)?.label}
-              </div>
+          {price && (
+            <div className="absolute bottom-2.5 left-2.5 rounded-md px-2 py-0.5"
+              style={{ background: "rgba(17,50,30,0.78)", color: "var(--bone)", fontSize: 11 }}>{price}</div>
+          )}
+        </div>
+
+        <div style={{ padding: compact ? 14 : 16 }}>
+          <div className="flex items-start justify-between gap-2">
+            <h3 className={`${compact ? 't-label-sm' : 't-label'} line-clamp-1`} style={{ color: "var(--ink-900)" }}>{business.name}</h3>
+            {business.distance !== undefined && (
+              <span className="t-body-xs whitespace-nowrap" style={{ color: "var(--ink-500)" }}>{business.distance.toFixed(1)} mi</span>
             )}
           </div>
 
-          <div className={compact ? 'p-3' : 'p-4'}>
-            <div className="flex items-start justify-between mb-1">
-              <h3 className={`font-semibold group-hover:text-primary transition-colors line-clamp-1 ${compact ? 'text-sm' : 'text-lg'}`}>
-                {business.name}
-              </h3>
-              {business.distance !== undefined && (
-                <span className="text-xs text-gray-500 whitespace-nowrap ml-2">
-                  {business.distance.toFixed(1)} mi
-                </span>
-              )}
-            </div>
-
-            <div className="flex items-center gap-2 mb-2">
-              {business.averageRating > 0 && (
-                <div className="flex items-center text-sm">
-                  <span className="text-yellow-500">★</span>
-                  <span className="ml-1 font-medium">
-                    {business.averageRating.toFixed(1)}
-                  </span>
-                  <span className="text-gray-500 ml-1">
-                    ({business.reviewCount})
-                  </span>
-                </div>
-              )}
-              <span className="text-xs text-gray-400">
-                {BUSINESS_CATEGORIES.find((c) => c.value === business.category)?.label}
+          <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 t-body-sm" style={{ color: "var(--ink-500)" }}>
+            {business.averageRating > 0 && (
+              <span className="inline-flex items-center gap-1" style={{ color: "var(--ink-700)" }}>
+                <Star size={13} fill="var(--clay-500)" stroke="none" />
+                <span style={{ fontWeight: 600 }}>{business.averageRating.toFixed(1)}</span>
+                <span style={{ color: "var(--ink-400)" }}>({business.reviewCount})</span>
               </span>
-            </div>
-
-            {!compact && (
-              <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                {business.description}
-              </p>
             )}
-
-            <p className="text-sm text-gray-500 mb-3 line-clamp-1">
-              {business.address}, {business.city}
-            </p>
-
-            {!compact && (
-              <div className="flex flex-wrap gap-1">
-                {business.tags.slice(0, 3).map((tag) => {
-                  const tagInfo = BUSINESS_TAGS.find((t) => t.value === tag.tag);
-                  return (
-                    <Badge key={tag.tag} variant="secondary" className="text-xs">
-                      {tagInfo?.icon} {tagInfo?.label.split(" ")[0]}
-                    </Badge>
-                  );
-                })}
-                {business.tags.length > 3 && (
-                  <Badge variant="secondary" className="text-xs">
-                    +{business.tags.length - 3}
-                  </Badge>
-                )}
-              </div>
-            )}
+            {cat && <span>{cat}</span>}
           </div>
-        </CardContent>
-      </Card>
+
+          {!compact && business.description && (
+            <p className="mt-2 t-body-sm line-clamp-2" style={{ color: "var(--ink-500)" }}>{business.description}</p>
+          )}
+
+          <p className="mt-2 t-body-sm line-clamp-1" style={{ color: "var(--ink-500)" }}>{[business.address, business.city].filter(Boolean).join(", ")}</p>
+
+          {!compact && business.tags?.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {business.tags.slice(0, 3).map((tag) => {
+                const ti = BUSINESS_TAGS.find((t) => t.value === tag.tag);
+                return <span key={tag.tag} className="rounded-full px-2.5 py-1 t-body-xs" style={{ background: "var(--moss-50)", color: "var(--moss-700)" }}>{ti?.label.split(" ")[0] || tag.tag}</span>;
+              })}
+              {business.tags.length > 3 && (
+                <span className="rounded-full px-2.5 py-1 t-body-xs" style={{ background: "var(--paper-2)", color: "var(--ink-700)" }}>+{business.tags.length - 3}</span>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
     </Link>
-  );
+    );
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ background: "var(--paper)" }}>
       {/* Search Header */}
-      <div className="bg-white border-b py-6 px-4 sticky top-0 z-10">
+      <div className="border-b px-4 py-6 sm:px-8" style={{ background: "var(--card)", borderColor: "var(--card-edge)" }}>
         <div className="container mx-auto max-w-6xl">
-          <h1 className="text-3xl font-bold mb-4">Find Muslim Businesses</h1>
+          <h1 className="t-h2 mb-4" style={{ color: "var(--ink-900)" }}>Find Muslim-owned businesses</h1>
 
           <form onSubmit={handleSearch} className="space-y-4">
             <div className="grid md:grid-cols-4 gap-4">
@@ -299,15 +304,10 @@ function SearchContent() {
 
               <Select
                 value={filters.category}
-                onChange={(e) => setFilters({ category: e.target.value })}
-              >
-                <option value="">All Categories</option>
-                {BUSINESS_CATEGORIES.map((cat) => (
-                  <option key={cat.value} value={cat.value}>
-                    {cat.label}
-                  </option>
-                ))}
-              </Select>
+                onChange={(v) => setFilters({ category: v })}
+                placeholder="All categories"
+                options={[{ value: "", label: "All categories" }, ...BUSINESS_CATEGORIES.map((c) => ({ value: c.value, label: c.label }))]}
+              />
 
               <div className="flex gap-2">
                 <Button type="submit" className="flex-1">
@@ -329,82 +329,18 @@ function SearchContent() {
               </div>
             </div>
 
-            {/* Advanced Filters */}
-            {showAdvancedFilters && (
-              <div className="bg-gray-50 p-4 rounded-lg space-y-4">
-                <div className="grid md:grid-cols-4 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Distance</label>
-                    <Select
-                      value={filters.distance}
-                      onChange={(e) => setFilters({
-                        distance: e.target.value,
-                        // Clear bounds when switching back to radius mode
-                        ne_lat: null,
-                        ne_lng: null,
-                        sw_lat: null,
-                        sw_lng: null,
-                      })}
-                    >
-                      {DISTANCE_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </option>
-                      ))}
-                    </Select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Sort By</label>
-                    <Select
-                      value={filters.sort}
-                      onChange={(e) => setFilters({ sort: e.target.value })}
-                    >
-                      {SORT_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </option>
-                      ))}
-                    </Select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Price Range</label>
-                    <Select
-                      value={filters.priceRange}
-                      onChange={(e) => setFilters({ priceRange: e.target.value })}
-                    >
-                      <option value="">Any Price</option>
-                      {PRICE_RANGES.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label} - {opt.description}
-                        </option>
-                      ))}
-                    </Select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Minimum Rating</label>
-                    <Select
-                      value={filters.minRating}
-                      onChange={(e) => setFilters({ minRating: e.target.value })}
-                    >
-                      <option value="">Any Rating</option>
-                      <option value="4">4+ Stars</option>
-                      <option value="3">3+ Stars</option>
-                      <option value="2">2+ Stars</option>
-                    </Select>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-end">
-                  <Button type="button" variant="outline" size="sm" onClick={clearFilters}>
-                    Clear All Filters
-                  </Button>
-                </div>
-              </div>
-            )}
           </form>
+
+          {/* C3 — Filter Panel (slide-over) */}
+          <FilterSheet
+            open={showAdvancedFilters}
+            onClose={() => setShowAdvancedFilters(false)}
+            filters={filters}
+            setFilters={setFilters}
+            clearFilters={clearFilters}
+            resultCount={sortedBusinesses.length}
+            activeCount={activeFilterCount}
+          />
 
           {/* Tag Filters */}
           <div className="mt-4 flex flex-wrap gap-2">
@@ -427,88 +363,120 @@ function SearchContent() {
 
       {/* Results */}
       <div className="container mx-auto max-w-6xl py-8 px-4">
-        {isLoading ? (
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-gray-600">Finding businesses near you...</p>
-          </div>
-        ) : sortedBusinesses.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4">🔍</div>
-            <p className="text-gray-600 mb-4">No businesses found</p>
-            <p className="text-sm text-gray-500 mb-4">
-              Try adjusting your search filters or expanding your search radius
-            </p>
-            <Button variant="outline" onClick={clearFilters}>
-              Clear Filters
-            </Button>
-          </div>
-        ) : (
-          <>
-            <div className="flex items-center justify-between mb-6">
-              <p className="text-gray-600">
-                Found <strong>{sortedBusinesses.length}</strong> businesses
-                {userLocation && ` within ${filters.distance} miles`}
-              </p>
-              <div className="flex items-center gap-2">
-                {favorites.length > 0 && (
-                  <Link href="/favorites">
-                    <Button variant="outline" size="sm">
-                      View Favorites ({favorites.length})
-                    </Button>
-                  </Link>
-                )}
-                {/* View Toggle */}
-                <ViewToggle value={viewMode} onChange={setViewMode} />
-              </div>
+        {/* Guest rail — limited, but intentional (not broken) */}
+        {!session && (
+          <div className="mb-6 flex flex-wrap items-center gap-4 rounded-[14px] px-5 py-4"
+            style={{ background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full" style={{ background: "var(--moss-700)" }}><Bookmark size={16} style={{ color: "var(--bone)" }} /></span>
+              <span className="flex h-9 w-9 -ml-4 items-center justify-center rounded-full" style={{ background: "var(--clay-500)", border: "2px solid var(--moss-50)" }}><MessageCircle size={16} style={{ color: "var(--bone)" }} /></span>
             </div>
+            <div className="min-w-[220px] flex-1">
+              <div className="t-label" style={{ color: "var(--ink-900)" }}>You&apos;re browsing as a guest</div>
+              <div className="t-body-sm" style={{ color: "var(--ink-700)" }}>Create a free account to save businesses and message owners directly.</div>
+            </div>
+            <div className="flex gap-2">
+              <Link href="/register"><Button size="sm">Sign up free</Button></Link>
+              <Link href="/login"><Button size="sm" variant="outline">Sign in</Button></Link>
+            </div>
+          </div>
+        )}
 
-            {viewMode === "split" ? (
-              <div className="grid md:grid-cols-2 gap-6">
-                {/* List on left - dims when stale */}
-                <div className={cn(
-                  "space-y-4 max-h-[600px] overflow-y-auto pr-2 transition-opacity duration-300",
-                  isStale ? "opacity-50" : "opacity-100"
-                )}>
-                  {sortedBusinesses.map((business) => renderBusinessCard(business, true))}
-                </div>
-                {/* Map on right */}
-                <div className="h-[600px] rounded-lg overflow-hidden border sticky top-24">
-                  <MapLibreMap
-                    businesses={businessesForMap}
-                    userLat={userLocation?.lat ?? 37.5485}
-                    userLng={userLocation?.lng ?? -121.9886}
-                    radius={parseInt(filters.distance) || 25}
-                    onBoundsChange={handleBoundsChange}
-                    isStale={isStale}
-                    onSearchThisArea={handleSearchThisArea}
-                    isSearching={isLoading}
-                  />
-                </div>
+        <div className="lg:grid lg:grid-cols-[250px_1fr] lg:gap-6">
+          {/* Desktop FilterRail */}
+          <aside className="hidden lg:block">
+            <div className="sticky top-[88px] max-h-[calc(100vh-110px)] overflow-auto rounded-[14px] border p-4"
+              style={{ background: "var(--bone)", borderColor: "var(--card-edge)" }}>
+              <FilterRail filters={filters} setFilters={setFilters} clearFilters={clearFilters} activeCount={activeFilterCount} />
+            </div>
+          </aside>
+
+          {/* Results column */}
+          <div>
+            {isLoading ? (
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                <p className="text-muted-foreground">Finding businesses near you...</p>
               </div>
-            ) : viewMode === "map" ? (
-              <div className="h-[600px] rounded-lg overflow-hidden border">
-                <MapLibreMap
-                  businesses={businessesForMap}
-                  userLat={userLocation?.lat ?? 37.5485}
-                  userLng={userLocation?.lng ?? -121.9886}
-                  radius={parseInt(filters.distance) || 25}
-                  onBoundsChange={handleBoundsChange}
-                  isStale={isStale}
-                  onSearchThisArea={handleSearchThisArea}
-                  isSearching={isLoading}
-                />
+            ) : sortedBusinesses.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="text-6xl mb-4">🔍</div>
+                <p className="text-muted-foreground mb-4">No businesses found</p>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Try adjusting your search filters or expanding your search radius
+                </p>
+                <Button variant="outline" onClick={clearFilters}>
+                  Clear Filters
+                </Button>
               </div>
             ) : (
-              <div className={cn(
-                "grid md:grid-cols-2 lg:grid-cols-3 gap-6 transition-opacity duration-300",
-                isStale ? "opacity-50" : "opacity-100"
-              )}>
-                {sortedBusinesses.map((business) => renderBusinessCard(business))}
-              </div>
+              <>
+                <div className="flex items-center justify-between mb-6">
+                  <p className="text-muted-foreground">
+                    Found <strong>{sortedBusinesses.length}</strong> businesses
+                    {userLocation && ` within ${filters.distance} miles`}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    {favorites.length > 0 && (
+                      <Link href="/favorites">
+                        <Button variant="outline" size="sm">
+                          View Favorites ({favorites.length})
+                        </Button>
+                      </Link>
+                    )}
+                    {/* View Toggle */}
+                    <ViewToggle value={viewMode} onChange={setViewMode} />
+                  </div>
+                </div>
+
+                {viewMode === "split" ? (
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {/* List on left - dims when stale */}
+                    <div className={cn(
+                      "space-y-4 max-h-[600px] overflow-y-auto pr-2 transition-opacity duration-300",
+                      isStale ? "opacity-50" : "opacity-100"
+                    )}>
+                      {sortedBusinesses.map((business) => renderBusinessCard(business, true))}
+                    </div>
+                    {/* Map on right */}
+                    <div className="h-[600px] rounded-lg overflow-hidden border sticky top-24">
+                      <MapLibreMap
+                        businesses={businessesForMap}
+                        userLat={userLocation?.lat ?? 37.5485}
+                        userLng={userLocation?.lng ?? -121.9886}
+                        radius={parseInt(filters.distance) || 25}
+                        onBoundsChange={handleBoundsChange}
+                        isStale={isStale}
+                        onSearchThisArea={handleSearchThisArea}
+                        isSearching={isLoading}
+                      />
+                    </div>
+                  </div>
+                ) : viewMode === "map" ? (
+                  <div className="h-[600px] rounded-lg overflow-hidden border">
+                    <MapLibreMap
+                      businesses={businessesForMap}
+                      userLat={userLocation?.lat ?? 37.5485}
+                      userLng={userLocation?.lng ?? -121.9886}
+                      radius={parseInt(filters.distance) || 25}
+                      onBoundsChange={handleBoundsChange}
+                      isStale={isStale}
+                      onSearchThisArea={handleSearchThisArea}
+                      isSearching={isLoading}
+                    />
+                  </div>
+                ) : (
+                  <div className={cn(
+                    "grid md:grid-cols-2 lg:grid-cols-3 gap-6 transition-opacity duration-300",
+                    isStale ? "opacity-50" : "opacity-100"
+                  )}>
+                    {sortedBusinesses.map((business) => renderBusinessCard(business))}
+                  </div>
+                )}
+              </>
             )}
-          </>
-        )}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -519,8 +487,8 @@ export default function SearchPage() {
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading search...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--moss-700)] mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading search...</p>
         </div>
       </div>
     }>
