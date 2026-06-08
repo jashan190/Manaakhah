@@ -1,7 +1,7 @@
 /* Manaakhah — design tokens ported from the Claude Design handoff.
    Hanken Grotesk · deep moss green (#1f5638) · warm paper neutrals · clay accents. */
 @import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&display=swap");
+/* Fraunces (headings) is loaded via a <link> in app/layout.tsx — Turbopack drops a 2nd remote @import here. */
 
 @tailwind base;
 @tailwind components;
