@@ -17,7 +17,7 @@ export function CategoryGroupGrid() {
   const [showAll, setShowAll] = useState(false);
   return (
     <section className="mx-auto max-w-[1200px] px-6 py-12">
-      <PH title="Browse by category" sub="Find Muslim-owned businesses across Sacramento" />
+      <PH title="Browse by Category" sub="Find Muslim-owned businesses across Sacramento" />
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-3">
         {CATEGORY_GROUPS.map((g) => {
           const Icon = ICONS[g.icon] ?? Briefcase;

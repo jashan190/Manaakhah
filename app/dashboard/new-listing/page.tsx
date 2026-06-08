@@ -1,302 +1,150 @@
 "use client";
 
 import { useState } from "react";
-import { useMockSession } from "@/components/mock-session-provider";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select } from "@/components/ui/select";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BUSINESS_CATEGORIES, BUSINESS_TAGS } from "@/lib/constants";
+import { ManCard, PH, Seal, Tag } from "@/components/man/primitives";
+import { Select } from "@/components/man/Select";
+import { Checkbox } from "@/components/man/Choice";
+import { DatePicker } from "@/components/man/DatePicker";
 
-const USE_MOCK_DATA = process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true";
+const opts = (...l: string[]) => l.map((s) => ({ value: s, label: s }));
+import { ArrowLeft, ArrowRight, Check, Plus, MapPin, Clock, Image as ImageIcon, BadgeCheck } from "lucide-react";
+
+const STEPS = ["Basics", "Address & hours", "Halal details", "Photos", "Review"];
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const fieldCls = "w-full rounded-[10px] border bg-white px-3.5 py-2.5 t-body outline-none";
+const fs = { borderColor: "var(--card-edge)", color: "var(--ink-900)" } as const;
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 5 }}>{label}</div>
+      {children}
+    </div>
+  );
+}
 
 export default function NewListingPage() {
-  const { data: session } = useMockSession();
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    category: "HALAL_FOOD",
-    address: "",
-    city: "Fremont",
-    state: "CA",
-    zipCode: "",
-    latitude: 37.5485,
-    longitude: -121.9886,
-    phone: "",
-    email: "",
-    website: "",
-    services: "",
-    tags: [] as string[],
-  });
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    try {
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-      };
-
-      // In mock mode, send user info in headers
-      if (USE_MOCK_DATA && session?.user) {
-        headers["x-user-id"] = session.user.id;
-        headers["x-user-role"] = session.user.role;
-      }
-
-      const response = await fetch("/api/businesses", {
-        method: "POST",
-        headers,
-        body: JSON.stringify({
-          ...formData,
-          services: formData.services
-            .split(",")
-            .map((s) => s.trim())
-            .filter(Boolean),
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || "Failed to create listing");
-        return;
-      }
-
-      router.push("/dashboard");
-    } catch (err) {
-      setError("An error occurred. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleTagToggle = (tag: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      tags: prev.tags.includes(tag)
-        ? prev.tags.filter((t) => t !== tag)
-        : [...prev.tags, tag],
-    }));
-  };
-
-  // Simple geocoding simulation (in production, use Mapbox Geocoding API)
-  const handleAddressChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
+  const [step, setStep] = useState(0);
+  const last = STEPS.length - 1;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="container mx-auto max-w-3xl">
-        <Card>
-          <CardHeader>
-            <CardTitle>Create New Listing</CardTitle>
-            <CardDescription>
-              Add your business to Manakhaah
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {error && (
-                <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm">
-                  {error}
-                </div>
-              )}
+    <div style={{ background: "var(--paper)" }} className="px-6 py-8 md:px-14">
+      <div className="mx-auto max-w-[820px]">
+        <Link href="/for-business" className="t-body-sm inline-flex items-center gap-1" style={{ color: "var(--ink-500)" }}><ArrowLeft size={14} /> Back to owner home</Link>
+        <PH title="Add Your Business" sub="A few quick steps, then our team verifies you" />
 
-              <div className="space-y-2">
-                <Label htmlFor="name">Business Name *</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  required
-                />
+        {/* Stepper */}
+        <div className="mb-6 flex items-center gap-1.5">
+          {STEPS.map((s, i) => (
+            <div key={s} className="flex flex-1 items-center gap-1.5">
+              <button onClick={() => setStep(i)} className="flex items-center gap-2">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full t-body-xs" style={i < step ? { background: "var(--moss-700)", color: "var(--bone)" } : i === step ? { background: "var(--ink-900)", color: "var(--bone)" } : { background: "var(--paper-2)", color: "var(--ink-400)", border: "1px solid var(--card-edge)" }}>
+                  {i < step ? <Check size={12} /> : i + 1}
+                </span>
+                <span className="t-body-sm hidden sm:inline" style={{ color: i === step ? "var(--ink-900)" : "var(--ink-500)" }}>{s}</span>
+              </button>
+              {i < last && <div className="h-px flex-1" style={{ background: i < step ? "var(--moss-700)" : "var(--card-edge)" }} />}
+            </div>
+          ))}
+        </div>
+
+        <ManCard style={{ padding: 28 }}>
+          {step === 0 && (
+            <div className="grid gap-4">
+              <Field label="Business name"><input className={fieldCls} style={fs} placeholder="e.g. Famous Kabob" /></Field>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label="Category"><Select defaultValue="Restaurant" options={opts("Restaurant", "Grocery & market", "Café & bakery", "Salon & barber", "Jewelry", "Modest fashion", "Professional services", "Home services")} /></Field>
+                <Field label="Price range"><Select defaultValue="$$ — Moderate" options={opts("$ — Budget", "$$ — Moderate", "$$$ — Upscale")} /></Field>
               </div>
+              <Field label="Short description"><textarea className={fieldCls} style={{ ...fs, minHeight: 96, resize: "vertical" }} placeholder="One or two sentences about what makes your business special." /></Field>
+            </div>
+          )}
 
-              <div className="space-y-2">
-                <Label htmlFor="category">Category *</Label>
-                <Select
-                  id="category"
-                  value={formData.category}
-                  onChange={(e) =>
-                    setFormData({ ...formData, category: e.target.value })
-                  }
-                  required
-                >
-                  {BUSINESS_CATEGORIES.map((cat) => (
-                    <option key={cat.value} value={cat.value}>
-                      {cat.label}
-                    </option>
-                  ))}
-                </Select>
+          {step === 1 && (
+            <div className="grid gap-4">
+              <div className="flex items-center gap-2 t-h4" style={{ color: "var(--ink-900)" }}><MapPin size={18} style={{ color: "var(--moss-700)" }} /> Location</div>
+              <Field label="Street address"><input className={fieldCls} style={fs} defaultValue="1290 Fulton Ave" /></Field>
+              <div className="grid gap-4 sm:grid-cols-3">
+                <Field label="City"><input className={fieldCls} style={fs} defaultValue="Sacramento" /></Field>
+                <Field label="State"><input className={fieldCls} style={fs} defaultValue="CA" /></Field>
+                <Field label="ZIP"><input className={fieldCls} style={fs} defaultValue="95825" /></Field>
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="description">Description *</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) =>
-                    setFormData({ ...formData, description: e.target.value })
-                  }
-                  placeholder="Tell customers about your business..."
-                  rows={4}
-                  required
-                />
+              <div className="flex items-center gap-2 t-h4" style={{ color: "var(--ink-900)", marginTop: 8 }}><Clock size={18} style={{ color: "var(--moss-700)" }} /> Opening hours</div>
+              <div className="grid gap-2">
+                {DAYS.map((d, i) => (
+                  <div key={d} className="flex items-center gap-3">
+                    <span className="t-body-sm" style={{ color: "var(--ink-700)", width: 96 }}>{d}</span>
+                    <input className="rounded-[8px] border bg-white px-2.5 py-1.5 t-body-sm outline-none" style={fs} defaultValue="11:00" disabled={i === 6} />
+                    <span className="t-body-sm" style={{ color: "var(--ink-400)" }}>–</span>
+                    <input className="rounded-[8px] border bg-white px-2.5 py-1.5 t-body-sm outline-none" style={fs} defaultValue="22:00" disabled={i === 6} />
+                    <Checkbox className="ml-auto" defaultChecked={i === 6} label="Closed" />
+                  </div>
+                ))}
               </div>
+            </div>
+          )}
 
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number *</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) =>
-                      setFormData({ ...formData, phone: e.target.value })
-                    }
-                    placeholder="(555) 123-4567"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    placeholder="business@example.com"
-                  />
-                </div>
+          {step === 2 && (
+            <div className="grid gap-4">
+              <div className="flex items-center gap-2 t-h4" style={{ color: "var(--ink-900)" }}><BadgeCheck size={18} style={{ color: "var(--moss-700)" }} /> Halal details</div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label="Certifying body"><Select defaultValue="HFSAA" options={opts("HFSAA", "HMS", "IFANCA", "Self-certified", "Not applicable")} /></Field>
+                <Field label="Certificate expiry"><DatePicker placeholder="Select expiry date" /></Field>
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="website">Website</Label>
-                <Input
-                  id="website"
-                  type="url"
-                  value={formData.website}
-                  onChange={(e) =>
-                    setFormData({ ...formData, website: e.target.value })
-                  }
-                  placeholder="https://example.com"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="address">Street Address *</Label>
-                <Input
-                  id="address"
-                  value={formData.address}
-                  onChange={(e) => handleAddressChange("address", e.target.value)}
-                  placeholder="123 Main St"
-                  required
-                />
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="city">City *</Label>
-                  <Input
-                    id="city"
-                    value={formData.city}
-                    onChange={(e) =>
-                      setFormData({ ...formData, city: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="state">State *</Label>
-                  <Input
-                    id="state"
-                    value={formData.state}
-                    onChange={(e) =>
-                      setFormData({ ...formData, state: e.target.value })
-                    }
-                    maxLength={2}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="zipCode">Zip Code *</Label>
-                  <Input
-                    id="zipCode"
-                    value={formData.zipCode}
-                    onChange={(e) =>
-                      setFormData({ ...formData, zipCode: e.target.value })
-                    }
-                    placeholder="94536"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="services">
-                  Services Offered (comma-separated)
-                </Label>
-                <Input
-                  id="services"
-                  value={formData.services}
-                  onChange={(e) =>
-                    setFormData({ ...formData, services: e.target.value })
-                  }
-                  placeholder="Oil change, Brake repair, Tire rotation"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Tags</Label>
-                <div className="flex flex-wrap gap-2">
-                  {BUSINESS_TAGS.map((tag) => (
-                    <button
-                      key={tag.value}
-                      type="button"
-                      onClick={() => handleTagToggle(tag.value)}
-                      className={`px-3 py-1 rounded-full text-sm border ${
-                        formData.tags.includes(tag.value)
-                          ? "bg-primary text-white border-primary"
-                          : "bg-white border-gray-300 hover:border-primary"
-                      }`}
-                    >
-                      {tag.icon} {tag.label}
-                    </button>
+              <Field label="What&apos;s halal here?">
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {["All meat is zabihah", "Separate halal kitchen", "No alcohol served", "Vegetarian options"].map((o) => (
+                    <div key={o} className="flex items-center rounded-[10px] border px-3 py-2.5" style={{ borderColor: "var(--card-edge)" }}><Checkbox defaultChecked label={o} /></div>
                   ))}
                 </div>
+              </Field>
+              <div className="flex items-start gap-3 rounded-[10px] p-3.5" style={{ background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
+                <Seal size={22} />
+                <p className="t-body-sm" style={{ color: "var(--ink-700)" }}>Upload your certificate on the next step. Our verification team cross-checks it with the issuing body before your Seal goes live.</p>
               </div>
+            </div>
+          )}
 
-              <div className="flex gap-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => router.back()}
-                  disabled={loading}
-                >
-                  Cancel
-                </Button>
-                <Button type="submit" disabled={loading} className="flex-1">
-                  {loading ? "Creating..." : "Create Listing"}
-                </Button>
+          {step === 3 && (
+            <div className="grid gap-4">
+              <div className="flex items-center gap-2 t-h4" style={{ color: "var(--ink-900)" }}><ImageIcon size={18} style={{ color: "var(--moss-700)" }} /> Photos & documents</div>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <button className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-[12px] border-2 border-dashed t-body-xs" style={{ borderColor: "var(--card-edge)", color: "var(--ink-500)" }}><Plus size={20} /> Cover photo</button>
+                {[1, 2, 3].map((i) => (
+                  <button key={i} className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-[12px] border-2 border-dashed t-body-xs" style={{ borderColor: "var(--card-edge)", color: "var(--ink-500)" }}><Plus size={20} /> Add photo</button>
+                ))}
               </div>
-            </form>
-          </CardContent>
-        </Card>
+              <Field label="Halal certificate (PDF or image)">
+                <button className="flex w-full items-center justify-center gap-2 rounded-[10px] border-2 border-dashed py-5 t-body-sm" style={{ borderColor: "var(--card-edge)", color: "var(--ink-500)" }}><Plus size={16} /> Upload certificate</button>
+              </Field>
+            </div>
+          )}
+
+          {step === 4 && (
+            <div className="grid gap-4">
+              <div className="t-h4" style={{ color: "var(--ink-900)" }}>Review & submit</div>
+              {[["Business", "Famous Kabob · Restaurant · $$"], ["Address", "1290 Fulton Ave, Sacramento, CA 95825"], ["Hours", "Mon–Sat 11:00–22:00 · Sun closed"], ["Halal", "HFSAA · Zabihah · No alcohol"], ["Photos", "Cover + 3 photos · certificate attached"]].map(([k, v]) => (
+                <div key={k} className="flex items-start justify-between gap-4 pb-3" style={{ borderBottom: "1px dashed var(--card-edge)" }}>
+                  <span className="t-eyebrow" style={{ color: "var(--ink-500)" }}>{k}</span>
+                  <span className="t-body-sm" style={{ color: "var(--ink-900)", textAlign: "right" }}>{v}</span>
+                </div>
+              ))}
+              <div className="flex items-center gap-2"><Tag tone="warn">Pending verification</Tag><span className="t-body-sm" style={{ color: "var(--ink-500)" }}>Most listings are reviewed within 2 business days.</span></div>
+            </div>
+          )}
+        </ManCard>
+
+        <div className="mt-5 flex items-center justify-between">
+          <Button variant="outline" size="sm" onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0}><ArrowLeft className="mr-1.5 h-4 w-4" /> Back</Button>
+          <div className="flex gap-2">
+            <Button variant="ghost" size="sm">Save draft</Button>
+            {step < last
+              ? <Button size="sm" onClick={() => setStep(step + 1)}>Continue <ArrowRight className="ml-1.5 h-4 w-4" /></Button>
+              : <Link href="/dashboard"><Button size="sm">Submit for verification <Check className="ml-1.5 h-4 w-4" /></Button></Link>}
+          </div>
+        </div>
       </div>
     </div>
   );

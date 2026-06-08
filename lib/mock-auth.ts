@@ -154,12 +154,33 @@ export function mockLogout() {
  * Switch role (for testing)
  * This allows you to quickly switch between consumer/business/admin
  */
+const ROLE_DEFAULTS: Record<UserRole, { name: string; email: string }> = {
+  CONSUMER: { name: "Aisha Rahman", email: "consumer@manaakhah.test" },
+  BUSINESS_OWNER: { name: "Yusuf Khan", email: "owner@manaakhah.test" },
+  ADMIN: { name: "Trust Team", email: "admin@manaakhah.test" },
+};
+
 export function switchMockRole(role: UserRole) {
   const users = mockStorage.getUsers();
-  const user = users.find((u) => u.role === role);
+  let user = users.find((u) => u.role === role);
 
+  // No seeded user for this role yet? Create one so the flow always connects.
   if (!user) {
-    throw new Error(`No ${role} user found in mock data`);
+    const d = ROLE_DEFAULTS[role];
+    user = {
+      id: mockStorage.generateId("user"),
+      email: d.email,
+      password: "password",
+      name: d.name,
+      phone: null,
+      role,
+      image: null,
+      emailVerified: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    users.push(user);
+    mockStorage.setUsers(users);
   }
 
   return setMockSession(user.id);

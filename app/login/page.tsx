@@ -59,7 +59,7 @@ function LoginContent() {
 
   return (
     <AuthShell>
-      <h1 className="t-h1" style={{ color: "var(--ink-900)" }}>Welcome back</h1>
+      <h1 className="t-h1" style={{ color: "var(--ink-900)" }}>Welcome Back</h1>
       <p className="mt-2 t-body" style={{ color: "var(--ink-500)" }}>
         Sign in to support Muslim-owned businesses near you.
       </p>

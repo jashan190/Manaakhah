@@ -12,11 +12,13 @@ type Tab = { l: string; href: string };
 
 const SIGNED_OUT: Tab[] = [
   { l: "Home", href: "/" },
-  { l: "For businesses", href: "/for-business" },
+  { l: "Browse", href: "/search" },
+  { l: "For Businesses", href: "/for-business" },
   { l: "About", href: "/about" },
 ];
 const CONSUMER: Tab[] = [
   { l: "Home", href: "/" },
+  { l: "Browse", href: "/search" },
   { l: "Account", href: "/account" },
 ];
 // Business owners navigate via the OwnerShell sidebar — no top-nav tabs needed.
@@ -49,20 +51,23 @@ export function Header() {
 
   const signedIn = !!session;
   const role = session?.user?.role;
-  const tabs = !signedIn ? SIGNED_OUT : role === "BUSINESS_OWNER" ? BUSINESS : CONSUMER;
-  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
   const isOwner = role === "BUSINESS_OWNER";
-  const settingsHref = isOwner ? "/dashboard/settings" : "/account/settings";
-  const helpHref = isOwner ? "/dashboard/help" : "/account/help";
+  const isAdmin = role === "ADMIN";
+  // Owners and admins navigate via their own shell sidebars — no top-nav tabs.
+  const tabs = !signedIn ? SIGNED_OUT : (isOwner || isAdmin) ? BUSINESS : CONSUMER;
+  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+  const homeHref = !signedIn ? "/" : isOwner ? "/dashboard" : isAdmin ? "/admin" : "/";
+  const settingsHref = isOwner ? "/dashboard/settings" : isAdmin ? "/admin/settings" : "/account/settings";
+  const helpHref = isOwner ? "/dashboard/help" : isAdmin ? "/admin/support" : "/account/help";
   const notifHref = isOwner ? "/dashboard/notifications" : "/notifications";
-  const roleLabel = role === "ADMIN" ? "Admin" : isOwner ? "Business owner" : "Member";
+  const roleLabel = isAdmin ? "Admin" : isOwner ? "Business Owner" : "Member";
 
   return (
     <header style={{ height: 64, borderBottom: "1px solid var(--card-edge)", background: "var(--paper-2)", boxShadow: scrolled ? "0 4px 16px -8px rgba(17,50,30,0.22)" : "none", transition: "box-shadow 0.2s" }}
       className="sticky top-0 z-[1000] flex items-center justify-between px-5 sm:px-8">
       {/* Left: logo + tabs */}
       <div className="flex items-center gap-9">
-        <Link href={signedIn ? (role === "BUSINESS_OWNER" ? "/dashboard" : "/") : "/"} className="t-h4" style={{ color: "var(--moss-700)", fontWeight: 600 }}>
+        <Link href={homeHref} className="t-h4" style={{ color: "var(--moss-700)", fontWeight: 600 }}>
           Manaakhah
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
@@ -79,14 +84,16 @@ export function Header() {
       <div className="flex items-center gap-2.5">
         {!signedIn ? (
           <>
-            <Link href="/login"><Button variant="ghost" size="sm">Sign in</Button></Link>
-            <Link href="/register"><Button size="sm">Sign up</Button></Link>
+            <Link href="/login"><Button variant="ghost" size="sm">Sign In</Button></Link>
+            <Link href="/register"><Button size="sm">Sign Up</Button></Link>
           </>
         ) : (
           <>
-            <Link href={notifHref} className="hidden rounded-full p-2 hover:bg-[var(--paper-2)] md:block" aria-label="Notifications">
-              <Bell className="h-5 w-5" style={{ color: "var(--ink-500)" }} />
-            </Link>
+            {!isAdmin && (
+              <Link href={notifHref} className="hidden rounded-full p-2 hover:bg-[var(--paper-2)] md:block" aria-label="Notifications">
+                <Bell className="h-5 w-5" style={{ color: "var(--ink-500)" }} />
+              </Link>
+            )}
             <div ref={acctRef} className="relative">
               <button onClick={() => setAcctOpen((o) => !o)} className="flex items-center gap-1.5" aria-label="Account menu">
                 <Avatar name={session?.user?.name || "User"} size={32} />
@@ -103,10 +110,10 @@ export function Header() {
                   </div>
                   <div className="py-1">
                     <Link href={settingsHref} onClick={() => setAcctOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}><Settings size={16} style={{ color: "var(--ink-500)" }} /> Settings</Link>
-                    <Link href={helpHref} onClick={() => setAcctOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}><LifeBuoy size={16} style={{ color: "var(--ink-500)" }} /> Help &amp; support</Link>
+                    <Link href={helpHref} onClick={() => setAcctOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}><LifeBuoy size={16} style={{ color: "var(--ink-500)" }} /> Help &amp; Support</Link>
                   </div>
                   <div className="py-1" style={{ borderTop: "1px solid var(--card-edge)" }}>
-                    <button onClick={() => { setAcctOpen(false); signOut(); }} className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--err-500)" }}><LogOut size={16} /> Sign out</button>
+                    <button onClick={() => { setAcctOpen(false); signOut(); }} className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--err-500)" }}><LogOut size={16} /> Sign Out</button>
                   </div>
                 </div>
               )}
@@ -127,8 +134,8 @@ export function Header() {
             ))}
             {!signedIn && (
               <div className="mt-2 flex gap-2 border-t pt-3" style={{ borderColor: "var(--card-edge)" }}>
-                <Link href="/login" className="flex-1" onClick={() => setMobileOpen(false)}><Button variant="outline" className="w-full">Sign in</Button></Link>
-                <Link href="/register" className="flex-1" onClick={() => setMobileOpen(false)}><Button className="w-full">Sign up</Button></Link>
+                <Link href="/login" className="flex-1" onClick={() => setMobileOpen(false)}><Button variant="outline" className="w-full">Sign In</Button></Link>
+                <Link href="/register" className="flex-1" onClick={() => setMobileOpen(false)}><Button className="w-full">Sign Up</Button></Link>
               </div>
             )}
           </nav>

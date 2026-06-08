@@ -27,7 +27,7 @@ export default function RegisterPage() {
     // Mock mode: establish the chosen-role session and route into that flow
     if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true") {
       switchMockRole(formData.role);
-      window.location.href = formData.role === "BUSINESS_OWNER" ? "/business" : "/";
+      window.location.href = formData.role === "BUSINESS_OWNER" ? "/for-business#get-listed" : "/";
       return;
     }
     try {
@@ -67,9 +67,9 @@ export default function RegisterPage() {
   };
 
   return (
-    <AuthShell quote="Manaakhah helps neighbors find the Muslim-owned businesses that make our community thrive." author="Yusuf R." role="Diner · Sacramento">
+    <AuthShell>
       <span className="t-eyebrow" style={{ color: "var(--ink-500)" }}>Step 1 of 2</span>
-      <h1 className="mt-2 t-h1" style={{ color: "var(--ink-900)" }}>Create your account</h1>
+      <h1 className="mt-2 t-h1" style={{ color: "var(--ink-900)" }}>Create Your Account</h1>
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         {error && (

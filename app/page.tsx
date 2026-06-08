@@ -27,7 +27,7 @@ export default function Home() {
       {/* HOW WE BUILD TRUST — our differentiator */}
       <section style={{ background: "var(--paper-2)" }}>
         <div className="mx-auto max-w-[1200px] px-6 py-12">
-          <PH title="How we build trust" sub="Three layers of verification, never just one badge" />
+          <PH title="How We Build Trust" sub="Three layers of verification, never just one badge" />
           <div className="grid gap-4 md:grid-cols-3">
             {trust.map(({ Icon, t, d }) => (
               <ManCard key={t} style={{ padding: 22 }}>

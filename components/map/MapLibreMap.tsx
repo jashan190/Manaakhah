@@ -286,7 +286,13 @@ export default function MapLibreMap({
                 zoom: 13
               }}
               style={{ width: '100%', height: '100%' }}
-              mapStyle={`https://api.maptiler.com/maps/streets-v2/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_KEY}`}
+              mapStyle={(process.env.NEXT_PUBLIC_MAPTILER_KEY
+                ? `https://api.maptiler.com/maps/streets-v2/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_KEY}`
+                : {
+                    version: 8,
+                    sources: { osm: { type: "raster", tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"], tileSize: 256, attribution: "© OpenStreetMap contributors" } },
+                    layers: [{ id: "osm", type: "raster", source: "osm" }],
+                  }) as any}
               interactiveLayerIds={['clusters', 'unclustered-point']}
               onClick={onMapClick}
               onMoveEnd={handleMoveEnd}

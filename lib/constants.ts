@@ -1,18 +1,38 @@
 export const BUSINESS_CATEGORIES = [
-  { value: 'HALAL_FOOD', label: 'Halal Food' },
+  // Food & grocery
   { value: 'RESTAURANT', label: 'Restaurant' },
-  { value: 'GROCERY', label: 'Grocery Store' },
-  { value: 'MASJID', label: 'Masjid / Islamic Center' },
-  { value: 'AUTO_REPAIR', label: 'Auto Repair' },
+  { value: 'GROCERY', label: 'Grocery & Market' },
+  { value: 'BAKERY', label: 'Bakery & Sweets' },
+  { value: 'HALAL_FOOD', label: 'Halal Food' },
+  // Retail & shops
+  { value: 'JEWELRY', label: 'Jewelry' },
+  { value: 'CLOTHING', label: 'Clothing & Modest Fashion' },
+  { value: 'FLORIST', label: 'Florist' },
+  { value: 'BOOKS_GIFTS', label: 'Books & Gifts' },
+  { value: 'RETAIL', label: 'Retail & Shops' },
+  // Beauty & wellness
+  { value: 'BARBER_SALON', label: 'Barber / Salon' },
+  { value: 'BEAUTY_SPA', label: 'Beauty & Spa' },
+  { value: 'HEALTH_WELLNESS', label: 'Health & Wellness' },
+  { value: 'FITNESS', label: 'Fitness & Gym' },
+  // Home & auto services
+  { value: 'HOME_SERVICES', label: 'Home Services' },
   { value: 'PLUMBING', label: 'Plumbing' },
   { value: 'ELECTRICAL', label: 'Electrical' },
   { value: 'HANDYMAN', label: 'Handyman' },
-  { value: 'TUTORING', label: 'Tutoring / Education' },
+  { value: 'AUTO_REPAIR', label: 'Auto & Repair' },
+  // Professional services
   { value: 'LEGAL_SERVICES', label: 'Legal Services' },
   { value: 'ACCOUNTING', label: 'Accounting / CPA' },
-  { value: 'HEALTH_WELLNESS', label: 'Health & Wellness' },
-  { value: 'BARBER_SALON', label: 'Barber / Salon' },
+  { value: 'REAL_ESTATE', label: 'Real Estate' },
+  { value: 'TECH_SERVICES', label: 'Tech & Digital' },
+  { value: 'PHOTOGRAPHY', label: 'Photography' },
+  { value: 'TAILORING', label: 'Tailoring & Alterations' },
+  { value: 'EVENTS', label: 'Events & Catering' },
+  // Family & community
+  { value: 'TUTORING', label: 'Tutoring / Education' },
   { value: 'CHILDCARE', label: 'Childcare' },
+  { value: 'MASJID', label: 'Masjid / Islamic Center' },
   { value: 'COMMUNITY_AID', label: 'Community Aid' },
   { value: 'OTHER', label: 'Other Services' },
 ] as const;
@@ -60,11 +80,11 @@ export const PRAYER_TIMES = [
   'isha',
 ] as const;
 
-// Fremont, CA coordinates (Bay Area)
+// Sacramento, CA coordinates (default service area)
 export const DEFAULT_LOCATION = {
-  latitude: 37.5485,
-  longitude: -121.9886,
-  city: 'Fremont, CA',
+  latitude: 38.5816,
+  longitude: -121.4944,
+  city: 'Sacramento, CA',
   zoom: 11,
 } as const;
 

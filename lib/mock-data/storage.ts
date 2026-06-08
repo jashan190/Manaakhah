@@ -1,10 +1,12 @@
 import { MockDatabase } from "./types";
+import { getSacramentoBusinesses } from "./seed-sacramento";
+import { getSeedReviews, SEED_REVIEW_USERS } from "./seed-reviews";
 
-// Empty initial data - no seed data
+// Initial data — seeded with the real Sacramento business directory
 const emptyMockData: MockDatabase = {
-  users: [],
-  businesses: [],
-  reviews: [],
+  users: [...SEED_REVIEW_USERS],
+  businesses: getSacramentoBusinesses(),
+  reviews: getSeedReviews(),
   scrapedBusinesses: [],
   conversations: [],
   messages: [],
@@ -17,6 +19,15 @@ const emptyMockData: MockDatabase = {
   availabilityExceptions: [],
 };
 
+// Sync seeded-review aggregates onto businesses so list/card ratings match the profile
+for (const biz of emptyMockData.businesses) {
+  const rs = emptyMockData.reviews.filter((r) => r.businessId === biz.id);
+  if (rs.length) {
+    biz.totalReviews = rs.length;
+    biz.averageRating = Math.round((rs.reduce((s, r) => s + r.rating, 0) / rs.length) * 10) / 10;
+  }
+}
+
 /**
  * In-memory storage for mock data
  * This acts as our "database" when USE_MOCK_DATA=true
@@ -27,7 +38,7 @@ class MockStorage {
   constructor() {
     // Load from localStorage if in browser, otherwise use empty data
     if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("manakhaah-mock-data");
+      const stored = localStorage.getItem("manakhaah-mock-data-v6");
       this.data = stored ? JSON.parse(stored, this.dateReviver) : { ...emptyMockData };
     } else {
       this.data = { ...emptyMockData };
@@ -182,7 +193,7 @@ class MockStorage {
   // Persist to localStorage (browser only)
   private persist() {
     if (typeof window !== "undefined") {
-      localStorage.setItem("manakhaah-mock-data", JSON.stringify(this.data));
+      localStorage.setItem("manakhaah-mock-data-v6", JSON.stringify(this.data));
     }
   }
 

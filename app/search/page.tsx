@@ -9,7 +9,7 @@ import Link from "next/link";
 const MapLibreMap = dynamic(() => import("@/components/map/MapLibreMap"), {
   ssr: false,
   loading: () => (
-    <div className="h-[600px] bg-gray-100 rounded-lg flex items-center justify-center">
+    <div className="h-[600px] rounded-lg flex items-center justify-center" style={{ background: "var(--paper-2)" }}>
       <p className="text-muted-foreground">Loading map...</p>
     </div>
   ),
@@ -210,6 +210,58 @@ function SearchContent() {
     const cat = BUSINESS_CATEGORIES.find((c) => c.value === business.category)?.label;
     const price = PRICE_RANGES.find((p) => p.value === business.priceRange)?.label;
     const fav = favorites.includes(business.id);
+
+    // Compact = short horizontal row (used in split view alongside the map)
+    if (compact) {
+      return (
+        <Link href={`/business/${business.id}`} key={business.id} onClick={() => addToRecentlyViewed(business.id)}>
+          <div className="flex gap-3 overflow-hidden rounded-[12px] p-2.5 transition-shadow hover:shadow-[var(--shadow-rest)]"
+            style={{ background: "var(--card)", border: "1px solid var(--card-edge)" }}>
+            {/* Thumbnail */}
+            <div className="relative h-[84px] w-[84px] flex-shrink-0 overflow-hidden rounded-[10px]">
+              {img ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={img} alt={business.name} loading="lazy" className="h-full w-full object-cover" />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center" style={{ background: "linear-gradient(135deg, var(--moss-100), var(--moss-200))" }}>
+                  <Store size={20} style={{ color: "var(--moss-700)" }} />
+                </div>
+              )}
+              {business.verificationStatus === "APPROVED" && (
+                <div className="absolute left-1 top-1 flex h-5 w-5 items-center justify-center rounded-full shadow-sm" style={{ background: "var(--moss-700)" }}>
+                  <Check size={11} style={{ color: "var(--bone)" }} />
+                </div>
+              )}
+            </div>
+            {/* Content */}
+            <div className="flex min-w-0 flex-1 flex-col">
+              <div className="flex items-start justify-between gap-2">
+                <h3 className="t-label line-clamp-1" style={{ color: "var(--ink-900)" }}>{business.name}</h3>
+                <button onClick={(e) => toggleFavorite(business.id, e)} aria-label="Save" className="-mr-0.5 flex-shrink-0">
+                  <Heart size={15} fill={fav ? "var(--clay-500)" : "none"} stroke={fav ? "var(--clay-500)" : "var(--ink-400)"} />
+                </button>
+              </div>
+              <div className="mt-0.5 flex flex-wrap items-center gap-x-2 t-body-xs" style={{ color: "var(--ink-500)" }}>
+                {business.averageRating > 0 && (
+                  <span className="inline-flex items-center gap-1" style={{ color: "var(--ink-700)" }}>
+                    <Star size={12} fill="var(--clay-500)" stroke="none" />
+                    <span style={{ fontWeight: 600 }}>{business.averageRating.toFixed(1)}</span>
+                    <span style={{ color: "var(--ink-400)" }}>({business.reviewCount})</span>
+                  </span>
+                )}
+                {cat && <span>{cat}</span>}
+                {price && <span>· {price}</span>}
+              </div>
+              <p className="mt-auto pt-1 t-body-xs line-clamp-1" style={{ color: "var(--ink-500)" }}>
+                {[business.address, business.city].filter(Boolean).join(", ")}
+                {business.distance !== undefined && ` · ${business.distance.toFixed(1)} mi`}
+              </p>
+            </div>
+          </div>
+        </Link>
+      );
+    }
+
     return (
     <Link href={`/business/${business.id}`} key={business.id} onClick={() => addToRecentlyViewed(business.id)}>
       <div className="h-full overflow-hidden rounded-[14px] transition-shadow hover:shadow-[var(--shadow-lift)]"
@@ -291,7 +343,7 @@ function SearchContent() {
       {/* Search Header */}
       <div className="border-b px-4 py-6 sm:px-8" style={{ background: "var(--card)", borderColor: "var(--card-edge)" }}>
         <div className="container mx-auto max-w-6xl">
-          <h1 className="t-h2 mb-4" style={{ color: "var(--ink-900)" }}>Find Muslim-owned businesses</h1>
+          <h1 className="t-h2 mb-4" style={{ color: "var(--ink-900)" }}>Find Muslim-Owned Businesses</h1>
 
           <form onSubmit={handleSearch} className="space-y-4">
             <div className="grid md:grid-cols-4 gap-4">
@@ -351,7 +403,7 @@ function SearchContent() {
                 className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
                   filters.tags.includes(tag.value)
                     ? "bg-primary text-white border-primary"
-                    : "bg-white border-gray-300 hover:border-primary hover:text-primary"
+                    : "bg-white border-[var(--card-edge)] hover:border-primary hover:text-primary"
                 }`}
               >
                 {tag.icon} {tag.label}
@@ -376,8 +428,8 @@ function SearchContent() {
               <div className="t-body-sm" style={{ color: "var(--ink-700)" }}>Create a free account to save businesses and message owners directly.</div>
             </div>
             <div className="flex gap-2">
-              <Link href="/register"><Button size="sm">Sign up free</Button></Link>
-              <Link href="/login"><Button size="sm" variant="outline">Sign in</Button></Link>
+              <Link href="/register"><Button size="sm">Sign Up Free</Button></Link>
+              <Link href="/login"><Button size="sm" variant="outline">Sign In</Button></Link>
             </div>
           </div>
         )}
@@ -433,7 +485,7 @@ function SearchContent() {
                   <div className="grid md:grid-cols-2 gap-6">
                     {/* List on left - dims when stale */}
                     <div className={cn(
-                      "space-y-4 max-h-[600px] overflow-y-auto pr-2 transition-opacity duration-300",
+                      "space-y-2.5 max-h-[600px] overflow-y-auto pr-2 transition-opacity duration-300",
                       isStale ? "opacity-50" : "opacity-100"
                     )}>
                       {sortedBusinesses.map((business) => renderBusinessCard(business, true))}

@@ -1,312 +1,77 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { useState } from "react";
+import { AdminShell } from "@/components/admin/AdminShell";
+import { ManCard, PH, StatCard, Avatar, Tag } from "@/components/man/primitives";
 import { Button } from "@/components/ui/button";
-import { useMockSession } from "@/components/mock-session-provider";
-import Link from "next/link";
+import { MessageSquareWarning, Flag, Trash2, Check, Star, Bot } from "lucide-react";
 
-interface Review {
-  id: string;
-  rating: number;
-  title: string;
-  content: string;
-  text: string;
-  status: string;
-  reportCount: number;
-  createdAt: string;
-  user?: {
-    id: string;
-    name: string;
-    email: string;
-  };
-  business?: {
-    id: string;
-    name: string;
-  };
-}
-
-const STATUS_OPTIONS = [
-  { value: "", label: "All Statuses" },
-  { value: "PUBLISHED", label: "Published" },
-  { value: "PENDING", label: "Pending" },
-  { value: "FLAGGED", label: "Flagged" },
-  { value: "REMOVED", label: "Removed" },
+const FILTERS = ["All flagged", "Spam", "Hate / abuse", "Fake review", "Off-topic"];
+const REPORTS = [
+  { id: 1, n: "Anon User", biz: "Famous Kabob", reason: "Spam", flags: 4, ai: 0.92, stars: 1, text: "CHEAP RX MEDS visit my site bit.ly/xyz — best prices guaranteed!!!", time: "1h" },
+  { id: 2, n: "Kareem B.", biz: "Sinbad Market", reason: "Hate / abuse", flags: 7, ai: 0.88, stars: 1, text: "Owner was extremely rude and used a slur. Will not return.", time: "3h" },
+  { id: 3, n: "Mystery Diner", biz: "Aria Afghan", reason: "Fake review", flags: 2, ai: 0.74, stars: 5, text: "Amazing amazing amazing best food ever 10/10 would recommend to everyone always!", time: "6h" },
+  { id: 4, n: "Sam P.", biz: "Shalimar", reason: "Off-topic", flags: 1, ai: 0.41, stars: 2, text: "The parking lot next door is always full, terrible city planning honestly.", time: "1d" },
 ];
 
-export default function AdminReviewsPage() {
-  const { data: session } = useMockSession();
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState("");
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [selectedReview, setSelectedReview] = useState<Review | null>(null);
-
-  const fetchReviews = async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      if (statusFilter) params.set("status", statusFilter);
-      params.set("page", page.toString());
-      params.set("limit", "20");
-
-      const response = await fetch(`/api/admin/reviews?${params}`, {
-        headers: {
-          "x-user-id": session?.user?.id || "",
-          "x-user-role": session?.user?.role || "",
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setReviews(data.reviews || []);
-        setTotalPages(data.pagination?.totalPages || 1);
-      }
-    } catch (error) {
-      console.error("Error fetching reviews:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (session?.user?.role === "ADMIN") {
-      fetchReviews();
-    }
-  }, [session, page, statusFilter]);
-
-  const handleUpdateStatus = async (reviewId: string, newStatus: string) => {
-    try {
-      const response = await fetch(`/api/admin/reviews/${reviewId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "x-user-id": session?.user?.id || "",
-          "x-user-role": session?.user?.role || "",
-        },
-        body: JSON.stringify({ status: newStatus }),
-      });
-
-      if (response.ok) {
-        fetchReviews();
-        setSelectedReview(null);
-      }
-    } catch (error) {
-      console.error("Error updating review:", error);
-    }
-  };
-
-  const handleDelete = async (reviewId: string) => {
-    if (!confirm("Are you sure you want to delete this review? This action cannot be undone.")) {
-      return;
-    }
-
-    try {
-      const response = await fetch(`/api/admin/reviews/${reviewId}`, {
-        method: "DELETE",
-        headers: {
-          "x-user-id": session?.user?.id || "",
-          "x-user-role": session?.user?.role || "",
-        },
-      });
-
-      if (response.ok) {
-        fetchReviews();
-        setSelectedReview(null);
-      }
-    } catch (error) {
-      console.error("Error deleting review:", error);
-    }
-  };
-
-  const getStatusBadge = (status: string) => {
-    const styles: Record<string, string> = {
-      PUBLISHED: "bg-green-100 text-green-700",
-      PENDING: "bg-yellow-100 text-yellow-700",
-      FLAGGED: "bg-red-100 text-red-700",
-      REMOVED: "bg-gray-100 text-gray-700",
-    };
-    return styles[status] || "bg-gray-100 text-gray-700";
-  };
-
-  const renderStars = (rating: number) => {
-    return "★".repeat(rating) + "☆".repeat(5 - rating);
-  };
-
-  if (session?.user?.role !== "ADMIN") {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <Card>
-          <CardContent className="p-8 text-center">
-            <p className="text-red-600">Access denied. Admin privileges required.</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+export default function ContentModerationPage() {
+  const [filter, setFilter] = useState("All flagged");
+  const [resolved, setResolved] = useState<Record<number, string>>({});
+  const rows = (filter === "All flagged" ? REPORTS : REPORTS.filter((r) => r.reason === filter)).filter((r) => !resolved[r.id]);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold">Review Moderation</h1>
-          <p className="text-gray-600">Manage and moderate user reviews</p>
+    <AdminShell active="moderation">
+      <div className="px-6 py-7 md:px-8">
+        <PH title="Content Moderation" sub="Keep reviews trustworthy — AI pre-scores every flag" />
+
+        <div className="grid grid-cols-2 gap-3.5 lg:grid-cols-4">
+          <StatCard label="Flagged reviews" value="5" Icon={Flag} />
+          <StatCard label="AI high-confidence" value="2" delta="≥0.85 score" deltaTone="err" Icon={Bot} />
+          <StatCard label="Removed this week" value="23" Icon={Trash2} />
+          <StatCard label="False-flag rate" value="11%" delta="-2%" Icon={MessageSquareWarning} />
         </div>
-        <Link href="/admin">
-          <Button variant="outline">Back to Dashboard</Button>
-        </Link>
-      </div>
 
-      {/* Quick Filters */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        {STATUS_OPTIONS.map((opt) => (
-          <Button
-            key={opt.value}
-            variant={statusFilter === opt.value ? "default" : "outline"}
-            size="sm"
-            onClick={() => {
-              setStatusFilter(opt.value);
-              setPage(1);
-            }}
-          >
-            {opt.label}
-          </Button>
-        ))}
-      </div>
-
-      {/* Reviews Grid */}
-      {loading ? (
-        <div className="p-8 text-center">Loading reviews...</div>
-      ) : reviews.length === 0 ? (
-        <Card>
-          <CardContent className="p-8 text-center text-gray-500">
-            No reviews found
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid gap-4">
-          {reviews.map((review) => (
-            <Card key={review.id} className={review.status === "FLAGGED" ? "border-red-200" : ""}>
-              <CardContent className="p-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="text-yellow-500 text-lg">{renderStars(review.rating)}</span>
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusBadge(review.status)}`}>
-                        {review.status}
-                      </span>
-                      {review.reportCount > 0 && (
-                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
-                          {review.reportCount} reports
-                        </span>
-                      )}
-                    </div>
-
-                    {review.title && (
-                      <h3 className="font-semibold mb-1">{review.title}</h3>
-                    )}
-
-                    <p className="text-gray-700 mb-3">
-                      {review.content || review.text}
-                    </p>
-
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
-                      <span>
-                        By: <strong>{review.user?.name || "Unknown"}</strong>
-                      </span>
-                      <span>|</span>
-                      <span>
-                        For:{" "}
-                        <Link href={`/business/${review.business?.id}`} className="text-blue-600 hover:underline">
-                          {review.business?.name || "Unknown"}
-                        </Link>
-                      </span>
-                      <span>|</span>
-                      <span>{new Date(review.createdAt).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    {review.status === "FLAGGED" && (
-                      <Button
-                        size="sm"
-                        className="bg-green-600 hover:bg-green-700"
-                        onClick={() => handleUpdateStatus(review.id, "PUBLISHED")}
-                      >
-                        Approve
-                      </Button>
-                    )}
-                    {review.status === "PUBLISHED" && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-yellow-600 hover:text-yellow-700"
-                        onClick={() => handleUpdateStatus(review.id, "FLAGGED")}
-                      >
-                        Flag
-                      </Button>
-                    )}
-                    {review.status !== "REMOVED" && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-gray-600 hover:text-gray-700"
-                        onClick={() => handleUpdateStatus(review.id, "REMOVED")}
-                      >
-                        Remove
-                      </Button>
-                    )}
-                    {review.status === "REMOVED" && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-green-600 hover:text-green-700"
-                        onClick={() => handleUpdateStatus(review.id, "PUBLISHED")}
-                      >
-                        Restore
-                      </Button>
-                    )}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-red-600 hover:text-red-700"
-                      onClick={() => handleDelete(review.id)}
-                    >
-                      Delete
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        <div className="my-5 flex flex-wrap gap-2">
+          {FILTERS.map((f) => (
+            <button key={f} onClick={() => setFilter(f)} className="t-body-sm rounded-full px-3 py-1.5"
+              style={filter === f ? { background: "var(--ink-900)", color: "var(--bone)" } : { background: "var(--card)", border: "1px solid var(--card-edge)", color: "var(--ink-700)" }}>{f}</button>
           ))}
         </div>
-      )}
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 mt-6">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page === 1}
-            onClick={() => setPage(page - 1)}
-          >
-            Previous
-          </Button>
-          <span className="text-sm text-gray-600">
-            Page {page} of {totalPages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page === totalPages}
-            onClick={() => setPage(page + 1)}
-          >
-            Next
-          </Button>
+        <div className="grid gap-3.5">
+          {rows.map((r) => (
+            <ManCard key={r.id} style={{ padding: 20 }}>
+              <div className="flex items-start gap-3">
+                <Avatar name={r.n} size={40} />
+                <div className="flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="t-label-sm" style={{ color: "var(--ink-900)" }}>{r.n}</span>
+                    <span className="t-body-xs" style={{ color: "var(--ink-500)" }}>on {r.biz} · {r.time} ago</span>
+                    <span className="inline-flex">{[1, 2, 3, 4, 5].map((i) => <Star key={i} size={12} fill={i <= r.stars ? "var(--clay-500)" : "none"} stroke={i <= r.stars ? "none" : "var(--ink-300)"} />)}</span>
+                  </div>
+                  <p className="t-body-sm" style={{ color: "var(--ink-700)", marginTop: 8 }}>{r.text}</p>
+                  <div className="mt-2.5 flex flex-wrap items-center gap-2">
+                    <Tag tone="err">{r.reason}</Tag>
+                    <Tag tone="warn">{r.flags} user flags</Tag>
+                    <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 t-body-xs" style={{ background: r.ai >= 0.85 ? "var(--err-50, #fdecea)" : "var(--paper-2)", color: r.ai >= 0.85 ? "var(--err-500)" : "var(--ink-700)" }}><Bot size={12} /> AI score {r.ai.toFixed(2)}</span>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Button size="sm" onClick={() => setResolved((p) => ({ ...p, [r.id]: "removed" }))} style={{ background: "var(--err-500)" }}><Trash2 className="mr-1.5 h-4 w-4" /> Remove</Button>
+                  <Button variant="outline" size="sm" onClick={() => setResolved((p) => ({ ...p, [r.id]: "kept" }))}><Check className="mr-1.5 h-4 w-4" /> Keep</Button>
+                </div>
+              </div>
+            </ManCard>
+          ))}
+          {rows.length === 0 && (
+            <ManCard style={{ padding: 40 }} className="text-center">
+              <Check size={28} style={{ color: "var(--moss-700)", margin: "0 auto" }} />
+              <div className="t-h4" style={{ color: "var(--ink-900)", marginTop: 10 }}>Queue clear</div>
+              <div className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 4 }}>No flagged reviews match this filter.</div>
+            </ManCard>
+          )}
         </div>
-      )}
-    </div>
+      </div>
+    </AdminShell>
   );
 }

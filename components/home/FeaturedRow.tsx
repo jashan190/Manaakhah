@@ -19,7 +19,7 @@ export function FeaturedRow() {
 
   return (
     <section className="mx-auto max-w-[1200px] px-6 py-12">
-      <PH title="Featured near you" sub="Verified Muslim-owned businesses in Sacramento" />
+      <PH title="Featured Near You" sub="Verified Muslim-owned businesses in Sacramento" />
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {items.map((b) => (
           <Link key={b.id} href={`/business/${b.id}`}>
