@@ -47,6 +47,7 @@ export function HeroSearch() {
                 className="w-full bg-transparent py-2.5 t-body outline-none" style={{ color: "var(--ink-900)" }} />
             </div>
             <Button type="submit" size="lg">Search</Button>
+            <Link href="/search"><Button type="button" variant="outline" size="lg" className="w-full sm:w-auto">Browse all</Button></Link>
           </form>
 
           <div className="mt-4 flex flex-wrap gap-2">
