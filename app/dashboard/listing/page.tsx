@@ -33,7 +33,7 @@ export default function ListingProfilePage() {
       <div className="px-6 py-7 md:px-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <PH title="Listing & Profile" sub="This is what the community sees on Manaakhah" />
-          <Link href="/business/sac-famous-kabob"><Button variant="outline" size="sm"><ExternalLink className="mr-1.5 h-4 w-4" /> View public profile</Button></Link>
+          <Link href="/business/sac-famous-kabob"><Button variant="outline" size="sm"><ExternalLink className="mr-1.5 h-4 w-4" /> View Public Profile</Button></Link>
         </div>
 
         {/* Tabs */}
@@ -79,7 +79,7 @@ export default function ListingProfilePage() {
 
             {tab === "Menu" && (
               <ManCard style={{ padding: 24 }}>
-                <div className="flex items-center justify-between"><div className="t-h4" style={{ color: "var(--ink-900)" }}>Menu</div><Button size="sm"><Plus className="mr-1.5 h-4 w-4" /> Add item</Button></div>
+                <div className="flex items-center justify-between"><div className="t-h4" style={{ color: "var(--ink-900)" }}>Menu</div><Button size="sm"><Plus className="mr-1.5 h-4 w-4" /> Add Item</Button></div>
                 <div className="mt-4 grid gap-2.5">
                   {[["Chicken kabob plate", "$14.99"], ["Lamb chops", "$24.99"], ["Beef koobideh", "$15.99"], ["Mixed grill", "$22.99"]].map(([n, p]) => (
                     <div key={n} className="flex items-center justify-between rounded-[10px] border px-3.5 py-2.5" style={{ borderColor: "var(--card-edge)" }}>
@@ -108,7 +108,7 @@ export default function ListingProfilePage() {
 
             {tab === "Hours" && (
               <ManCard style={{ padding: 24 }}>
-                <div className="t-h4" style={{ color: "var(--ink-900)", marginBottom: 12 }}>Opening hours</div>
+                <div className="t-h4" style={{ color: "var(--ink-900)", marginBottom: 12 }}>Opening Hours</div>
                 <div className="grid gap-2">
                   {DAYS.map((d, i) => (
                     <div key={d} className="flex items-center gap-3">
@@ -134,13 +134,13 @@ export default function ListingProfilePage() {
               </ManCard>
             )}
 
-            <div className="flex justify-end gap-2"><Button variant="ghost" size="sm">Discard</Button><Button size="sm">Save changes</Button></div>
+            <div className="flex justify-end gap-2"><Button variant="ghost" size="sm">Discard</Button><Button size="sm">Save Changes</Button></div>
           </div>
 
           {/* Completeness column */}
           <div className="grid gap-3.5">
             <ManCard style={{ padding: 22 }}>
-              <div className="flex items-baseline justify-between"><div className="t-h4" style={{ color: "var(--ink-900)" }}>Profile completeness</div><span className="t-h3" style={{ color: "var(--moss-700)" }}>{pct}%</span></div>
+              <div className="flex items-baseline justify-between"><div className="t-h4" style={{ color: "var(--ink-900)" }}>Profile Completeness</div><span className="t-h3" style={{ color: "var(--moss-700)" }}>{pct}%</span></div>
               <div className="mt-3 h-2.5 w-full rounded-full" style={{ background: "var(--paper-2)" }}><div className="h-2.5 rounded-full" style={{ width: `${pct}%`, background: "var(--moss-700)" }} /></div>
               <div className="mt-4 grid gap-2.5">
                 {completeness.map(([l, done]) => (

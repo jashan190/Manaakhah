@@ -33,7 +33,7 @@ export default function VerificationDetailPage() {
               <div className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 2 }}>Restaurant · HFSAA · submitted 4h ago by Yusuf A.</div>
             </div>
           </div>
-          <Link href="/business/sac-famous-kabob"><Button variant="outline" size="sm"><ExternalLink className="mr-1.5 h-4 w-4" /> Preview listing</Button></Link>
+          <Link href="/business/sac-famous-kabob"><Button variant="outline" size="sm"><ExternalLink className="mr-1.5 h-4 w-4" /> Preview Listing</Button></Link>
         </div>
 
         {decision && (
@@ -47,7 +47,7 @@ export default function VerificationDetailPage() {
           {/* Checks */}
           <div className="grid gap-3.5">
             <ManCard style={{ padding: 22 }}>
-              <div className="flex items-baseline justify-between"><div className="t-h4" style={{ color: "var(--ink-900)" }}>Automated checks</div><span className="t-body-sm" style={{ color: passed === CHECKS.length ? "var(--moss-700)" : "var(--clay-700)" }}>{passed}/{CHECKS.length} passed</span></div>
+              <div className="flex items-baseline justify-between"><div className="t-h4" style={{ color: "var(--ink-900)" }}>Automated Checks</div><span className="t-body-sm" style={{ color: passed === CHECKS.length ? "var(--moss-700)" : "var(--clay-700)" }}>{passed}/{CHECKS.length} passed</span></div>
               <div className="mt-3.5 grid gap-2.5">
                 {CHECKS.map((c) => (
                   <div key={c.l} className="flex items-start gap-3 pb-2.5" style={{ borderBottom: "1px dashed var(--card-edge)" }}>
@@ -59,7 +59,7 @@ export default function VerificationDetailPage() {
             </ManCard>
 
             <ManCard style={{ padding: 22 }}>
-              <div className="t-h4" style={{ color: "var(--ink-900)" }}>Submitted certificate</div>
+              <div className="t-h4" style={{ color: "var(--ink-900)" }}>Submitted Certificate</div>
               <div className="mt-3 flex items-center gap-3 rounded-[10px] p-3.5" style={{ background: "var(--paper-2)" }}>
                 <FileText size={22} style={{ color: "var(--ink-700)" }} />
                 <div className="flex-1"><div className="t-label-sm" style={{ color: "var(--ink-900)" }}>HFSAA_cert_2026.pdf</div><div className="t-body-xs" style={{ color: "var(--ink-500)" }}>Issued by Halal Food Standards Alliance of America</div></div>
@@ -74,9 +74,9 @@ export default function VerificationDetailPage() {
               <div className="t-h4" style={{ color: "var(--ink-900)" }}>Decision</div>
               <textarea placeholder="Add a note (sent to the owner if rejected)…" className="mt-3 w-full rounded-[10px] border bg-white px-3 py-2.5 t-body-sm outline-none" style={{ borderColor: "var(--card-edge)", color: "var(--ink-900)", minHeight: 80, resize: "vertical" }} />
               <div className="mt-3 grid gap-2">
-                <Button onClick={() => setDecision("approved")}><Check className="mr-1.5 h-4 w-4" /> Approve & issue Seal</Button>
+                <Button onClick={() => setDecision("approved")}><Check className="mr-1.5 h-4 w-4" /> Approve & Issue Seal</Button>
                 <Button variant="outline" size="sm" onClick={() => setDecision("rejected")} style={{ color: "var(--err-500)", borderColor: "var(--err-500)" }}><X className="mr-1.5 h-4 w-4" /> Reject</Button>
-                <Button variant="ghost" size="sm">Request more documents</Button>
+                <Button variant="ghost" size="sm">Request More Documents</Button>
               </div>
             </ManCard>
 

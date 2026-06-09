@@ -58,14 +58,14 @@ export default function ReviewsPage() {
               </div>
               <div className="mt-1"><Stars n={4} /></div>
               <p className="t-body" style={{ color: "var(--ink-700)", marginTop: 8 }}>Great kabobs and the prayer space was a real plus for our family. Service was a touch slow on a busy Friday.</p>
-              <div className="mt-2 flex flex-wrap gap-1.5"><Tag tone="moss">Prayer space</Tag><Tag tone="moss">Family seating</Tag></div>
+              <div className="mt-2 flex flex-wrap gap-1.5"><Tag tone="moss">Prayer Space</Tag><Tag tone="moss">Family Seating</Tag></div>
 
               <div className="mt-4 rounded-[10px] p-3.5" style={{ background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
                 <div className="flex items-center gap-1.5 t-eyebrow" style={{ color: "var(--moss-700)" }}><Sparkles size={13} /> AI-suggested reply</div>
                 <textarea value={draft} onChange={(e) => setDraft(e.target.value)} className="mt-2 w-full bg-transparent t-body outline-none" style={{ color: "var(--ink-900)", minHeight: 70, resize: "vertical" }} />
                 <div className="mt-2 flex justify-end gap-2">
                   <Button variant="outline" size="sm">Regenerate</Button>
-                  <Button size="sm">Reply publicly</Button>
+                  <Button size="sm">Reply Publicly</Button>
                 </div>
               </div>
             </div>

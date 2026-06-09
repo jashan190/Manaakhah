@@ -27,8 +27,8 @@ export default function HelpPage() {
     <div style={{ background: "var(--paper)" }}>
       <section style={{ background: "var(--paper-2)" }} className="px-6 py-14">
         <div className="mx-auto max-w-[1100px]">
-          <Tag>Help center</Tag>
-          <h1 className="t-h1" style={{ color: "var(--ink-900)", marginTop: 12, fontSize: 44 }}>How can we help?</h1>
+          <Tag>Help Center</Tag>
+          <h1 className="t-h1" style={{ color: "var(--ink-900)", marginTop: 12, fontSize: 44 }}>How Can We Help?</h1>
           <div className="mt-5 flex max-w-[600px] items-center gap-2 rounded-full border bg-white px-4 py-3" style={{ borderColor: "var(--card-edge)" }}>
             <Search size={18} style={{ color: "var(--ink-400)" }} />
             <input placeholder="Search articles, e.g. 'how to claim my listing'" className="w-full bg-transparent t-body outline-none" style={{ color: "var(--ink-900)" }} />
@@ -70,10 +70,10 @@ export default function HelpPage() {
             </ManCard>
           ))}
           <div className="mt-4 rounded-[14px] p-[22px]" style={{ background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
-            <div className="t-h4" style={{ color: "var(--ink-900)" }}>Still need help?</div>
+            <div className="t-h4" style={{ color: "var(--ink-900)" }}>Still Need Help?</div>
             <p className="t-body-sm" style={{ color: "var(--ink-700)", marginTop: 6 }}>Our team replies within one business day.</p>
             <div className="mt-3.5 flex flex-wrap items-center gap-3">
-              <a href="mailto:support@manaakhah.com"><Button size="sm">Contact support</Button></a>
+              <a href="mailto:support@manaakhah.com"><Button size="sm">Contact Support</Button></a>
               <Link href="/register" className="t-body-sm" style={{ color: "var(--moss-700)", fontWeight: 600 }}>New to Manaakhah? Create a free account →</Link>
             </div>
           </div>

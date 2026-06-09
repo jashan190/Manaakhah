@@ -40,7 +40,7 @@ export default function NotificationsPage() {
         <div className="mb-5 flex flex-wrap gap-2">
           {filters.map((f) => (
             <button key={f} onClick={() => setActive(f)} className="t-body-sm rounded-full px-3 py-1.5"
-              style={active === f ? { background: "var(--ink-900)", color: "var(--bone)" } : { background: "var(--card)", border: "1px solid var(--card-edge)", color: "var(--ink-700)" }}>{f}</button>
+              style={active === f ? { background: "var(--ink-900)", color: "var(--bone)" } : { background: "#ffffff", border: "1px solid var(--card-edge)", color: "var(--ink-700)" }}>{f}</button>
           ))}
         </div>
 

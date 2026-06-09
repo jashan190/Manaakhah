@@ -55,7 +55,7 @@ export function AuthedHelp({ role }: { role: "consumer" | "owner" }) {
 
           {/* Topics */}
           <div>
-            <div className="t-h4" style={{ color: "var(--ink-900)", marginBottom: 12 }}>Browse topics</div>
+            <div className="t-h4" style={{ color: "var(--ink-900)", marginBottom: 12 }}>Browse Topics</div>
             <div className="grid gap-3 sm:grid-cols-2">
               {topics.map((t) => (
                 <ManCard key={t.t} style={{ padding: 16 }} className="flex items-start gap-3">
@@ -70,7 +70,7 @@ export function AuthedHelp({ role }: { role: "consumer" | "owner" }) {
         {/* Tickets + contact */}
         <div className="grid gap-3.5">
           <ManCard style={{ padding: 0 }}>
-            <div className="px-5 py-3.5 t-h4" style={{ color: "var(--ink-900)", borderBottom: "1px solid var(--card-edge)" }}>Your support tickets</div>
+            <div className="px-5 py-3.5 t-h4" style={{ color: "var(--ink-900)", borderBottom: "1px solid var(--card-edge)" }}>Your Support Tickets</div>
             {tickets.map((tk, i) => (
               <div key={tk.id} className="flex items-center gap-3 px-5 py-3.5" style={{ borderBottom: i === tickets.length - 1 ? "none" : "1px solid var(--card-edge)" }}>
                 <div className="flex-1"><div className="t-label-sm" style={{ color: "var(--ink-900)" }}>{tk.t}</div><div className="t-body-xs" style={{ color: "var(--ink-500)" }}>{tk.id}</div></div>
@@ -80,12 +80,12 @@ export function AuthedHelp({ role }: { role: "consumer" | "owner" }) {
           </ManCard>
 
           <ManCard style={{ padding: 22 }}>
-            <div className="t-h4" style={{ color: "var(--ink-900)" }}>Contact support</div>
+            <div className="t-h4" style={{ color: "var(--ink-900)" }}>Contact Support</div>
             <div className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 2 }}>Typical reply within {role === "owner" ? "2 hours" : "1 business day"}.</div>
             <div className="mt-3.5 grid gap-2">
-              <Button><MessageCircle className="mr-1.5 h-4 w-4" /> Start a chat</Button>
-              <Button variant="outline" size="sm"><Mail className="mr-1.5 h-4 w-4" /> Email us</Button>
-              {role === "owner" && <Button variant="outline" size="sm"><Phone className="mr-1.5 h-4 w-4" /> Request a callback</Button>}
+              <Button><MessageCircle className="mr-1.5 h-4 w-4" /> Start a Chat</Button>
+              <Button variant="outline" size="sm"><Mail className="mr-1.5 h-4 w-4" /> Email Us</Button>
+              {role === "owner" && <Button variant="outline" size="sm"><Phone className="mr-1.5 h-4 w-4" /> Request a Callback</Button>}
             </div>
           </ManCard>
         </div>

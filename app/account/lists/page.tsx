@@ -46,7 +46,7 @@ export default function SavedListsPage() {
         <div className="mt-10">
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h2 className="t-h3" style={{ color: "var(--ink-900)" }}>Sacramento favorites</h2>
+              <h2 className="t-h3" style={{ color: "var(--ink-900)" }}>Sacramento Favorites</h2>
               <div className="t-body-sm" style={{ color: "var(--ink-500)" }}>12 places · last updated this week</div>
             </div>
             <div className="flex gap-2">

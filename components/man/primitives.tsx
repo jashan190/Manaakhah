@@ -24,7 +24,7 @@ const TAG_TONES: Record<string, { bg: string; fg: string }> = {
 export function Tag({ tone = "default", leading, children }: { tone?: keyof typeof TAG_TONES; leading?: React.ReactNode; children: React.ReactNode }) {
   const t = TAG_TONES[tone];
   return (
-    <span className="t-body-sm inline-flex items-center gap-1.5 rounded-full px-2.5 py-1" style={{ background: t.bg, color: t.fg, fontWeight: 500 }}>
+    <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5" style={{ background: t.bg, color: t.fg, fontWeight: 600, fontSize: 11.5, lineHeight: 1.4, letterSpacing: "-0.005em" }}>
       {leading}{children}
     </span>
   );
@@ -57,7 +57,7 @@ export function PH({ title, sub, right }: { title: string; sub?: string; right?:
 /* ── Card ──────────────────────────────────────────────────────── */
 export function ManCard({ children, className = "", style }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
   return (
-    <div className={className} style={{ background: "var(--card)", border: "1px solid var(--card-edge)", borderRadius: 14, boxShadow: "var(--shadow-soft)", ...style }}>
+    <div className={className} style={{ background: "#ffffff", border: "1px solid var(--card-edge)", borderRadius: 14, boxShadow: "var(--shadow-soft)", ...style }}>
       {children}
     </div>
   );

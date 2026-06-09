@@ -64,18 +64,18 @@ export default function CertificationPage() {
             <div className="mt-5 flex flex-wrap gap-2">
               <Button variant="outline" size="sm"><ExternalLink className="mr-1.5 h-4 w-4" /> View on HFSAA.org</Button>
               <Button variant="outline" size="sm"><Download className="mr-1.5 h-4 w-4" /> Download PDF</Button>
-              <Button variant="outline" size="sm" style={{ color: "var(--err-500)", borderColor: "var(--err-500)" }}><Flag className="mr-1.5 h-4 w-4" /> Report issue</Button>
+              <Button variant="outline" size="sm" style={{ color: "var(--err-500)", borderColor: "var(--err-500)" }}><Flag className="mr-1.5 h-4 w-4" /> Report Issue</Button>
             </div>
           </div>
 
           <div className="space-y-4">
             <ManCard style={{ padding: 20 }}>
               <ShieldCheck size={20} style={{ color: "var(--moss-700)" }} />
-              <div className="t-h4" style={{ color: "var(--ink-900)", marginTop: 10 }}>How we verify</div>
+              <div className="t-h4" style={{ color: "var(--ink-900)", marginTop: 10 }}>How We Verify</div>
               <p className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 6 }}>We sync certification data nightly from the certifying body and remove badges within 24h if a certification lapses.</p>
             </ManCard>
             <div className="rounded-[14px] p-5" style={{ background: "var(--clay-50)", border: "1px solid var(--clay-100)" }}>
-              <div className="t-h4" style={{ color: "var(--clay-700)" }}>Have concerns?</div>
+              <div className="t-h4" style={{ color: "var(--clay-700)" }}>Have Concerns?</div>
               <p className="t-body-sm" style={{ color: "var(--ink-700)", marginTop: 6 }}>If something looks off, report it — halal disputes are reviewed within 48 hours.</p>
             </div>
           </div>

@@ -1,96 +1,155 @@
 // components/search/FilterRail.tsx
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { ChevronRight, ChevronLeft, Check } from "lucide-react";
 import { BUSINESS_TAGS, DISTANCE_OPTIONS, SORT_OPTIONS, PRICE_RANGES } from "@/lib/constants";
 import { CATEGORY_GROUPS } from "@/lib/category-groups";
 
 type Filters = { category: string; tags: string[]; distance: string; sort: string; priceRange: string; minRating: string };
 const RATINGS = [["", "Any"], ["4", "4+"], ["3", "3+"], ["2", "2+"]] as const;
+const titleCase = (s: string) => s.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (m) => m.toUpperCase());
 
-function Chip({ on, onClick, children }: { on: boolean; onClick: () => void; children: React.ReactNode }) {
+type View = "root" | "category" | "distance" | "price" | "rating" | "sort" | "amenities";
+
+/* A navigable row on the root menu (drills into a sub-list) */
+function NavRow({ label, value, onClick }: { label: string; value: string; onClick: () => void }) {
   return (
-    <button onClick={onClick} className="t-body-sm rounded-full px-3 py-1.5"
-      style={on ? { background: "var(--moss-700)", color: "var(--bone)" } : { background: "var(--card)", border: "1px solid var(--card-edge)", color: "var(--ink-700)" }}>
-      {children}
+    <button onClick={onClick} className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-[var(--paper-2)]">
+      <span className="t-label" style={{ color: "var(--ink-900)" }}>{label}</span>
+      <span className="flex items-center gap-1.5">
+        <span className="t-body-sm" style={{ color: "var(--ink-500)" }}>{value}</span>
+        <ChevronRight size={16} style={{ color: "var(--ink-400)" }} />
+      </span>
     </button>
   );
 }
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+
+/* A selectable option within a sub-list */
+function Opt({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
   return (
-    <div className="py-3.5" style={{ borderBottom: "1px solid var(--card-edge)" }}>
-      <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 8 }}>{title}</div>
-      {children}
-    </div>
+    <button onClick={onClick} className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-[var(--paper-2)]">
+      <span className="t-body" style={{ color: selected ? "var(--moss-700)" : "var(--ink-700)", fontWeight: selected ? 600 : 400 }}>{label}</span>
+      {selected && <Check size={16} style={{ color: "var(--moss-700)" }} />}
+    </button>
+  );
+}
+
+function SubHeader({ title, onBack }: { title: string; onBack: () => void }) {
+  return (
+    <button onClick={onBack} className="mb-1 flex w-full items-center gap-1 rounded-lg px-1.5 py-1.5 text-left transition-colors hover:bg-[var(--paper-2)]">
+      <ChevronLeft size={16} style={{ color: "var(--ink-500)" }} />
+      <span className="t-label" style={{ color: "var(--ink-900)" }}>{title}</span>
+    </button>
   );
 }
 
 export function FilterRail({
-  filters, setFilters, clearFilters, activeCount,
+  filters, setFilters,
 }: {
   filters: Filters;
   setFilters: (p: Partial<Filters> & Record<string, unknown>) => void;
   clearFilters: () => void;
   activeCount: number;
 }) {
+  const [view, setView] = useState<View>("root");
+  const back = () => setView("root");
   const toggleTag = (t: string) =>
     setFilters({ tags: filters.tags.includes(t) ? filters.tags.filter((x) => x !== t) : [...filters.tags, t] });
 
-  return (
-    <div>
-      <div className="flex items-center justify-between pb-1">
-        <div className="t-h4" style={{ color: "var(--ink-900)" }}>Filters</div>
-        {activeCount > 0 && <button onClick={clearFilters} className="t-body-sm" style={{ color: "var(--moss-700)" }}>Clear all</button>}
-      </div>
+  // current-value summaries shown on the root menu
+  const summary = {
+    category: filters.category ? titleCase(filters.category) : "All",
+    distance: DISTANCE_OPTIONS.find((o) => o.value === filters.distance)?.label || "Any",
+    price: PRICE_RANGES.find((o) => o.value === filters.priceRange)?.label || "Any",
+    rating: filters.minRating ? `${filters.minRating}+` : "Any",
+    sort: SORT_OPTIONS.find((o) => o.value === filters.sort)?.label || "Default",
+    amenities: filters.tags.length ? `${filters.tags.length} selected` : "Any",
+  };
 
-      <Section title="Category">
-        <div className="flex flex-wrap gap-2"><Chip on={!filters.category} onClick={() => setFilters({ category: "" })}>All</Chip></div>
+  if (view === "root") {
+    return (
+      <div className="flex flex-col">
+        <NavRow label="Category" value={summary.category} onClick={() => setView("category")} />
+        <NavRow label="Distance" value={summary.distance} onClick={() => setView("distance")} />
+        <NavRow label="Price" value={summary.price} onClick={() => setView("price")} />
+        <NavRow label="Rating" value={summary.rating} onClick={() => setView("rating")} />
+        <NavRow label="Sort By" value={summary.sort} onClick={() => setView("sort")} />
+        <NavRow label="Amenities" value={summary.amenities} onClick={() => setView("amenities")} />
+      </div>
+    );
+  }
+
+  if (view === "category") {
+    return (
+      <div>
+        <SubHeader title="Category" onBack={back} />
+        <Opt label="All Categories" selected={!filters.category} onClick={() => { setFilters({ category: "" }); back(); }} />
         {CATEGORY_GROUPS.map((g) => (
-          <div key={g.key} className="mt-2.5">
-            <div className="t-body-xs" style={{ color: "var(--ink-400)", marginBottom: 5, fontWeight: 600 }}>{g.label}</div>
-            <div className="flex flex-wrap gap-2">
-              {g.categories.map((c) => (
-                <Chip key={c} on={filters.category === c} onClick={() => setFilters({ category: c })}>
-                  {c.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (m) => m.toUpperCase())}
-                </Chip>
-              ))}
-            </div>
+          <div key={g.key}>
+            <div className="t-eyebrow px-3 pb-1 pt-3" style={{ color: "var(--ink-400)" }}>{g.label}</div>
+            {g.categories.map((c) => (
+              <Opt key={c} label={titleCase(c)} selected={filters.category === c} onClick={() => { setFilters({ category: c }); back(); }} />
+            ))}
           </div>
         ))}
-      </Section>
+      </div>
+    );
+  }
 
-      <Section title="Distance">
-        <div className="flex flex-wrap gap-2">
-          {DISTANCE_OPTIONS.map((o) => (
-            <Chip key={o.value} on={filters.distance === o.value} onClick={() => setFilters({ distance: o.value, ne_lat: null, ne_lng: null, sw_lat: null, sw_lng: null })}>{o.label}</Chip>
-          ))}
-        </div>
-      </Section>
+  if (view === "distance") {
+    return (
+      <div>
+        <SubHeader title="Distance" onBack={back} />
+        {DISTANCE_OPTIONS.map((o) => (
+          <Opt key={o.value} label={o.label} selected={filters.distance === o.value}
+            onClick={() => { setFilters({ distance: o.value, ne_lat: null, ne_lng: null, sw_lat: null, sw_lng: null }); back(); }} />
+        ))}
+      </div>
+    );
+  }
 
-      <Section title="Price">
-        <div className="flex flex-wrap gap-2">
-          <Chip on={!filters.priceRange} onClick={() => setFilters({ priceRange: "" })}>Any</Chip>
-          {PRICE_RANGES.map((o) => <Chip key={o.value} on={filters.priceRange === o.value} onClick={() => setFilters({ priceRange: o.value })}>{o.label}</Chip>)}
-        </div>
-      </Section>
+  if (view === "price") {
+    return (
+      <div>
+        <SubHeader title="Price" onBack={back} />
+        <Opt label="Any" selected={!filters.priceRange} onClick={() => { setFilters({ priceRange: "" }); back(); }} />
+        {PRICE_RANGES.map((o) => (
+          <Opt key={o.value} label={o.label} selected={filters.priceRange === o.value} onClick={() => { setFilters({ priceRange: o.value }); back(); }} />
+        ))}
+      </div>
+    );
+  }
 
-      <Section title="Minimum rating">
-        <div className="flex flex-wrap gap-2">
-          {RATINGS.map(([v, l]) => <Chip key={v} on={filters.minRating === v} onClick={() => setFilters({ minRating: v })}>{l}</Chip>)}
-        </div>
-      </Section>
+  if (view === "rating") {
+    return (
+      <div>
+        <SubHeader title="Minimum Rating" onBack={back} />
+        {RATINGS.map(([v, l]) => (
+          <Opt key={v} label={v ? `${l} stars` : l} selected={filters.minRating === v} onClick={() => { setFilters({ minRating: v }); back(); }} />
+        ))}
+      </div>
+    );
+  }
 
-      <Section title="Sort by">
-        <div className="flex flex-wrap gap-2">
-          {SORT_OPTIONS.map((o) => <Chip key={o.value} on={filters.sort === o.value} onClick={() => setFilters({ sort: o.value })}>{o.label}</Chip>)}
-        </div>
-      </Section>
+  if (view === "sort") {
+    return (
+      <div>
+        <SubHeader title="Sort By" onBack={back} />
+        {SORT_OPTIONS.map((o) => (
+          <Opt key={o.value} label={o.label} selected={filters.sort === o.value} onClick={() => { setFilters({ sort: o.value }); back(); }} />
+        ))}
+      </div>
+    );
+  }
 
-      <Section title="Amenities">
-        <div className="flex flex-wrap gap-2">
-          {BUSINESS_TAGS.map((t) => <Chip key={t.value} on={filters.tags.includes(t.value)} onClick={() => toggleTag(t.value)}>{t.label.split(" ")[0]}</Chip>)}
-        </div>
-      </Section>
+  // amenities — multi-select, stays open
+  return (
+    <div>
+      <SubHeader title="Amenities" onBack={back} />
+      {BUSINESS_TAGS.map((t) => (
+        <Opt key={t.value} label={t.label} selected={filters.tags.includes(t.value)} onClick={() => toggleTag(t.value)} />
+      ))}
     </div>
   );
 }

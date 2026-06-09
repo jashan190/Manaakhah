@@ -35,11 +35,11 @@ export default function WriteReviewPage() {
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full" style={{ background: "var(--moss-50)" }}>
               <CheckCircle2 size={30} style={{ color: "var(--moss-700)" }} />
             </div>
-            <h2 className="t-h3" style={{ color: "var(--ink-900)", marginTop: 16 }}>Thank you for your review</h2>
+            <h2 className="t-h3" style={{ color: "var(--ink-900)", marginTop: 16 }}>Thank You for Your Review</h2>
             <p className="t-body" style={{ color: "var(--ink-500)", marginTop: 8 }}>Your {stars}-star review of {name} is now live and helps the community shop with confidence.</p>
             <div className="mt-6 flex justify-center gap-2">
               <Link href={`/business/${id}`}><Button size="sm">Back to {name}</Button></Link>
-              <Link href="/account"><Button variant="outline" size="sm">My account</Button></Link>
+              <Link href="/account"><Button variant="outline" size="sm">My Account</Button></Link>
             </div>
           </ManCard>
         ) : (
@@ -99,8 +99,8 @@ export default function WriteReviewPage() {
           <div className="mt-6 flex items-center justify-between">
             <Checkbox label="Post privately" />
             <div className="flex gap-2">
-              <Button variant="outline" size="sm">Save draft</Button>
-              <Button size="sm" onClick={() => setPublished(true)}>Publish review</Button>
+              <Button variant="outline" size="sm">Save Draft</Button>
+              <Button size="sm" onClick={() => setPublished(true)}>Publish Review</Button>
             </div>
           </div>
         </ManCard>

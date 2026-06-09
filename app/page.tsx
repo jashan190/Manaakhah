@@ -45,7 +45,7 @@ export default function Home() {
         <ManCard style={{ padding: 32 }} className="grid items-center gap-8 md:grid-cols-[1fr_1.4fr]">
           <Photo src={REST_IMG} alt="Owner story" h={220} radius={12} />
           <div>
-            <Tag tone="clay">Owner story</Tag>
+            <Tag tone="clay">Owner Story</Tag>
             <p className="t-h3" style={{ color: "var(--ink-900)", marginTop: 12, fontWeight: 500, fontStyle: "italic", lineHeight: 1.3 }}>
               &ldquo;We were getting one or two calls a week. After verifying with Manaakhah, we filled our Friday evenings — people walk in already trusting us.&rdquo;
             </p>
@@ -64,9 +64,9 @@ export default function Home() {
       <section style={{ background: "var(--moss-700)", color: "var(--bone)" }}>
         <div className="mx-auto flex max-w-[1200px] flex-col items-center gap-4 px-6 py-12 text-center">
           <Store size={26} />
-          <h2 className="t-h2" style={{ color: "var(--bone)" }}>Own a Muslim business?</h2>
+          <h2 className="t-h2" style={{ color: "var(--bone)" }}>Own a Muslim Business?</h2>
           <p style={{ opacity: 0.85, fontSize: 15, maxWidth: 520 }}>Get found by the community — claim your listing, get verified, and grow.</p>
-          <Link href="/for-business"><Button size="lg" style={{ background: "var(--bone)", color: "var(--moss-800)" }}>List your business</Button></Link>
+          <Link href="/for-business"><Button size="lg" style={{ background: "var(--bone)", color: "var(--moss-800)" }}>List Your Business</Button></Link>
         </div>
       </section>
 

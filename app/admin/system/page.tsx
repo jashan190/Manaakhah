@@ -25,7 +25,7 @@ export default function SystemHealthPage() {
       <div className="px-6 py-7 md:px-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <PH title="System Health" sub="Platform status, performance and incidents" />
-          <Tag tone="warn">1 service degraded</Tag>
+          <Tag tone="warn">1 Service Degraded</Tag>
         </div>
 
         <div className="grid grid-cols-2 gap-3.5 lg:grid-cols-4">
@@ -52,7 +52,7 @@ export default function SystemHealthPage() {
           {/* Traffic chart */}
           <ManCard style={{ padding: 22 }}>
             <div className="flex items-baseline justify-between">
-              <div><div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>Requests / min</div><div className="t-h3" style={{ color: "var(--ink-900)", marginTop: 4 }}>Last 24 hours</div></div>
+              <div><div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>Requests / min</div><div className="t-h3" style={{ color: "var(--ink-900)", marginTop: 4 }}>Last 24 Hours</div></div>
               <span className="inline-flex items-center gap-1 t-body-sm" style={{ color: "var(--moss-700)" }}><CheckCircle2 size={14} /> Healthy</span>
             </div>
             <div className="mt-4"><MiniLine data={[1200, 1800, 1600, 2100, 2600, 2400, 3100, 2900, 3400, 3200, 3600, 3420]} height={180} /></div>
@@ -61,7 +61,7 @@ export default function SystemHealthPage() {
 
         {/* Incidents */}
         <ManCard style={{ padding: 0, marginTop: 14 }}>
-          <div className="px-5 py-3.5 t-h4" style={{ color: "var(--ink-900)", borderBottom: "1px solid var(--card-edge)" }}>Recent incidents</div>
+          <div className="px-5 py-3.5 t-h4" style={{ color: "var(--ink-900)", borderBottom: "1px solid var(--card-edge)" }}>Recent Incidents</div>
           {INCIDENTS.map((inc, i) => (
             <div key={inc.t} className="flex items-center gap-3 px-5 py-3.5" style={{ borderBottom: i === INCIDENTS.length - 1 ? "none" : "1px solid var(--card-edge)" }}>
               <span className="flex h-8 w-8 items-center justify-center rounded-full" style={{ background: inc.state === "Investigating" ? "var(--clay-50)" : "var(--paper-2)" }}>{inc.state === "Investigating" ? <AlertTriangle size={14} style={{ color: "var(--clay-700)" }} /> : <Database size={14} style={{ color: "var(--ink-500)" }} />}</span>

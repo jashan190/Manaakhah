@@ -124,14 +124,14 @@ export default function NewListingPage() {
 
           {step === 4 && (
             <div className="grid gap-4">
-              <div className="t-h4" style={{ color: "var(--ink-900)" }}>Review & submit</div>
+              <div className="t-h4" style={{ color: "var(--ink-900)" }}>Review & Submit</div>
               {[["Business", "Famous Kabob · Restaurant · $$"], ["Address", "1290 Fulton Ave, Sacramento, CA 95825"], ["Hours", "Mon–Sat 11:00–22:00 · Sun closed"], ["Halal", "HFSAA · Zabihah · No alcohol"], ["Photos", "Cover + 3 photos · certificate attached"]].map(([k, v]) => (
                 <div key={k} className="flex items-start justify-between gap-4 pb-3" style={{ borderBottom: "1px dashed var(--card-edge)" }}>
                   <span className="t-eyebrow" style={{ color: "var(--ink-500)" }}>{k}</span>
                   <span className="t-body-sm" style={{ color: "var(--ink-900)", textAlign: "right" }}>{v}</span>
                 </div>
               ))}
-              <div className="flex items-center gap-2"><Tag tone="warn">Pending verification</Tag><span className="t-body-sm" style={{ color: "var(--ink-500)" }}>Most listings are reviewed within 2 business days.</span></div>
+              <div className="flex items-center gap-2"><Tag tone="warn">Pending Verification</Tag><span className="t-body-sm" style={{ color: "var(--ink-500)" }}>Most listings are reviewed within 2 business days.</span></div>
             </div>
           )}
         </ManCard>
@@ -139,7 +139,7 @@ export default function NewListingPage() {
         <div className="mt-5 flex items-center justify-between">
           <Button variant="outline" size="sm" onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0}><ArrowLeft className="mr-1.5 h-4 w-4" /> Back</Button>
           <div className="flex gap-2">
-            <Button variant="ghost" size="sm">Save draft</Button>
+            <Button variant="ghost" size="sm">Save Draft</Button>
             {step < last
               ? <Button size="sm" onClick={() => setStep(step + 1)}>Continue <ArrowRight className="ml-1.5 h-4 w-4" /></Button>
               : <Link href="/dashboard"><Button size="sm">Submit for verification <Check className="ml-1.5 h-4 w-4" /></Button></Link>}

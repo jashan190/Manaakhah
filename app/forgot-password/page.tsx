@@ -36,7 +36,7 @@ export default function ForgotPasswordPage() {
         <div className="flex h-12 w-12 items-center justify-center rounded-full" style={{ background: "var(--moss-100)" }}>
           <CheckCircle className="h-6 w-6" style={{ color: "var(--moss-700)" }} />
         </div>
-        <h1 className="mt-5 t-h1" style={{ color: "var(--ink-900)" }}>Check your email</h1>
+        <h1 className="mt-5 t-h1" style={{ color: "var(--ink-900)" }}>Check Your Email</h1>
         <p className="mt-2 t-body" style={{ color: "var(--ink-500)" }}>
           If an account exists with this email, we&apos;ve sent a password reset link. It expires in 1 hour.
         </p>
@@ -55,7 +55,7 @@ export default function ForgotPasswordPage() {
       <Link href="/login" className="inline-flex items-center gap-1 t-body-sm" style={{ color: "var(--ink-500)" }}>
         <ArrowLeft className="h-4 w-4" /> Back to sign in
       </Link>
-      <h1 className="mt-4 t-h1" style={{ color: "var(--ink-900)" }}>Forgot password?</h1>
+      <h1 className="mt-4 t-h1" style={{ color: "var(--ink-900)" }}>Forgot Password?</h1>
       <p className="mt-2 t-body" style={{ color: "var(--ink-500)" }}>
         Enter your email and we&apos;ll send you a link to reset it.
       </p>

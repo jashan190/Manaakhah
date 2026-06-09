@@ -46,7 +46,7 @@ export function FilterSheet({
         </div>
 
         <div className="flex items-center gap-3 px-5 py-4" style={{ borderTop: "1px solid var(--card-edge)", background: "var(--card)" }}>
-          <Button variant="ghost" size="sm" onClick={clearFilters}>Clear all</Button>
+          <Button variant="ghost" size="sm" onClick={clearFilters}>Clear All</Button>
           <Button className="flex-1" onClick={onClose}>Show {resultCount} result{resultCount === 1 ? "" : "s"}</Button>
         </div>
       </aside>

@@ -151,7 +151,7 @@ function ResetPasswordContent() {
               <Link href="/forgot-password">
                 <Button variant="outline" className="mt-4">
                   <KeyRound className="h-4 w-4 mr-2" />
-                  Request a new reset link
+                  Request a New Reset Link
                 </Button>
               </Link>
             </div>
@@ -266,7 +266,7 @@ function ResetPasswordContent() {
               <Link href="/forgot-password">
                 <Button variant="outline" className="mt-4">
                   <KeyRound className="h-4 w-4 mr-2" />
-                  Request a new reset link
+                  Request a New Reset Link
                 </Button>
               </Link>
             </div>

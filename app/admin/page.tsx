@@ -44,7 +44,7 @@ export default function AdminHomePage() {
 
           <ManCard style={{ padding: 22 }}>
             <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>Seals issued</div>
-            <div className="t-h3" style={{ color: "var(--ink-900)", marginTop: 4 }}>Last 14 days</div>
+            <div className="t-h3" style={{ color: "var(--ink-900)", marginTop: 4 }}>Last 14 Days</div>
             <div className="mt-4"><MiniLine data={[6, 9, 7, 12, 10, 14, 11, 16, 13, 18, 15, 20, 17, 22]} height={180} /></div>
           </ManCard>
         </div>

@@ -16,10 +16,12 @@ function LoginContent() {
   const verified = searchParams.get("verified") === "true";
   const reset = searchParams.get("reset") === "true";
   const registered = searchParams.get("registered") === "true";
+  const next = searchParams.get("next") || "";
+  const roleParam = searchParams.get("role");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [role, setRole] = useState<"CONSUMER" | "BUSINESS_OWNER">("CONSUMER");
+  const [role, setRole] = useState<"CONSUMER" | "BUSINESS_OWNER">(roleParam === "owner" ? "BUSINESS_OWNER" : "CONSUMER");
   const [formData, setFormData] = useState({ email: "", password: "" });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -31,8 +33,8 @@ function LoginContent() {
       // Admin accounts (by email) drop into the admin console
       const target = formData.email.toLowerCase().includes("admin") ? "ADMIN" : role;
       switchMockRole(target);
-      window.location.href =
-        target === "ADMIN" ? "/admin" : target === "BUSINESS_OWNER" ? "/dashboard" : "/";
+      const fallback = target === "ADMIN" ? "/admin" : target === "BUSINESS_OWNER" ? "/dashboard" : "/";
+      window.location.href = target === "ADMIN" ? "/admin" : (next || fallback);
       return;
     }
     try {
@@ -126,7 +128,7 @@ function LoginContent() {
 
         <p className="text-center t-body-sm" style={{ color: "var(--ink-500)" }}>
           Don&apos;t have an account?{" "}
-          <Link href="/register" className="font-medium" style={{ color: "var(--moss-700)" }}>Create one</Link>
+          <Link href={next ? `/register?next=${encodeURIComponent(next)}${roleParam ? `&role=${roleParam}` : ""}` : "/register"} className="font-medium" style={{ color: "var(--moss-700)" }}>Create one</Link>
         </p>
       </form>
     </AuthShell>

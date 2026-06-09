@@ -29,7 +29,7 @@ export function CategoryGroupGrid() {
                 </span>
                 <div className="flex-1">
                   <div className="t-label" style={{ color: "var(--ink-900)" }}>{g.label}</div>
-                  <div className="t-body-xs" style={{ color: "var(--ink-500)", marginTop: 2 }}>{g.categories.length} categories</div>
+                  <div className="t-body-xs" style={{ color: "var(--ink-500)", marginTop: 2 }}>{g.categories.length} categor{g.categories.length === 1 ? "y" : "ies"}</div>
                 </div>
                 <ChevronRight size={16} style={{ color: "var(--ink-400)" }} />
               </ManCard>

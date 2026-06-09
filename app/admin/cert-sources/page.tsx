@@ -19,7 +19,7 @@ export default function CertSourcesPage() {
       <div className="px-6 py-7 md:px-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <PH title="Certification Sources" sub="Registries we cross-check against during verification" />
-          <Button size="sm"><Plus className="mr-1.5 h-4 w-4" /> Add source</Button>
+          <Button size="sm"><Plus className="mr-1.5 h-4 w-4" /> Add Source</Button>
         </div>
 
         <div className="grid grid-cols-2 gap-3.5 lg:grid-cols-4">

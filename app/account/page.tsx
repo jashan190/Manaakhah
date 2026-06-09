@@ -29,7 +29,7 @@ export default function AccountHome() {
             <h1 className="t-h2" style={{ color: "var(--ink-900)", marginTop: 4 }}>{name}</h1>
             <div className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 4 }}>Joined 2026 · Sacramento, CA · 18 reviews · 3 saved lists</div>
           </div>
-          <Link href="/account/settings"><Button variant="outline" size="sm"><Pencil className="mr-1.5 h-4 w-4" /> Edit profile</Button></Link>
+          <Link href="/account/settings"><Button variant="outline" size="sm"><Pencil className="mr-1.5 h-4 w-4" /> Edit Profile</Button></Link>
         </div>
 
         <div className="mt-7 grid grid-cols-2 gap-3.5 lg:grid-cols-4">

@@ -29,7 +29,7 @@ export default function OwnerNotificationsPage() {
       <div className="px-6 py-7 md:px-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <PH title="Notifications" sub="Leads, reviews, verification and billing activity" />
-          <Button variant="outline" size="sm" onClick={() => setRead(Object.fromEntries(NOTIFS.map((_, i) => [i, true])))}><Check className="mr-1.5 h-4 w-4" /> Mark all read</Button>
+          <Button variant="outline" size="sm" onClick={() => setRead(Object.fromEntries(NOTIFS.map((_, i) => [i, true])))}><Check className="mr-1.5 h-4 w-4" /> Mark All Read</Button>
         </div>
 
         <div className="mb-5 flex flex-wrap gap-2">

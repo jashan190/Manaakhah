@@ -70,8 +70,8 @@ export default function BusinessDetailPage() {
   if (!business) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3" style={{ background: "var(--paper)" }}>
-        <h1 className="t-h3" style={{ color: "var(--ink-900)" }}>Business not found</h1>
-        <Link href="/search"><Button>Back to search</Button></Link>
+        <h1 className="t-h3" style={{ color: "var(--ink-900)" }}>Business Not Found</h1>
+        <Link href="/search"><Button>Back to Search</Button></Link>
       </div>
     );
   }
@@ -136,7 +136,7 @@ export default function BusinessDetailPage() {
             </div>
 
             <div className="flex flex-col gap-2 md:w-[210px]">
-              <a href={`tel:${business.phone}`}><Button className="w-full"><Phone className="mr-1.5 h-4 w-4" /> Call now</Button></a>
+              <a href={`tel:${business.phone}`}><Button className="w-full"><Phone className="mr-1.5 h-4 w-4" /> Call Now</Button></a>
               <Link href={`/business/${id}/contact`}><Button variant="outline" className="w-full"><MessageCircle className="mr-1.5 h-4 w-4" /> Message</Button></Link>
               <a href={mapsUrl} target="_blank" rel="noopener noreferrer"><Button variant="outline" className="w-full"><Navigation className="mr-1.5 h-4 w-4" /> Directions</Button></a>
             </div>
@@ -164,7 +164,7 @@ export default function BusinessDetailPage() {
                 </ManCard>
                 {amenities.length > 0 && (
                   <ManCard style={{ padding: 22 }}>
-                    <div className="t-h4" style={{ color: "var(--ink-900)", marginBottom: 12 }}>What this place offers</div>
+                    <div className="t-h4" style={{ color: "var(--ink-900)", marginBottom: 12 }}>What This Place Offers</div>
                     <div className="grid gap-2 sm:grid-cols-2">
                       {amenities.map((a) => (
                         <div key={a} className="flex items-center gap-2 t-body-sm" style={{ color: "var(--ink-700)" }}>
@@ -184,13 +184,13 @@ export default function BusinessDetailPage() {
                     <div><div className="t-display" style={{ color: "var(--ink-900)", fontSize: 40, lineHeight: 1 }}>{business.reviewCount > 0 ? business.averageRating.toFixed(1) : "—"}</div></div>
                     <div><Stars n={business.averageRating} size={16} /><div className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 2 }}>{business.reviewCount} review{business.reviewCount === 1 ? "" : "s"}</div></div>
                   </div>
-                  <Link href={`/business/${id}/review`}><Button size="sm"><Pencil className="mr-1.5 h-4 w-4" /> Write a review</Button></Link>
+                  <Link href={`/business/${id}/review`}><Button size="sm"><Pencil className="mr-1.5 h-4 w-4" /> Write a Review</Button></Link>
                 </ManCard>
 
                 {reviews.length === 0 ? (
                   <ManCard style={{ padding: 40 }} className="text-center">
                     <Star size={26} style={{ color: "var(--clay-500)", margin: "0 auto" }} />
-                    <div className="t-h4" style={{ color: "var(--ink-900)", marginTop: 10 }}>No reviews yet</div>
+                    <div className="t-h4" style={{ color: "var(--ink-900)", marginTop: 10 }}>No Reviews Yet</div>
                     <div className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 4 }}>Be the first to share your experience.</div>
                   </ManCard>
                 ) : reviews.map((rv) => (
@@ -241,7 +241,7 @@ export default function BusinessDetailPage() {
                 {business.phone && <a href={`tel:${business.phone}`} className="flex items-center gap-2.5" style={{ color: "var(--ink-700)" }}><Phone size={15} style={{ color: "var(--ink-400)" }} /> {business.phone}</a>}
                 {business.website && <a href={business.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5" style={{ color: "var(--moss-700)" }}><Globe size={15} style={{ color: "var(--ink-400)" }} /> Visit website</a>}
               </div>
-              <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="mt-3 block"><Button variant="outline" size="sm" className="w-full"><Navigation className="mr-1.5 h-4 w-4" /> Get directions</Button></a>
+              <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="mt-3 block"><Button variant="outline" size="sm" className="w-full"><Navigation className="mr-1.5 h-4 w-4" /> Get Directions</Button></a>
             </ManCard>
 
             {business.hours && (

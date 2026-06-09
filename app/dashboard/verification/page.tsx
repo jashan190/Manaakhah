@@ -39,7 +39,7 @@ export default function VerificationPage() {
               {METHODS.map((m) => {
                 const on = method === m.k;
                 return (
-                  <button key={m.k} onClick={() => setMethod(m.k)} className="flex items-start gap-3.5 rounded-[14px] p-4 text-left" style={{ background: "var(--card)", border: on ? "1.5px solid var(--moss-700)" : "1px solid var(--card-edge)" }}>
+                  <button key={m.k} onClick={() => setMethod(m.k)} className="flex items-start gap-3.5 rounded-[14px] p-4 text-left transition-colors" style={{ background: "#ffffff", border: on ? "1.5px solid var(--moss-700)" : "1px solid var(--card-edge)" }}>
                     <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full" style={{ background: on ? "var(--moss-50)" : "var(--paper-2)" }}><m.Icon size={18} style={{ color: on ? "var(--moss-700)" : "var(--ink-500)" }} /></span>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
@@ -55,7 +55,7 @@ export default function VerificationPage() {
             </div>
             <div className="mt-5 flex items-center justify-between">
               <Link href="/claim-business"><Button variant="ghost" size="sm">Cancel</Button></Link>
-              <Button size="sm" onClick={() => setSent(true)}>Send verification</Button>
+              <Button size="sm" onClick={() => setSent(true)}>Send Verification</Button>
             </div>
           </>
         ) : (
@@ -71,8 +71,8 @@ export default function VerificationPage() {
               </div>
             )}
             <div className="mt-6 flex items-center justify-between">
-              <Button variant="ghost" size="sm" onClick={() => setSent(false)}>Try another method</Button>
-              <Link href="/dashboard/onboarding"><Button size="sm">Confirm & continue</Button></Link>
+              <Button variant="ghost" size="sm" onClick={() => setSent(false)}>Try Another Method</Button>
+              <Link href="/dashboard/onboarding"><Button size="sm">Confirm & Continue</Button></Link>
             </div>
           </ManCard>
         )}

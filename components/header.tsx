@@ -6,7 +6,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/man/primitives";
 import { useMockSession, useMockSignOut } from "@/components/mock-session-provider";
-import { Bell, Menu, X, ChevronDown, Settings, LifeBuoy, LogOut } from "lucide-react";
+import { switchMockRole } from "@/lib/mock-auth";
+import { Bell, Menu, X, ChevronDown, LogOut, User, Store, Check } from "lucide-react";
 
 type Tab = { l: string; href: string };
 
@@ -57,13 +58,20 @@ export function Header() {
   const tabs = !signedIn ? SIGNED_OUT : (isOwner || isAdmin) ? BUSINESS : CONSUMER;
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
   const homeHref = !signedIn ? "/" : isOwner ? "/dashboard" : isAdmin ? "/admin" : "/";
-  const settingsHref = isOwner ? "/dashboard/settings" : isAdmin ? "/admin/settings" : "/account/settings";
-  const helpHref = isOwner ? "/dashboard/help" : isAdmin ? "/admin/support" : "/account/help";
   const notifHref = isOwner ? "/dashboard/notifications" : "/notifications";
-  const roleLabel = isAdmin ? "Admin" : isOwner ? "Business Owner" : "Member";
+  // What the avatar dropdown leads with — the business for owners, otherwise the person
+  const acctName = isOwner ? "Famous Kabob" : (session?.user?.name || "Your account");
+  const acctSub = isAdmin ? "Admin console" : isOwner ? "Business account" : "Customer account";
+
+  // Switch between the customer and business experiences (mock)
+  const switchTo = (target: "CONSUMER" | "BUSINESS_OWNER") => {
+    if (target === role) { setAcctOpen(false); return; }
+    switchMockRole(target);
+    window.location.href = target === "BUSINESS_OWNER" ? "/dashboard" : "/";
+  };
 
   return (
-    <header style={{ height: 64, borderBottom: "1px solid var(--card-edge)", background: "var(--paper-2)", boxShadow: scrolled ? "0 4px 16px -8px rgba(17,50,30,0.22)" : "none", transition: "box-shadow 0.2s" }}
+    <header style={{ height: 64, borderBottom: "1px solid var(--card-edge)", background: "var(--paper)", boxShadow: scrolled ? "0 4px 16px -8px rgba(17,50,30,0.22)" : "none", transition: "box-shadow 0.2s" }}
       className="sticky top-0 z-[1000] flex items-center justify-between px-5 sm:px-8">
       {/* Left: logo + tabs */}
       <div className="flex items-center gap-9">
@@ -101,17 +109,24 @@ export function Header() {
               </button>
               {acctOpen && (
                 <div className="absolute right-0 mt-2 w-60 overflow-hidden rounded-[12px] border py-1.5" style={{ background: "var(--bone)", borderColor: "var(--card-edge)", boxShadow: "var(--shadow-lift)" }}>
-                  <div className="flex items-center gap-3 px-4 py-3" style={{ borderBottom: "1px solid var(--card-edge)" }}>
-                    <Avatar name={session?.user?.name || "User"} size={38} />
+                  <div className="flex items-center gap-3 px-4 py-4" style={{ borderBottom: "1px solid var(--card-edge)" }}>
+                    <Avatar name={acctName} size={44} />
                     <div className="min-w-0">
-                      <div className="t-label-sm truncate" style={{ color: "var(--ink-900)" }}>{session?.user?.name}</div>
-                      <div className="t-body-xs truncate" style={{ color: "var(--ink-500)" }}>{roleLabel}</div>
+                      <div className="t-h4 truncate" style={{ color: "var(--ink-900)" }}>{acctName}</div>
+                      <div className="t-body-xs truncate" style={{ color: "var(--ink-500)" }}>{acctSub}</div>
                     </div>
                   </div>
-                  <div className="py-1">
-                    <Link href={settingsHref} onClick={() => setAcctOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}><Settings size={16} style={{ color: "var(--ink-500)" }} /> Settings</Link>
-                    <Link href={helpHref} onClick={() => setAcctOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}><LifeBuoy size={16} style={{ color: "var(--ink-500)" }} /> Help &amp; Support</Link>
-                  </div>
+                  {!isAdmin && (
+                    <div className="py-1" style={{ borderTop: "1px solid var(--card-edge)" }}>
+                      <div className="px-4 pb-1 pt-1.5 t-eyebrow" style={{ color: "var(--ink-500)" }}>Switch account</div>
+                      <button onClick={() => switchTo("CONSUMER")} className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}>
+                        <User size={16} style={{ color: "var(--ink-500)" }} /> <span className="flex-1">Customer</span> {role === "CONSUMER" && <Check size={15} style={{ color: "var(--moss-700)" }} />}
+                      </button>
+                      <button onClick={() => switchTo("BUSINESS_OWNER")} className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}>
+                        <Store size={16} style={{ color: "var(--ink-500)" }} /> <span className="flex-1">Business</span> {role === "BUSINESS_OWNER" && <Check size={15} style={{ color: "var(--moss-700)" }} />}
+                      </button>
+                    </div>
+                  )}
                   <div className="py-1" style={{ borderTop: "1px solid var(--card-edge)" }}>
                     <button onClick={() => { setAcctOpen(false); signOut(); }} className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--err-500)" }}><LogOut size={16} /> Sign Out</button>
                   </div>

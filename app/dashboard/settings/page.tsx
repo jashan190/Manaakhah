@@ -40,7 +40,7 @@ export default function BusinessSettingsPage() {
       <div className="px-6 py-7 md:px-8">
         <PH title="Business Settings" sub="Account and listing controls for Famous Kabob" />
 
-        <div className="grid max-w-[760px] gap-3.5">
+        <div className="grid gap-3.5">
           {/* Listing controls */}
           <ManCard style={{ padding: 24 }}>
             <div className="t-h4" style={{ color: "var(--ink-900)" }}>Listing</div>
@@ -53,18 +53,22 @@ export default function BusinessSettingsPage() {
 
           {/* Business details */}
           <ManCard style={{ padding: 24 }}>
-            <div className="t-h4" style={{ color: "var(--ink-900)", marginBottom: 14 }}>Business account</div>
+            <div className="t-h4" style={{ color: "var(--ink-900)", marginBottom: 14 }}>Business Account</div>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Legal business name"><input className={fieldCls} style={fs} defaultValue="Famous Kabob LLC" /></Field>
               <Field label="EIN / tax ID"><input className={fieldCls} style={fs} defaultValue="••-•••4821" /></Field>
               <Field label="Billing contact"><input className={fieldCls} style={fs} defaultValue="yusuf@famouskabob.com" /></Field>
               <Field label="Default timezone"><Select defaultValue="Pacific (PT)" options={["Pacific (PT)", "Mountain (MT)", "Central (CT)", "Eastern (ET)"].map((s) => ({ value: s, label: s }))} /></Field>
             </div>
+            <div className="mt-5 flex justify-end gap-2 border-t pt-4" style={{ borderColor: "var(--card-edge)" }}>
+              <Button variant="ghost" size="sm">Discard</Button>
+              <Button size="sm">Save Changes</Button>
+            </div>
           </ManCard>
 
           {/* Team & access */}
           <ManCard style={{ padding: 24 }}>
-            <div className="flex items-center justify-between"><div className="t-h4" style={{ color: "var(--ink-900)" }}>Team & access</div><Button size="sm"><Plus className="mr-1.5 h-4 w-4" /> Invite</Button></div>
+            <div className="flex items-center justify-between"><div className="t-h4" style={{ color: "var(--ink-900)" }}>Team & Access</div><Button size="sm"><Plus className="mr-1.5 h-4 w-4" /> Invite</Button></div>
             <div className="mt-3.5 grid gap-2">
               {TEAM.map((m) => (
                 <div key={m.email} className="flex items-center gap-3 rounded-[10px] border px-3.5 py-2.5" style={{ borderColor: "var(--card-edge)" }}>
@@ -77,11 +81,9 @@ export default function BusinessSettingsPage() {
             </div>
           </ManCard>
 
-          <div className="flex justify-end gap-2"><Button variant="ghost" size="sm">Discard</Button><Button size="sm">Save changes</Button></div>
-
           {/* Danger zone */}
           <ManCard style={{ padding: 24, border: "1px solid var(--err-500)" }}>
-            <div className="flex items-center gap-2"><AlertTriangle size={18} style={{ color: "var(--err-500)" }} /><div className="t-h4" style={{ color: "var(--ink-900)" }}>Danger zone</div></div>
+            <div className="flex items-center gap-2"><AlertTriangle size={18} style={{ color: "var(--err-500)" }} /><div className="t-h4" style={{ color: "var(--ink-900)" }}>Danger Zone</div></div>
             <div className="mt-3 flex items-center justify-between gap-4">
               <div><div className="t-label-sm" style={{ color: "var(--ink-900)" }}>Deactivate listing</div><div className="t-body-xs" style={{ color: "var(--ink-500)" }}>Temporarily remove Famous Kabob from Manaakhah. You can restore it anytime.</div></div>
               <Button variant="outline" size="sm" style={{ color: "var(--err-500)", borderColor: "var(--err-500)" }}>Deactivate</Button>

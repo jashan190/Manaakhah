@@ -30,7 +30,7 @@ export default function PromotionsPage() {
 
         <div className="mt-5 grid gap-3.5 lg:grid-cols-[1.4fr_1fr]">
           <div>
-            <div className="t-h4" style={{ color: "var(--ink-900)", marginBottom: 12 }}>Your promotions</div>
+            <div className="t-h4" style={{ color: "var(--ink-900)", marginBottom: 12 }}>Your Promotions</div>
             <div className="grid gap-3">
               {promos.map((p) => (
                 <ManCard key={p.name} style={{ padding: 12 }} className="flex items-center gap-3.5">
@@ -49,7 +49,7 @@ export default function PromotionsPage() {
           </div>
 
           <ManCard style={{ padding: 22 }}>
-            <div className="t-h4" style={{ color: "var(--ink-900)" }}>Quick promotion</div>
+            <div className="t-h4" style={{ color: "var(--ink-900)" }}>Quick Promotion</div>
             <div className="mt-3.5 grid gap-3">
               <input className={field} style={fs} placeholder="Title (e.g. Friday iftar special)" />
               <input className={field} style={fs} placeholder="One-line description" />
@@ -59,7 +59,7 @@ export default function PromotionsPage() {
               </div>
               <Select defaultValue="Order online" placeholder="Call to action" options={["Order online", "Book a table", "Call us", "Visit website"].map((s) => ({ value: s, label: s }))} />
               <Checkbox defaultChecked label="Notify people who saved you" />
-              <Button className="mt-1">Launch promotion</Button>
+              <Button className="mt-1">Launch Promotion</Button>
             </div>
           </ManCard>
         </div>

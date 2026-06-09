@@ -65,7 +65,7 @@ export default function SettingsPage() {
           </div>
         </Section>
 
-        <Section title="Halal preferences">
+        <Section title="Halal Preferences">
           {HALAL.map(([l, d], i) => (
             <Row key={l} label={l} desc={d} last={i === HALAL.length - 1}>
               <Toggle on={halal[i]} onClick={() => setHalal((p) => p.map((v, j) => (j === i ? !v : v)))} />
@@ -81,13 +81,13 @@ export default function SettingsPage() {
           ))}
         </Section>
 
-        <Section title="Account & security">
+        <Section title="Account & Security">
           <Row label="Email" desc="you@example.com"><Button variant="outline" size="sm">Change</Button></Row>
           <Row label="Password" desc="Last changed 3 months ago"><Button variant="outline" size="sm">Update</Button></Row>
           <Row label="Two-factor authentication" desc="Add an extra layer of security" last><Button variant="outline" size="sm">Enable</Button></Row>
         </Section>
 
-        <Section title="Data & privacy">
+        <Section title="Data & Privacy">
           <Row label="Public reviews" desc="Show your reviews on your public profile"><Toggle on={publicReviews} onClick={() => setPublicReviews((v) => !v)} /></Row>
           <Row label="Download your data" desc="Get a copy of everything we store"><Button variant="outline" size="sm">Request</Button></Row>
           <Row label="Delete account" desc="Permanently remove your account and data" last>

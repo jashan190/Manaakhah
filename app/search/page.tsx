@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo, Suspense } from "react";
+import { useEffect, useState, useMemo, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -15,10 +15,9 @@ const MapLibreMap = dynamic(() => import("@/components/map/MapLibreMap"), {
   ),
 });
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/man/Select";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Tag } from "@/components/man/primitives";
 import {
   BUSINESS_CATEGORIES,
   BUSINESS_TAGS,
@@ -30,15 +29,16 @@ import {
 import { useMockSession } from "@/components/mock-session-provider";
 import { useMapSearch, type Business, type MapBounds } from "@/hooks/useMapSearch";
 import { ViewToggle, type ViewMode } from "@/components/search/ViewToggle";
-import { FilterSheet } from "@/components/search/FilterSheet";
 import { FilterRail } from "@/components/search/FilterRail";
 import { categoriesForGroup } from "@/lib/category-groups";
-import { Bookmark, MessageCircle, Heart, Star, Check, Store } from "lucide-react";
+import { Bookmark, MessageCircle, Heart, Star, Store, SlidersHorizontal, ChevronDown, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 function SearchContent() {
   const { data: session } = useMockSession();
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const filtersRef = useRef<HTMLDivElement>(null);
+  const [guestDismissed, setGuestDismissed] = useState(false);
   // Default to the service-area center so nearest businesses show immediately
   // (refined to the user's real location if geolocation is granted).
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>({
@@ -121,12 +121,14 @@ function SearchContent() {
     // Filters already sync to URL via setFilters, React Query auto-refetches
   };
 
-  const handleTagFilter = (tag: string) => {
-    const newTags = filters.tags.includes(tag)
-      ? filters.tags.filter((t) => t !== tag)
-      : [...filters.tags, tag];
-    setFilters({ tags: newTags });
-  };
+  // Close the Filters dropdown on outside click
+  useEffect(() => {
+    const onDoc = (e: MouseEvent) => {
+      if (filtersRef.current && !filtersRef.current.contains(e.target as Node)) setFiltersOpen(false);
+    };
+    if (filtersOpen) document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [filtersOpen]);
 
   const toggleFavorite = (businessId: string, e: React.MouseEvent) => {
     e.preventDefault();
@@ -210,13 +212,16 @@ function SearchContent() {
     const cat = BUSINESS_CATEGORIES.find((c) => c.value === business.category)?.label;
     const price = PRICE_RANGES.find((p) => p.value === business.priceRange)?.label;
     const fav = favorites.includes(business.id);
+    const knownTags = ((business as any).tags || [])
+      .map((t: any) => BUSINESS_TAGS.find((b) => b.value === t.tag))
+      .filter(Boolean) as { value: string; label: string }[];
 
     // Compact = short horizontal row (used in split view alongside the map)
     if (compact) {
       return (
         <Link href={`/business/${business.id}`} key={business.id} onClick={() => addToRecentlyViewed(business.id)}>
           <div className="flex gap-3 overflow-hidden rounded-[12px] p-2.5 transition-shadow hover:shadow-[var(--shadow-rest)]"
-            style={{ background: "var(--card)", border: "1px solid var(--card-edge)" }}>
+            style={{ background: "#ffffff", border: "1px solid var(--card-edge)" }}>
             {/* Thumbnail */}
             <div className="relative h-[84px] w-[84px] flex-shrink-0 overflow-hidden rounded-[10px]">
               {img ? (
@@ -225,11 +230,6 @@ function SearchContent() {
               ) : (
                 <div className="flex h-full w-full items-center justify-center" style={{ background: "linear-gradient(135deg, var(--moss-100), var(--moss-200))" }}>
                   <Store size={20} style={{ color: "var(--moss-700)" }} />
-                </div>
-              )}
-              {business.verificationStatus === "APPROVED" && (
-                <div className="absolute left-1 top-1 flex h-5 w-5 items-center justify-center rounded-full shadow-sm" style={{ background: "var(--moss-700)" }}>
-                  <Check size={11} style={{ color: "var(--bone)" }} />
                 </div>
               )}
             </div>
@@ -265,7 +265,7 @@ function SearchContent() {
     return (
     <Link href={`/business/${business.id}`} key={business.id} onClick={() => addToRecentlyViewed(business.id)}>
       <div className="h-full overflow-hidden rounded-[14px] transition-shadow hover:shadow-[var(--shadow-lift)]"
-        style={{ background: "var(--card)", border: "1px solid var(--card-edge)" }}>
+        style={{ background: "#ffffff", border: "1px solid var(--card-edge)" }}>
         <div className="relative">
           {img ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -279,16 +279,9 @@ function SearchContent() {
 
           <button onClick={(e) => toggleFavorite(business.id, e)} aria-label="Save"
             className="absolute right-2.5 top-2.5 flex h-8 w-8 items-center justify-center rounded-full shadow-md transition-transform hover:scale-110"
-            style={{ background: "var(--card)" }}>
+            style={{ background: "#ffffff" }}>
             <Heart size={15} fill={fav ? "var(--clay-500)" : "none"} stroke={fav ? "var(--clay-500)" : "var(--ink-500)"} />
           </button>
-
-          {business.verificationStatus === "APPROVED" && (
-            <div className="absolute left-2.5 top-2.5 inline-flex items-center gap-1 rounded-full px-2 py-1"
-              style={{ background: "var(--moss-700)", color: "var(--bone)", fontSize: 11, fontWeight: 600 }}>
-              <Check size={11} /> Verified
-            </div>
-          )}
 
           {price && (
             <div className="absolute bottom-2.5 left-2.5 rounded-md px-2 py-0.5"
@@ -321,15 +314,12 @@ function SearchContent() {
 
           <p className="mt-2 t-body-sm line-clamp-1" style={{ color: "var(--ink-500)" }}>{[business.address, business.city].filter(Boolean).join(", ")}</p>
 
-          {!compact && business.tags?.length > 0 && (
+          {!compact && knownTags.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-1.5">
-              {business.tags.slice(0, 3).map((tag) => {
-                const ti = BUSINESS_TAGS.find((t) => t.value === tag.tag);
-                return <span key={tag.tag} className="rounded-full px-2.5 py-1 t-body-xs" style={{ background: "var(--moss-50)", color: "var(--moss-700)" }}>{ti?.label.split(" ")[0] || tag.tag}</span>;
-              })}
-              {business.tags.length > 3 && (
-                <span className="rounded-full px-2.5 py-1 t-body-xs" style={{ background: "var(--paper-2)", color: "var(--ink-700)" }}>+{business.tags.length - 3}</span>
-              )}
+              {knownTags.slice(0, 3).map((t) => (
+                <Tag key={t.value} tone="moss">{t.label}</Tag>
+              ))}
+              {knownTags.length > 3 && <Tag>+{knownTags.length - 3}</Tag>}
             </div>
           )}
         </div>
@@ -341,83 +331,58 @@ function SearchContent() {
   return (
     <div className="min-h-screen" style={{ background: "var(--paper)" }}>
       {/* Search Header */}
-      <div className="border-b px-4 py-6 sm:px-8" style={{ background: "var(--card)", borderColor: "var(--card-edge)" }}>
+      <div className="border-b px-4 py-6 sm:px-8" style={{ background: "var(--paper)", borderColor: "var(--card-edge)" }}>
         <div className="container mx-auto max-w-6xl">
           <h1 className="t-h2 mb-4" style={{ color: "var(--ink-900)" }}>Find Muslim-Owned Businesses</h1>
 
-          <form onSubmit={handleSearch} className="space-y-4">
-            <div className="grid md:grid-cols-4 gap-4">
-              <Input
-                placeholder="Search businesses..."
-                value={filters.search}
-                onChange={(e) => setFilters({ search: e.target.value })}
-                className="md:col-span-2"
-              />
+          <form onSubmit={handleSearch} className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Input
+              placeholder="Search businesses..."
+              value={filters.search}
+              onChange={(e) => setFilters({ search: e.target.value })}
+              className="flex-1 bg-white"
+            />
 
-              <Select
-                value={filters.category}
-                onChange={(v) => setFilters({ category: v })}
-                placeholder="All categories"
-                options={[{ value: "", label: "All categories" }, ...BUSINESS_CATEGORIES.map((c) => ({ value: c.value, label: c.label }))]}
-              />
-
-              <div className="flex gap-2">
-                <Button type="submit" className="flex-1">
-                  Search
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-                  className="relative"
+            {/* Filters dropdown — every filter nested inside */}
+            <div className="relative" ref={filtersRef}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setFiltersOpen((o) => !o)}
+                className="w-full justify-center bg-white sm:w-auto"
+              >
+                <SlidersHorizontal className="mr-2 h-4 w-4" /> Filters
+                {activeFilterCount > 0 && (
+                  <span className="ml-2 flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-xs" style={{ background: "var(--moss-700)", color: "var(--bone)" }}>
+                    {activeFilterCount}
+                  </span>
+                )}
+                <ChevronDown className="ml-1.5 h-4 w-4" style={{ transform: filtersOpen ? "rotate(180deg)" : "none", transition: "transform .15s" }} />
+              </Button>
+              {filtersOpen && (
+                <div
+                  className="absolute left-0 z-50 mt-2 w-[min(340px,calc(100vw-2rem))] overflow-auto rounded-[14px] border p-2 sm:left-auto sm:right-0"
+                  style={{ background: "#ffffff", borderColor: "var(--card-edge)", boxShadow: "var(--shadow-lift)", maxHeight: "70vh" }}
                 >
-                  Filters
-                  {activeFilterCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-primary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
-                      {activeFilterCount}
-                    </span>
-                  )}
-                </Button>
-              </div>
+                  <FilterRail filters={filters} setFilters={setFilters} clearFilters={clearFilters} activeCount={activeFilterCount} />
+                  <div className="mt-2 flex gap-2 border-t px-1 pt-2.5" style={{ borderColor: "var(--card-edge)" }}>
+                    <Button type="button" variant="outline" size="sm" className="flex-1" onClick={clearFilters}>Clear All</Button>
+                    <Button type="button" size="sm" className="flex-1" onClick={() => setFiltersOpen(false)}>Show {sortedBusinesses.length}</Button>
+                  </div>
+                </div>
+              )}
             </div>
 
+            <Button type="submit" className="sm:w-auto">Search</Button>
           </form>
-
-          {/* C3 — Filter Panel (slide-over) */}
-          <FilterSheet
-            open={showAdvancedFilters}
-            onClose={() => setShowAdvancedFilters(false)}
-            filters={filters}
-            setFilters={setFilters}
-            clearFilters={clearFilters}
-            resultCount={sortedBusinesses.length}
-            activeCount={activeFilterCount}
-          />
-
-          {/* Tag Filters */}
-          <div className="mt-4 flex flex-wrap gap-2">
-            {BUSINESS_TAGS.map((tag) => (
-              <button
-                key={tag.value}
-                onClick={() => handleTagFilter(tag.value)}
-                className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
-                  filters.tags.includes(tag.value)
-                    ? "bg-primary text-white border-primary"
-                    : "bg-white border-[var(--card-edge)] hover:border-primary hover:text-primary"
-                }`}
-              >
-                {tag.icon} {tag.label}
-              </button>
-            ))}
-          </div>
         </div>
       </div>
 
       {/* Results */}
       <div className="container mx-auto max-w-6xl py-8 px-4">
         {/* Guest rail — limited, but intentional (not broken) */}
-        {!session && (
-          <div className="mb-6 flex flex-wrap items-center gap-4 rounded-[14px] px-5 py-4"
+        {!session && !guestDismissed && (
+          <div className="relative mb-6 flex flex-wrap items-center gap-4 rounded-[14px] py-4 pl-5 pr-12"
             style={{ background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
             <div className="flex items-center gap-2.5">
               <span className="flex h-9 w-9 items-center justify-center rounded-full" style={{ background: "var(--moss-700)" }}><Bookmark size={16} style={{ color: "var(--bone)" }} /></span>
@@ -431,19 +396,15 @@ function SearchContent() {
               <Link href="/register"><Button size="sm">Sign Up Free</Button></Link>
               <Link href="/login"><Button size="sm" variant="outline">Sign In</Button></Link>
             </div>
+            <button onClick={() => setGuestDismissed(true)} aria-label="Dismiss"
+              className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full transition-colors hover:bg-[var(--moss-100)]">
+              <X size={16} style={{ color: "var(--ink-500)" }} />
+            </button>
           </div>
         )}
 
-        <div className="lg:grid lg:grid-cols-[250px_1fr] lg:gap-6">
-          {/* Desktop FilterRail */}
-          <aside className="hidden lg:block">
-            <div className="sticky top-[88px] max-h-[calc(100vh-110px)] overflow-auto rounded-[14px] border p-4"
-              style={{ background: "var(--bone)", borderColor: "var(--card-edge)" }}>
-              <FilterRail filters={filters} setFilters={setFilters} clearFilters={clearFilters} activeCount={activeFilterCount} />
-            </div>
-          </aside>
-
-          {/* Results column */}
+        <div>
+          {/* Results */}
           <div>
             {isLoading ? (
               <div className="text-center py-12">
@@ -485,7 +446,7 @@ function SearchContent() {
                   <div className="grid md:grid-cols-2 gap-6">
                     {/* List on left - dims when stale */}
                     <div className={cn(
-                      "space-y-2.5 max-h-[600px] overflow-y-auto pr-2 transition-opacity duration-300",
+                      "flex flex-col gap-1 max-h-[600px] overflow-y-auto pr-3 transition-opacity duration-300",
                       isStale ? "opacity-50" : "opacity-100"
                     )}>
                       {sortedBusinesses.map((business) => renderBusinessCard(business, true))}
@@ -503,19 +464,6 @@ function SearchContent() {
                         isSearching={isLoading}
                       />
                     </div>
-                  </div>
-                ) : viewMode === "map" ? (
-                  <div className="h-[600px] rounded-lg overflow-hidden border">
-                    <MapLibreMap
-                      businesses={businessesForMap}
-                      userLat={userLocation?.lat ?? 37.5485}
-                      userLng={userLocation?.lng ?? -121.9886}
-                      radius={parseInt(filters.distance) || 25}
-                      onBoundsChange={handleBoundsChange}
-                      isStale={isStale}
-                      onSearchThisArea={handleSearchThisArea}
-                      isSearching={isLoading}
-                    />
                   </div>
                 ) : (
                   <div className={cn(

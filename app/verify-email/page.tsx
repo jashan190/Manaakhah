@@ -194,7 +194,7 @@ function VerifyEmailContent() {
               </div>
               <Button onClick={handleResendRequest} variant="outline" className="mt-4">
                 <Mail className="h-4 w-4 mr-2" />
-                Request new verification link
+                Request New Verification Link
               </Button>
               <Link
                 href="/login"

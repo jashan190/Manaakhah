@@ -1,8 +1,8 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { LayoutGrid, Columns2 } from "lucide-react";
 
-export type ViewMode = "list" | "map" | "split";
+export type ViewMode = "list" | "split";
 
 interface ViewToggleProps {
   value: ViewMode;
@@ -10,29 +10,27 @@ interface ViewToggleProps {
 }
 
 export function ViewToggle({ value, onChange }: ViewToggleProps) {
-  const modes: { key: ViewMode; label: string; icon: string }[] = [
-    { key: "list", label: "List", icon: "▤" },
-    { key: "map", label: "Map", icon: "📍" },
-    { key: "split", label: "Split", icon: "◫" },
+  const modes = [
+    { key: "list" as const, label: "List", Icon: LayoutGrid },
+    { key: "split" as const, label: "Split", Icon: Columns2 },
   ];
 
   return (
-    <div className="flex border rounded-lg overflow-hidden">
-      {modes.map((mode) => (
-        <button
-          key={mode.key}
-          onClick={() => onChange(mode.key)}
-          className={cn(
-            "px-3 py-1.5 text-sm font-medium transition-colors flex items-center gap-1",
-            value === mode.key
-              ? "bg-primary text-white"
-              : "bg-white text-gray-600 hover:bg-gray-50"
-          )}
-        >
-          <span className="hidden sm:inline">{mode.icon}</span>
-          {mode.label}
-        </button>
-      ))}
+    <div className="flex overflow-hidden rounded-lg border" style={{ borderColor: "var(--card-edge)" }}>
+      {modes.map((m) => {
+        const on = value === m.key;
+        return (
+          <button
+            key={m.key}
+            onClick={() => onChange(m.key)}
+            className="flex items-center gap-1.5 px-3 py-1.5 t-label transition-colors"
+            style={on ? { background: "var(--moss-700)", color: "var(--bone)" } : { background: "#ffffff", color: "var(--ink-500)" }}
+          >
+            <m.Icon className="h-4 w-4" />
+            <span className="hidden sm:inline">{m.label}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }

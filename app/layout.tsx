@@ -97,19 +97,22 @@ export default function RootLayout({
           id="register-sw"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
-            __html: `
-              if ('serviceWorker' in navigator) {
-                window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js')
-                    .then(function(registration) {
-                      console.log('ServiceWorker registration successful');
-                    })
-                    .catch(function(err) {
-                      console.log('ServiceWorker registration failed: ', err);
-                    });
-                });
-              }
-            `,
+            __html:
+              process.env.NODE_ENV === "production"
+                ? `if ('serviceWorker' in navigator) {
+                     window.addEventListener('load', function () {
+                       navigator.serviceWorker.register('/sw.js').catch(function () {});
+                     });
+                   }`
+                : `/* dev: never serve a stale build — remove any installed SW + caches */
+                   if ('serviceWorker' in navigator) {
+                     navigator.serviceWorker.getRegistrations().then(function (rs) {
+                       rs.forEach(function (r) { r.unregister(); });
+                     });
+                   }
+                   if (window.caches && caches.keys) {
+                     caches.keys().then(function (ks) { ks.forEach(function (k) { caches.delete(k); }); });
+                   }`,
           }}
         />
       </body>

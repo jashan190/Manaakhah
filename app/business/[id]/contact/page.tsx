@@ -37,7 +37,7 @@ export default function ContactPage() {
             <h2 className="t-h3" style={{ color: "var(--ink-900)", marginTop: 16 }}>Message sent to {name}</h2>
             <p className="t-body" style={{ color: "var(--ink-500)", marginTop: 8 }}>They typically reply within ~2 hours. You&apos;ll see their response in your inbox.</p>
             <div className="mt-6 flex justify-center gap-2">
-              <Link href="/inbox"><Button size="sm">Go to inbox</Button></Link>
+              <Link href="/inbox"><Button size="sm">Go to Inbox</Button></Link>
               <Link href={`/business/${id}`}><Button variant="outline" size="sm">Back to {name}</Button></Link>
             </div>
           </ManCard>
@@ -63,8 +63,8 @@ export default function ContactPage() {
               <Checkbox defaultChecked label="Send me a copy of this message" />
               <p className="t-body-xs" style={{ color: "var(--ink-400)" }}>Your email is shared with the owner only to reply.</p>
               <div className="flex gap-2 pt-1">
-                <Button variant="outline" size="sm">Save draft</Button>
-                <Button size="sm" onClick={() => setSent(true)}>Send message</Button>
+                <Button variant="outline" size="sm">Save Draft</Button>
+                <Button size="sm" onClick={() => setSent(true)}>Send Message</Button>
               </div>
             </div>
           </ManCard>
