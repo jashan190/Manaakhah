@@ -201,7 +201,7 @@ function SearchContent() {
         reviewCount: b.reviewCount,
         distance: b.distance,
         tags: b.tags?.map((t) => t.tag) || [],
-        imageUrl: b.coverImage || (typeof b.photos?.[0] === "string" ? b.photos[0] : b.photos?.[0]?.url),
+        imageUrl: (b as any).coverImage || (typeof b.photos?.[0] === "string" ? b.photos[0] : b.photos?.[0]?.url),
         description: b.description,
       }));
   }, [sortedBusinesses]);

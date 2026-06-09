@@ -38,8 +38,8 @@ export async function GET(req: Request) {
 
     const code = existingReferral?.code || generateCode(user.id);
 
-    const completed = referrals.filter((r) => r.status === "completed" || r.status === "rewarded");
-    const totalEarned = referrals.reduce((sum, r) => sum + (r.rewardAmount || 0), 0);
+    const completed = referrals.filter((r: any) => r.status === "completed" || r.status === "rewarded");
+    const totalEarned = referrals.reduce((sum: number, r: any) => sum + (r.rewardAmount || 0), 0);
 
     return NextResponse.json({
       referrals,

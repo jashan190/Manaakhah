@@ -36,7 +36,7 @@ export async function GET(req: Request) {
       });
 
       return NextResponse.json({
-        publicLists: publicLists.map((l) => ({
+        publicLists: publicLists.map((l: any) => ({
           ...l,
           authorName: l.user.name || "Anonymous",
           businessCount: l._count.businesses,
@@ -57,7 +57,7 @@ export async function GET(req: Request) {
     });
 
     return NextResponse.json({
-      myLists: myLists.map((l) => ({
+      myLists: myLists.map((l: any) => ({
         ...l,
         businessCount: l._count.businesses,
       })),
