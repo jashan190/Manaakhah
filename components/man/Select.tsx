@@ -49,7 +49,7 @@ export function Select({
       {open && (
         <div
           className="absolute z-50 mt-1.5 w-full rounded-[10px] border py-1"
-          style={{ background: "var(--bone)", borderColor: "var(--card-edge)", boxShadow: "var(--shadow-lift)", maxHeight: 248, overflowY: "auto" }}
+          style={{ background: "#ffffff", borderColor: "var(--card-edge)", boxShadow: "var(--shadow-lift)", maxHeight: 248, overflowY: "auto" }}
           role="listbox"
         >
           {options.map((o) => {

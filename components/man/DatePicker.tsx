@@ -64,7 +64,7 @@ export function DatePicker({
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1.5 rounded-[12px] border p-3" style={{ background: "var(--bone)", borderColor: "var(--card-edge)", boxShadow: "var(--shadow-lift)", width: 280 }}>
+        <div className="absolute z-50 mt-1.5 rounded-[12px] border p-3" style={{ background: "#ffffff", borderColor: "var(--card-edge)", boxShadow: "var(--shadow-lift)", width: 280 }}>
           <div className="flex items-center justify-between px-1 pb-2">
             <button type="button" onClick={prev} aria-label="Previous month" className="rounded-lg p-1.5 hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}><ChevronLeft size={16} /></button>
             <div className="t-label-sm" style={{ color: "var(--ink-900)" }}>{MO[view.m]} {view.y}</div>

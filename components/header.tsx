@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/man/primitives";
 import { useMockSession, useMockSignOut } from "@/components/mock-session-provider";
 import { switchMockRole } from "@/lib/mock-auth";
-import { Bell, Menu, X, ChevronDown, LogOut, User, Store, Check } from "lucide-react";
+import { Bell, Menu, X, ChevronDown, LogOut, User, Store, Check, Bookmark, Search, MessageCircle, Settings, LifeBuoy } from "lucide-react";
 
 type Tab = { l: string; href: string };
 
@@ -20,7 +20,6 @@ const SIGNED_OUT: Tab[] = [
 const CONSUMER: Tab[] = [
   { l: "Home", href: "/" },
   { l: "Browse", href: "/search" },
-  { l: "Account", href: "/account" },
 ];
 // Business owners navigate via the OwnerShell sidebar — no top-nav tabs needed.
 const BUSINESS: Tab[] = [];
@@ -54,6 +53,15 @@ export function Header() {
   const role = session?.user?.role;
   const isOwner = role === "BUSINESS_OWNER";
   const isAdmin = role === "ADMIN";
+  const isConsumer = signedIn && !isOwner && !isAdmin;
+  const acctLinks = [
+    { l: "Account Home", href: "/account", Icon: User },
+    { l: "Saved Lists", href: "/account/lists", Icon: Bookmark },
+    { l: "Saved Searches", href: "/account/searches", Icon: Search },
+    { l: "Messages", href: "/inbox", Icon: MessageCircle },
+    { l: "Settings", href: "/account/settings", Icon: Settings },
+    { l: "Help & Support", href: "/account/help", Icon: LifeBuoy },
+  ];
   // Owners and admins navigate via their own shell sidebars — no top-nav tabs.
   const tabs = !signedIn ? SIGNED_OUT : (isOwner || isAdmin) ? BUSINESS : CONSUMER;
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
@@ -108,7 +116,7 @@ export function Header() {
                 <ChevronDown className="hidden h-4 w-4 md:block" style={{ color: "var(--ink-400)", transform: acctOpen ? "rotate(180deg)" : "none", transition: "transform 0.15s" }} />
               </button>
               {acctOpen && (
-                <div className="absolute right-0 mt-2 w-60 overflow-hidden rounded-[12px] border py-1.5" style={{ background: "var(--bone)", borderColor: "var(--card-edge)", boxShadow: "var(--shadow-lift)" }}>
+                <div className="absolute right-0 mt-2 w-60 overflow-hidden rounded-[12px] border py-1.5" style={{ background: "#ffffff", borderColor: "var(--card-edge)", boxShadow: "var(--shadow-lift)" }}>
                   <div className="flex items-center gap-3 px-4 py-4" style={{ borderBottom: "1px solid var(--card-edge)" }}>
                     <Avatar name={acctName} size={44} />
                     <div className="min-w-0">
@@ -116,6 +124,15 @@ export function Header() {
                       <div className="t-body-xs truncate" style={{ color: "var(--ink-500)" }}>{acctSub}</div>
                     </div>
                   </div>
+                  {isConsumer && (
+                    <div className="py-1" style={{ borderBottom: "1px solid var(--card-edge)" }}>
+                      {acctLinks.map((it) => (
+                        <Link key={it.href} href={it.href} onClick={() => setAcctOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}>
+                          <it.Icon size={16} style={{ color: "var(--ink-500)" }} /> {it.l}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
                   {!isAdmin && (
                     <div className="py-1" style={{ borderTop: "1px solid var(--card-edge)" }}>
                       <div className="px-4 pb-1 pt-1.5 t-eyebrow" style={{ color: "var(--ink-500)" }}>Switch account</div>
