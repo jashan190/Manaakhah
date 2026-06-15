@@ -154,7 +154,7 @@ function VerifyEmailContent() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Email Verification</CardTitle>
@@ -163,7 +163,7 @@ function VerifyEmailContent() {
           {status === "loading" && (
             <div className="flex flex-col items-center py-8 space-y-4">
               <Loader2 className="h-12 w-12 text-primary animate-spin" />
-              <p className="text-gray-600">Verifying your email...</p>
+              <p className="text-muted-foreground">Verifying your email...</p>
             </div>
           )}
 
@@ -172,13 +172,13 @@ function VerifyEmailContent() {
               {status === "signing-in" ? (
                 <Loader2 className="h-12 w-12 text-primary animate-spin" />
               ) : (
-                <CheckCircle className="h-12 w-12 text-green-600" />
+                <CheckCircle className="h-12 w-12 text-primary" />
               )}
               <div className="text-center space-y-2">
-                <p className="text-lg font-medium text-green-600">
+                <p className="text-lg font-medium text-primary">
                   {successMessage || "Email verified successfully!"}
                 </p>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   {status === "signing-in" ? "Please wait..." : "Redirecting to login..."}
                 </p>
               </div>
@@ -190,11 +190,11 @@ function VerifyEmailContent() {
               <XCircle className="h-12 w-12 text-red-600" />
               <div className="text-center space-y-2">
                 <p className="text-lg font-medium text-red-600">Verification failed</p>
-                <p className="text-gray-600">{errorMessage}</p>
+                <p className="text-muted-foreground">{errorMessage}</p>
               </div>
               <Button onClick={handleResendRequest} variant="outline" className="mt-4">
                 <Mail className="h-4 w-4 mr-2" />
-                Request new verification link
+                Request New Verification Link
               </Button>
               <Link
                 href="/login"
@@ -208,7 +208,7 @@ function VerifyEmailContent() {
           {status === "resend-form" && (
             <form onSubmit={handleResendSubmit} className="space-y-4">
               <div className="text-center mb-4">
-                <p className="text-gray-600">Enter your email address to receive a new verification link.</p>
+                <p className="text-muted-foreground">Enter your email address to receive a new verification link.</p>
               </div>
 
               {resendError && (
@@ -251,7 +251,7 @@ function VerifyEmailContent() {
                   setResendError("");
                   setCooldownSeconds(0);
                 }}
-                className="w-full text-sm text-gray-600 hover:text-gray-800"
+                className="w-full text-sm text-muted-foreground hover:text-gray-800"
               >
                 Cancel
               </button>
@@ -263,10 +263,10 @@ function VerifyEmailContent() {
               <Mail className="h-12 w-12 text-primary" />
               <div className="text-center space-y-2">
                 <p className="text-lg font-medium">Check your email</p>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   If an account exists with this email, we&apos;ve sent a new verification link.
                 </p>
-                <p className="text-sm text-gray-500 mt-2">
+                <p className="text-sm text-muted-foreground mt-2">
                   Don&apos;t forget to check your spam folder.
                 </p>
               </div>
@@ -288,7 +288,7 @@ export default function VerifyEmailPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+        <div className="min-h-screen flex items-center justify-center bg-background px-4">
           <Card className="w-full max-w-md">
             <CardHeader className="text-center">
               <CardTitle className="text-2xl font-bold">Email Verification</CardTitle>
@@ -296,7 +296,7 @@ export default function VerifyEmailPage() {
             <CardContent>
               <div className="flex flex-col items-center py-8 space-y-4">
                 <Loader2 className="h-12 w-12 text-primary animate-spin" />
-                <p className="text-gray-600">Loading...</p>
+                <p className="text-muted-foreground">Loading...</p>
               </div>
             </CardContent>
           </Card>

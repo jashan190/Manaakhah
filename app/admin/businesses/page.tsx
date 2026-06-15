@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useMockSession } from "@/components/mock-session-provider";
+import { AdminShell } from "@/components/admin/AdminShell";
 import Link from "next/link";
 
 interface Business {
@@ -201,15 +202,11 @@ export default function AdminBusinessesPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold">All Businesses</h1>
-          <p className="text-gray-600">Manage all businesses on the platform</p>
-        </div>
-        <Link href="/admin">
-          <Button variant="outline">Back to Dashboard</Button>
-        </Link>
+    <AdminShell active="businesses">
+      <div className="px-6 py-8 md:px-9">
+      <div className="mb-6">
+        <h1 className="t-h2" style={{ color: "var(--ink-900)" }}>All Businesses</h1>
+        <p className="t-body-sm" style={{ color: "var(--ink-500)" }}>Manage all businesses on the platform</p>
       </div>
 
       {/* Filters */}
@@ -455,6 +452,7 @@ export default function AdminBusinessesPage() {
           </Card>
         </div>
       )}
-    </div>
+      </div>
+    </AdminShell>
   );
 }

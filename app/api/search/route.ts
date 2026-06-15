@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { db, isMockMode } from "@/lib/db";
 
 // GET /api/search - Enhanced search with NLP-like features
 export async function GET(req: Request) {
@@ -14,8 +15,8 @@ export async function GET(req: Request) {
     const priceRange = searchParams.get("priceRange");
     const verified = searchParams.get("verified") === "true";
     const openNow = searchParams.get("openNow") === "true";
-    const lat = parseFloat(searchParams.get("lat") || "37.5485");
-    const lng = parseFloat(searchParams.get("lng") || "-121.9886");
+    const lat = parseFloat(searchParams.get("lat") || "38.5816");
+    const lng = parseFloat(searchParams.get("lng") || "-121.4944");
     const radius = parseFloat(searchParams.get("radius") || "10"); // miles
     const sortBy = searchParams.get("sortBy") || "relevance";
     const page = parseInt(searchParams.get("page") || "1");
@@ -24,170 +25,92 @@ export async function GET(req: Request) {
     // Parse natural language query
     const parsedQuery = parseNaturalLanguageQuery(query);
 
-    // Build search conditions
-    const where: any = {
-      status: "PUBLISHED",
-    };
+    // Base filter (simple equality — works in both mock and Prisma)
+    const where: any = { status: "PUBLISHED" };
+    if (category || parsedQuery.category) where.category = category || parsedQuery.category;
+    if (priceRange || parsedQuery.priceRange) where.priceRange = priceRange || parsedQuery.priceRange;
+    if (verified) where.verificationStatus = "APPROVED";
 
-    // Text search
-    if (parsedQuery.searchTerms.length > 0) {
-      where.OR = [
-        { name: { contains: parsedQuery.searchTerms.join(" "), mode: "insensitive" } },
-        { description: { contains: parsedQuery.searchTerms.join(" "), mode: "insensitive" } },
-        { services: { hasSome: parsedQuery.searchTerms } },
-      ];
+    // Fetch candidate businesses, then filter/sort in-memory (mock-safe)
+    let candidates: any[] = await db.business.findMany({
+      where,
+      include: { photos: { take: 1 }, tags: true },
+      take: 300,
+    });
+
+    // Text search (name / description / services)
+    const terms = parsedQuery.searchTerms;
+    if (terms.length > 0) {
+      candidates = candidates.filter((b: any) => {
+        const hay = [b.name, b.description, ...(b.serviceList || [])]
+          .filter(Boolean).join(" ").toLowerCase();
+        return terms.some((t) => hay.includes(t));
+      });
     }
 
-    // Category filter
-    if (category || parsedQuery.category) {
-      where.category = category || parsedQuery.category;
+    // Tag filter (sheet/mock tags are a string array; relational in Prisma)
+    const wantTags = [...(tags || []), ...parsedQuery.tags];
+    if (wantTags.length > 0) {
+      candidates = candidates.filter((b: any) => {
+        const bt = (b.tags || []).map((t: any) => (typeof t === "string" ? t : t.tag));
+        return wantTags.some((t) => bt.includes(t));
+      });
     }
 
-    // Tags filter
-    if (tags && tags.length > 0) {
-      where.tags = {
-        some: {
-          tag: { in: tags },
-        },
-      };
-    }
-
-    // Apply parsed intent tags
-    if (parsedQuery.tags.length > 0) {
-      where.tags = {
-        some: {
-          tag: { in: parsedQuery.tags },
-        },
-      };
-    }
-
-    // Price range filter
-    if (priceRange || parsedQuery.priceRange) {
-      where.priceRange = priceRange || parsedQuery.priceRange;
-    }
-
-    // Verified only
-    if (verified) {
-      where.verificationStatus = "APPROVED";
-    }
-
-    // Location-based search with radius
-    const radiusInDegrees = radius / 69; // Approximate miles to degrees
-
-    where.latitude = {
-      gte: lat - radiusInDegrees,
-      lte: lat + radiusInDegrees,
-    };
-    where.longitude = {
-      gte: lng - radiusInDegrees,
-      lte: lng + radiusInDegrees,
-    };
-
-    // Build order by
-    let orderBy: any = [];
-    if (sortBy === "distance") {
-      // Will calculate distance in post-processing
-      orderBy = [{ averageRating: "desc" }];
-    } else if (sortBy === "rating") {
-      orderBy = [{ averageRating: "desc" }, { totalReviews: "desc" }];
-    } else if (sortBy === "reviews") {
-      orderBy = [{ totalReviews: "desc" }];
-    } else if (sortBy === "newest") {
-      orderBy = [{ createdAt: "desc" }];
-    } else {
-      // relevance - prioritize verified, high-rated businesses
-      orderBy = [
-        { verificationStatus: "asc" }, // APPROVED comes before PENDING
-        { averageRating: "desc" },
-        { totalReviews: "desc" },
-      ];
-    }
-
-    const [businesses, total] = await Promise.all([
-      prisma.business.findMany({
-        where,
-        include: {
-          photos: { take: 1 },
-          tags: true,
-          _count: {
-            select: { reviews: true },
-          },
-        },
-        orderBy,
-        skip: (page - 1) * limit,
-        take: limit,
-      }),
-      prisma.business.count({ where }),
-    ]);
-
-    // Calculate distance and filter by exact radius
-    const resultsWithDistance = businesses
+    // Distance + radius filter
+    let results = candidates
       .map((b: any) => ({
         ...b,
         distance: calculateDistance(lat, lng, b.latitude, b.longitude),
-        reviewCount: b._count.reviews,
+        reviewCount: b.totalReviews || 0,
+        isOpen: openNow ? isBusinessOpen(b.hours) : undefined,
       }))
       .filter((b: any) => b.distance <= radius);
 
-    // Sort by distance if requested
+    // Sort
     if (sortBy === "distance") {
-      resultsWithDistance.sort((a: any, b: any) => a.distance - b.distance);
-    }
-
-    // Check open now status
-    const results = resultsWithDistance.map((b: any) => ({
-      ...b,
-      isOpen: openNow ? isBusinessOpen(b.hours) : undefined,
-    }));
-
-    // Track search for trending
-    if (query) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      await prisma.trendingSearch.upsert({
-        where: {
-          query_date_city: {
-            query: query.toLowerCase(),
-            date: today,
-            city: searchParams.get("city") || "Fremont",
-          },
-        },
-        update: {
-          count: { increment: 1 },
-        },
-        create: {
-          query: query.toLowerCase(),
-          date: today,
-          city: searchParams.get("city") || "Fremont",
-          category: parsedQuery.category,
-          count: 1,
-        },
+      results.sort((a: any, b: any) => a.distance - b.distance);
+    } else if (sortBy === "rating") {
+      results.sort((a: any, b: any) => (b.averageRating || 0) - (a.averageRating || 0) || (b.reviewCount || 0) - (a.reviewCount || 0));
+    } else if (sortBy === "reviews") {
+      results.sort((a: any, b: any) => (b.reviewCount || 0) - (a.reviewCount || 0));
+    } else if (sortBy === "newest") {
+      results.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    } else {
+      results.sort((a: any, b: any) => {
+        const score = (x: any) => (x.verificationStatus === "APPROVED" ? 2 : 0) + (x.averageRating || 0) + Math.max(0, 2 - x.distance / 25);
+        return score(b) - score(a);
       });
     }
 
-    // Save search if user is logged in and query is meaningful
-    if (session?.user?.id && query.length >= 3) {
-      await prisma.user.update({
-        where: { id: session.user.id },
-        data: { lastActiveAt: new Date() },
-      });
+    const total = results.length;
+    const paged = results.slice((page - 1) * limit, (page - 1) * limit + limit);
+
+    // Trending/search tracking only in real (Prisma) mode — never block the response
+    if (!isMockMode() && query) {
+      try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        await prisma.trendingSearch.upsert({
+          where: { query_date_city: { query: query.toLowerCase(), date: today, city: searchParams.get("city") || "Sacramento" } },
+          update: { count: { increment: 1 } },
+          create: { query: query.toLowerCase(), date: today, city: searchParams.get("city") || "Sacramento", category: parsedQuery.category, count: 1 },
+        });
+        if (session?.user?.id && query.length >= 3) {
+          await prisma.user.update({ where: { id: session.user.id }, data: { lastActiveAt: new Date() } });
+        }
+      } catch { /* tracking is best-effort */ }
     }
 
     return NextResponse.json({
-      businesses: results,
+      businesses: paged,
       parsed: {
         terms: parsedQuery.searchTerms,
         intent: parsedQuery.intent,
         category: parsedQuery.category,
         tags: parsedQuery.tags,
       },
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
+      pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
     });
   } catch (error) {
     console.error("Search error:", error);

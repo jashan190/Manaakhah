@@ -1,491 +1,176 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { useMockSession, useMockSignOut } from "@/components/mock-session-provider";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { NotificationBell } from "@/components/notifications/NotificationBell";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { Search, Menu, X, ChevronDown, Building2, Calendar, Users, Bookmark, Camera, Scale, Heart, ClipboardList, TrendingUp, LayoutDashboard, Tag, Settings, CheckCircle, PlusCircle, Store, User, Star, BarChart3, CalendarDays, MessageCircle, Home } from "lucide-react";
+import { Avatar } from "@/components/man/primitives";
+import { useMockSession, useMockSignOut } from "@/components/mock-session-provider";
+import { switchMockRole } from "@/lib/mock-auth";
+import { Bell, Menu, X, ChevronDown, LogOut, User, Store, Check, Bookmark, Search, MessageCircle, Settings, LifeBuoy } from "lucide-react";
+
+type Tab = { l: string; href: string };
+
+const SIGNED_OUT: Tab[] = [
+  { l: "Home", href: "/" },
+  { l: "Browse", href: "/search" },
+  { l: "For Businesses", href: "/for-business" },
+  { l: "About", href: "/about" },
+];
+const CONSUMER: Tab[] = [
+  { l: "Home", href: "/" },
+  { l: "Browse", href: "/search" },
+];
+// Business owners navigate via the OwnerShell sidebar — no top-nav tabs needed.
+const BUSINESS: Tab[] = [];
 
 export function Header() {
   const { data: session } = useMockSession();
   const signOut = useMockSignOut();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const pathname = usePathname() || "";
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [acctOpen, setAcctOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const acctRef = useRef<HTMLDivElement>(null);
 
-  const isBusinessOwner = session?.user?.role === "BUSINESS_OWNER";
-  const isAdmin = session?.user?.role === "ADMIN";
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 4);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-  const handleMouseEnter = (dropdown: string) => {
-    if (closeTimeoutRef.current) {
-      clearTimeout(closeTimeoutRef.current);
-      closeTimeoutRef.current = null;
-    }
-    setActiveDropdown(dropdown);
-  };
+  useEffect(() => {
+    const onDoc = (e: MouseEvent) => { if (acctRef.current && !acctRef.current.contains(e.target as Node)) setAcctOpen(false); };
+    if (acctOpen) document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [acctOpen]);
 
-  const handleMouseLeave = () => {
-    closeTimeoutRef.current = setTimeout(() => {
-      setActiveDropdown(null);
-    }, 150);
+  // Auth screens use a standalone AuthShell — no marketing header
+  if (/^\/(login|register|forgot-password|reset-password|verify-email|link-account)/.test(pathname)) return null;
+
+  const signedIn = !!session;
+  const role = session?.user?.role;
+  const isOwner = role === "BUSINESS_OWNER";
+  const isAdmin = role === "ADMIN";
+  const isConsumer = signedIn && !isOwner && !isAdmin;
+  const acctLinks = [
+    { l: "Account Home", href: "/account", Icon: User },
+    { l: "Saved Lists", href: "/account/lists", Icon: Bookmark },
+    { l: "Saved Searches", href: "/account/searches", Icon: Search },
+    { l: "Messages", href: "/inbox", Icon: MessageCircle },
+    { l: "Settings", href: "/account/settings", Icon: Settings },
+    { l: "Help & Support", href: "/account/help", Icon: LifeBuoy },
+  ];
+  // Owners and admins navigate via their own shell sidebars — no top-nav tabs.
+  const tabs = !signedIn ? SIGNED_OUT : (isOwner || isAdmin) ? BUSINESS : CONSUMER;
+  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+  const homeHref = !signedIn ? "/" : isOwner ? "/dashboard" : isAdmin ? "/admin" : "/";
+  const notifHref = isOwner ? "/dashboard/notifications" : "/notifications";
+  // What the avatar dropdown leads with — the business for owners, otherwise the person
+  const acctName = isOwner ? "Famous Kabob" : (session?.user?.name || "Your account");
+  const acctSub = isAdmin ? "Admin console" : isOwner ? "Business account" : "Customer account";
+
+  // Switch between the customer and business experiences (mock)
+  const switchTo = (target: "CONSUMER" | "BUSINESS_OWNER") => {
+    if (target === role) { setAcctOpen(false); return; }
+    switchMockRole(target);
+    window.location.href = target === "BUSINESS_OWNER" ? "/dashboard" : "/";
   };
 
   return (
-    <header className="sticky top-0 z-[1000] w-full border-b bg-white shadow-sm">
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-between gap-4">
-          {/* Logo and Navigation */}
-          <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center">
-              <span className="text-2xl font-bold text-green-600">Manakhaah</span>
+    <header style={{ height: 64, borderBottom: "1px solid var(--card-edge)", background: "var(--paper)", boxShadow: scrolled ? "0 4px 16px -8px rgba(17,50,30,0.22)" : "none", transition: "box-shadow 0.2s" }}
+      className="sticky top-0 z-[1000] flex items-center justify-between px-5 sm:px-8">
+      {/* Left: logo + tabs */}
+      <div className="flex items-center gap-9">
+        <Link href={homeHref} className="t-h4" style={{ color: "var(--moss-700)", fontWeight: 600 }}>
+          Manaakhah
+        </Link>
+        <nav className="hidden items-center gap-1 md:flex">
+          {tabs.map((t) => (
+            <Link key={t.href} href={t.href} className="rounded-lg px-3 py-2"
+              style={{ fontSize: 13, fontWeight: 500, color: isActive(t.href) ? "var(--ink-900)" : "var(--ink-500)", background: isActive(t.href) ? "#ffffff" : "transparent" }}>
+              {t.l}
             </Link>
-
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-1">
-              {/* Discover Dropdown */}
-              <div
-                className="relative"
-                onMouseEnter={() => handleMouseEnter("discover")}
-                onMouseLeave={handleMouseLeave}
-              >
-                <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium hover:text-green-600 rounded-md transition-colors">
-                  Discover
-                  <ChevronDown className="w-4 h-4" />
-                </button>
-                {activeDropdown === "discover" && (
-                  <div className="absolute left-0 mt-1 w-64 bg-white border rounded-xl shadow-lg py-2 z-50">
-                    <Link href="/search" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50">
-                      <Search className="w-4 h-4 text-gray-500" />
-                      <div>
-                        <div className="font-medium">Find Businesses</div>
-                        <div className="text-xs text-gray-500">Search our directory</div>
-                      </div>
-                    </Link>
-                    <Link href="/search/image" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50">
-                      <Camera className="w-4 h-4 text-gray-500" />
-                      <div>
-                        <div className="font-medium">Image Search</div>
-                        <div className="text-xs text-gray-500">Search by photo</div>
-                      </div>
-                    </Link>
-                    <Link href="/compare" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50">
-                      <Scale className="w-4 h-4 text-gray-500" />
-                      <div>
-                        <div className="font-medium">Compare</div>
-                        <div className="text-xs text-gray-500">Side-by-side comparison</div>
-                      </div>
-                    </Link>
-                    <hr className="my-2" />
-                    <Link href="/favorites" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50">
-                      <Heart className="w-4 h-4 text-gray-500" />
-                      <span>My Favorites</span>
-                    </Link>
-                    <Link href="/saved-searches" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50">
-                      <Bookmark className="w-4 h-4 text-gray-500" />
-                      <span>Saved Searches</span>
-                    </Link>
-                    <Link href="/lists" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50">
-                      <ClipboardList className="w-4 h-4 text-gray-500" />
-                      <span>My Lists</span>
-                    </Link>
-                  </div>
-                )}
-              </div>
-
-              {/* Events Link */}
-              <Link href="/events" className="flex items-center gap-1 px-3 py-2 text-sm font-medium hover:text-green-600 rounded-md transition-colors">
-                <Calendar className="w-4 h-4 mr-1" />
-                Events
-              </Link>
-
-              {/* Community Dropdown */}
-              <div
-                className="relative"
-                onMouseEnter={() => handleMouseEnter("community")}
-                onMouseLeave={handleMouseLeave}
-              >
-                <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium hover:text-green-600 rounded-md transition-colors">
-                  Community
-                  <ChevronDown className="w-4 h-4" />
-                </button>
-                {activeDropdown === "community" && (
-                  <div className="absolute left-0 mt-1 w-64 bg-white border rounded-xl shadow-lg py-2 z-50">
-                    <Link href="/community-impact" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50">
-                      <Heart className="w-4 h-4 text-green-500" />
-                      <div>
-                        <div className="font-medium">Economic Impact</div>
-                        <div className="text-xs text-gray-500">Track community growth</div>
-                      </div>
-                    </Link>
-                    <Link href="/forum" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50">
-                      <Users className="w-4 h-4 text-gray-500" />
-                      <div>
-                        <div className="font-medium">Community Forum</div>
-                        <div className="text-xs text-gray-500">Join discussions</div>
-                      </div>
-                    </Link>
-                    <Link href="/trends" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50">
-                      <TrendingUp className="w-4 h-4 text-gray-500" />
-                      <span>Trend Reports</span>
-                    </Link>
-                  </div>
-                )}
-              </div>
-
-              {/* For Business Dropdown */}
-              {session && (
-                <div
-                  className="relative"
-                  onMouseEnter={() => handleMouseEnter("business")}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium hover:text-green-600 rounded-md transition-colors">
-                    <Building2 className="w-4 h-4 mr-1" />
-                    For Business
-                    <ChevronDown className="w-4 h-4" />
-                  </button>
-                  {activeDropdown === "business" && (
-                    <div className="absolute left-0 mt-1 w-64 bg-white border rounded-xl shadow-lg py-2 z-50">
-                      {isBusinessOwner ? (
-                        <>
-                          <Link href="/dashboard" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50">
-                            <LayoutDashboard className="w-4 h-4 text-gray-500" />
-                            <div>
-                              <div className="font-medium">Dashboard</div>
-                              <div className="text-xs text-gray-500">Manage your business</div>
-                            </div>
-                          </Link>
-                          <Link href="/dashboard/analytics" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50">
-                            <BarChart3 className="w-4 h-4 text-gray-500" />
-                            <span>Analytics</span>
-                          </Link>
-                          <Link href="/dashboard/deals" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50">
-                            <Tag className="w-4 h-4 text-gray-500" />
-                            <span>Deals & Offers</span>
-                          </Link>
-                          <Link href="/dashboard/services" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50">
-                            <ClipboardList className="w-4 h-4 text-gray-500" />
-                            <span>Service Menu</span>
-                          </Link>
-                          <hr className="my-2" />
-                          <Link href="/bookings" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50">
-                            <CalendarDays className="w-4 h-4 text-gray-500" />
-                            <span>Bookings</span>
-                          </Link>
-                          <Link href="/messages" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50">
-                            <MessageCircle className="w-4 h-4 text-gray-500" />
-                            <span>Messages</span>
-                          </Link>
-                        </>
-                      ) : (
-                        <>
-                          <Link href="/claim-business" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50">
-                            <CheckCircle className="w-4 h-4 text-gray-500" />
-                            <div>
-                              <div className="font-medium">Claim Your Business</div>
-                              <div className="text-xs text-gray-500">Verify ownership</div>
-                            </div>
-                          </Link>
-                          <Link href="/business/register" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50">
-                            <PlusCircle className="w-4 h-4 text-gray-500" />
-                            <div>
-                              <div className="font-medium">Add Your Business</div>
-                              <div className="text-xs text-gray-500">Get listed for free</div>
-                            </div>
-                          </Link>
-                        </>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Admin Menu */}
-              {isAdmin && (
-                <div
-                  className="relative"
-                  onMouseEnter={() => handleMouseEnter("admin")}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-red-600 hover:text-red-700 rounded-md transition-colors">
-                    Admin
-                    <ChevronDown className="w-4 h-4" />
-                  </button>
-                  {activeDropdown === "admin" && (
-                    <div className="absolute left-0 mt-1 w-56 bg-white border rounded-xl shadow-lg py-2 z-50">
-                      <Link href="/admin" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-50">
-                        <Home className="w-4 h-4" />
-                        Admin Dashboard
-                      </Link>
-                      <Link href="/admin/businesses" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-50">
-                        <Store className="w-4 h-4" />
-                        Manage Businesses
-                      </Link>
-                      <Link href="/admin/users" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-50">
-                        <User className="w-4 h-4" />
-                        Manage Users
-                      </Link>
-                      <Link href="/admin/reviews" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-50">
-                        <Star className="w-4 h-4" />
-                        Manage Reviews
-                      </Link>
-                      <hr className="my-2" />
-                      <Link href="/admin/settings" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-50">
-                        <Settings className="w-4 h-4" />
-                        Settings
-                      </Link>
-                    </div>
-                  )}
-                </div>
-              )}
-            </nav>
-          </div>
-
-          {/* Search Bar & Actions */}
-          <div className="flex items-center gap-3">
-            {/* Desktop Search */}
-            <div className="hidden lg:flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2">
-              <Search className="w-4 h-4 text-gray-500" />
-              <Input
-                type="search"
-                placeholder="Search businesses..."
-                className="w-48 border-0 bg-transparent p-0 h-auto focus-visible:ring-0 text-sm"
-              />
-            </div>
-
-            {/* Mobile Search Button */}
-            <Button variant="ghost" size="icon" className="lg:hidden">
-              <Search className="w-5 h-5" />
-            </Button>
-
-            <LanguageSwitcher />
-            {session && <NotificationBell />}
-
-            {session ? (
-              <div
-                className="relative"
-                onMouseEnter={() => handleMouseEnter("user")}
-                onMouseLeave={handleMouseLeave}
-              >
-                <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                  <span className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-medium">
-                    {session.user?.name?.charAt(0).toUpperCase() || "U"}
-                  </span>
-                  <span className="hidden md:inline">{session.user?.name || "Account"}</span>
-                  <ChevronDown className="w-4 h-4 hidden md:block" />
-                </Button>
-                {activeDropdown === "user" && (
-                  <div className="absolute right-0 mt-1 w-56 bg-white border rounded-xl shadow-lg py-2 z-50">
-                    <div className="px-4 py-2 border-b">
-                      <p className="font-medium">{session.user?.name}</p>
-                      <p className="text-xs text-gray-500">{session.user?.email}</p>
-                    </div>
-                    <Link href="/dashboard" className="block px-4 py-2.5 text-sm hover:bg-gray-50">
-                      My Dashboard
-                    </Link>
-                    <Link href={`/profile/${session.user?.id}`} className="block px-4 py-2.5 text-sm hover:bg-gray-50">
-                      My Profile
-                    </Link>
-                    <Link href="/favorites" className="block px-4 py-2.5 text-sm hover:bg-gray-50">
-                      My Favorites
-                    </Link>
-                    <Link href="/lists" className="block px-4 py-2.5 text-sm hover:bg-gray-50">
-                      My Lists
-                    </Link>
-                    <Link href="/bookings" className="block px-4 py-2.5 text-sm hover:bg-gray-50">
-                      Bookings
-                    </Link>
-                    <Link href="/messages" className="block px-4 py-2.5 text-sm hover:bg-gray-50">
-                      Messages
-                    </Link>
-                    <hr className="my-2" />
-                    <Link href="/settings/notifications" className="block px-4 py-2.5 text-sm hover:bg-gray-50">
-                      Settings
-                    </Link>
-                    <button
-                      onClick={() => signOut()}
-                      className="block w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50"
-                    >
-                      Sign Out
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <>
-                <Link href="/login">
-                  <Button variant="ghost" size="sm">
-                    Sign In
-                  </Button>
-                </Link>
-                <Link href="/register">
-                  <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                    Get Started
-                  </Button>
-                </Link>
-              </>
-            )}
-
-            {/* Mobile Menu Button */}
-            <button
-              className="lg:hidden p-2 hover:bg-gray-100 rounded-md"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              {mobileMenuOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
-            </button>
-          </div>
-        </div>
+          ))}
+        </nav>
       </div>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden border-t bg-white">
-          <div className="container mx-auto px-4 py-4">
-            {/* Mobile Search */}
-            <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2 mb-4">
-              <Search className="w-4 h-4 text-gray-500" />
-              <Input
-                type="search"
-                placeholder="Search businesses..."
-                className="border-0 bg-transparent p-0 h-auto focus-visible:ring-0 text-sm"
-              />
-            </div>
-
-            <div className="space-y-6">
-              {/* Discover Section */}
-              <div>
-                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Discover</h3>
-                <div className="space-y-1">
-                  <Link href="/search" className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
-                    Find Businesses
-                  </Link>
-                  <Link href="/search/image" className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
-                    Image Search
-                  </Link>
-                  <Link href="/compare" className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
-                    Compare Businesses
-                  </Link>
-                  <Link href="/events" className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
-                    Events
-                  </Link>
-                </div>
-              </div>
-
-              {/* Community Section */}
-              <div>
-                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Community</h3>
-                <div className="space-y-1">
-                  <Link href="/community-impact" className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
-                    Economic Impact
-                  </Link>
-                  <Link href="/forum" className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
-                    Community Forum
-                  </Link>
-                </div>
-              </div>
-
-              {/* For Business Section */}
-              {session && (
-                <div>
-                  <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">For Business</h3>
-                  <div className="space-y-1">
-                    {isBusinessOwner ? (
-                      <>
-                        <Link href="/dashboard" className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
-                          Dashboard
-                        </Link>
-                        <Link href="/dashboard/analytics" className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
-                          Analytics
-                        </Link>
-                        <Link href="/bookings" className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
-                          Bookings
-                        </Link>
-                        <Link href="/messages" className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
-                          Messages
-                        </Link>
-                      </>
-                    ) : (
-                      <>
-                        <Link href="/claim-business" className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
-                          Claim Your Business
-                        </Link>
-                        <Link href="/business/register" className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
-                          Add Your Business
-                        </Link>
-                      </>
-                    )}
+      {/* Right: auth actions OR bell + avatar */}
+      <div className="flex items-center gap-2.5">
+        {!signedIn ? (
+          <>
+            <Link href="/login"><Button variant="ghost" size="sm">Sign In</Button></Link>
+            <Link href="/register"><Button size="sm">Sign Up</Button></Link>
+          </>
+        ) : (
+          <>
+            {!isAdmin && (
+              <Link href={notifHref} className="hidden rounded-full p-2 hover:bg-[var(--paper-2)] md:block" aria-label="Notifications">
+                <Bell className="h-5 w-5" style={{ color: "var(--ink-500)" }} />
+              </Link>
+            )}
+            <div ref={acctRef} className="relative">
+              <button onClick={() => setAcctOpen((o) => !o)} className="flex items-center gap-1.5" aria-label="Account menu">
+                <Avatar name={session?.user?.name || "User"} size={32} />
+                <ChevronDown className="hidden h-4 w-4 md:block" style={{ color: "var(--ink-400)", transform: acctOpen ? "rotate(180deg)" : "none", transition: "transform 0.15s" }} />
+              </button>
+              {acctOpen && (
+                <div className="absolute right-0 mt-2 w-60 overflow-hidden rounded-[12px] border py-1.5" style={{ background: "#ffffff", borderColor: "var(--card-edge)", boxShadow: "var(--shadow-lift)" }}>
+                  <div className="flex items-center gap-3 px-4 py-4" style={{ borderBottom: "1px solid var(--card-edge)" }}>
+                    <Avatar name={acctName} size={44} />
+                    <div className="min-w-0">
+                      <div className="t-h4 truncate" style={{ color: "var(--ink-900)" }}>{acctName}</div>
+                      <div className="t-body-xs truncate" style={{ color: "var(--ink-500)" }}>{acctSub}</div>
+                    </div>
                   </div>
-                </div>
-              )}
-
-              {/* Admin Section */}
-              {isAdmin && (
-                <div>
-                  <h3 className="text-xs font-semibold text-red-500 uppercase tracking-wide mb-2">Admin</h3>
-                  <div className="space-y-1">
-                    <Link href="/admin" className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
-                      Admin Dashboard
-                    </Link>
-                    <Link href="/admin/businesses" className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
-                      Manage Businesses
-                    </Link>
-                    <Link href="/admin/users" className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
-                      Manage Users
-                    </Link>
+                  {isConsumer && (
+                    <div className="py-1" style={{ borderBottom: "1px solid var(--card-edge)" }}>
+                      {acctLinks.map((it) => (
+                        <Link key={it.href} href={it.href} onClick={() => setAcctOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}>
+                          <it.Icon size={16} style={{ color: "var(--ink-500)" }} /> {it.l}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                  {!isAdmin && (
+                    <div className="py-1" style={{ borderTop: "1px solid var(--card-edge)" }}>
+                      <div className="px-4 pb-1 pt-1.5 t-eyebrow" style={{ color: "var(--ink-500)" }}>Switch account</div>
+                      <button onClick={() => switchTo("CONSUMER")} className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}>
+                        <User size={16} style={{ color: "var(--ink-500)" }} /> <span className="flex-1">Customer</span> {role === "CONSUMER" && <Check size={15} style={{ color: "var(--moss-700)" }} />}
+                      </button>
+                      <button onClick={() => switchTo("BUSINESS_OWNER")} className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}>
+                        <Store size={16} style={{ color: "var(--ink-500)" }} /> <span className="flex-1">Business</span> {role === "BUSINESS_OWNER" && <Check size={15} style={{ color: "var(--moss-700)" }} />}
+                      </button>
+                    </div>
+                  )}
+                  <div className="py-1" style={{ borderTop: "1px solid var(--card-edge)" }}>
+                    <button onClick={() => { setAcctOpen(false); signOut(); }} className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--err-500)" }}><LogOut size={16} /> Sign Out</button>
                   </div>
-                </div>
-              )}
-
-              {/* Account Section */}
-              {session && (
-                <div>
-                  <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Account</h3>
-                  <div className="space-y-1">
-                    <Link href={`/profile/${session.user?.id}`} className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
-                      My Profile
-                    </Link>
-                    <Link href="/favorites" className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
-                      My Favorites
-                    </Link>
-                    <Link href="/lists" className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
-                      My Lists
-                    </Link>
-                    <Link href="/settings/notifications" className="block py-2 text-sm hover:text-green-600" onClick={() => setMobileMenuOpen(false)}>
-                      Settings
-                    </Link>
-                    <button
-                      onClick={() => {
-                        signOut();
-                        setMobileMenuOpen(false);
-                      }}
-                      className="block w-full text-left py-2 text-sm text-red-600"
-                    >
-                      Sign Out
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Auth buttons for non-logged in users */}
-              {!session && (
-                <div className="flex gap-2 pt-4 border-t">
-                  <Link href="/login" className="flex-1" onClick={() => setMobileMenuOpen(false)}>
-                    <Button variant="outline" className="w-full">Sign In</Button>
-                  </Link>
-                  <Link href="/register" className="flex-1" onClick={() => setMobileMenuOpen(false)}>
-                    <Button className="w-full bg-green-600 hover:bg-green-700">Get Started</Button>
-                  </Link>
                 </div>
               )}
             </div>
-          </div>
+          </>
+        )}
+        <button className="md:hidden" onClick={() => setMobileOpen((o) => !o)} aria-label="Menu">
+          {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
+      </div>
+
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <div className="absolute left-0 right-0 top-16 border-b bg-white p-4 md:hidden" style={{ borderColor: "var(--card-edge)" }}>
+          <nav className="flex flex-col gap-1">
+            {tabs.map((t) => (
+              <Link key={t.href} href={t.href} onClick={() => setMobileOpen(false)} className="rounded-lg px-3 py-2 t-body" style={{ color: "var(--ink-700)" }}>{t.l}</Link>
+            ))}
+            {!signedIn && (
+              <div className="mt-2 flex gap-2 border-t pt-3" style={{ borderColor: "var(--card-edge)" }}>
+                <Link href="/login" className="flex-1" onClick={() => setMobileOpen(false)}><Button variant="outline" className="w-full">Sign In</Button></Link>
+                <Link href="/register" className="flex-1" onClick={() => setMobileOpen(false)}><Button className="w-full">Sign Up</Button></Link>
+              </div>
+            )}
+          </nav>
         </div>
       )}
     </header>

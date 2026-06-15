@@ -18,7 +18,7 @@ export default function GlobalError({
       <div className="text-center max-w-md">
         <div className="text-5xl mb-4">!</div>
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          Something went wrong
+          Something Went Wrong
         </h2>
         <p className="text-gray-600 mb-6">
           An unexpected error occurred. Please try again.

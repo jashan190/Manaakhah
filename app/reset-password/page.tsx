@@ -123,7 +123,7 @@ function ResetPasswordContent() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Reset Password</CardTitle>
@@ -137,7 +137,7 @@ function ResetPasswordContent() {
           {status === "validating" && (
             <div className="flex flex-col items-center py-8 space-y-4">
               <Loader2 className="h-12 w-12 text-primary animate-spin" />
-              <p className="text-gray-600">Validating reset link...</p>
+              <p className="text-muted-foreground">Validating reset link...</p>
             </div>
           )}
 
@@ -146,12 +146,12 @@ function ResetPasswordContent() {
               <XCircle className="h-12 w-12 text-red-600" />
               <div className="text-center space-y-2">
                 <p className="text-lg font-medium text-red-600">Invalid reset link</p>
-                <p className="text-gray-600">{errorMessage}</p>
+                <p className="text-muted-foreground">{errorMessage}</p>
               </div>
               <Link href="/forgot-password">
                 <Button variant="outline" className="mt-4">
                   <KeyRound className="h-4 w-4 mr-2" />
-                  Request a new reset link
+                  Request a New Reset Link
                 </Button>
               </Link>
             </div>
@@ -182,7 +182,7 @@ function ResetPasswordContent() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                     tabIndex={-1}
                   >
                     {showPassword ? (
@@ -192,7 +192,7 @@ function ResetPasswordContent() {
                     )}
                   </button>
                 </div>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-muted-foreground">
                   Password must be at least 8 characters.
                 </p>
               </div>
@@ -213,7 +213,7 @@ function ResetPasswordContent() {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                     tabIndex={-1}
                   >
                     {showConfirmPassword ? (
@@ -243,13 +243,13 @@ function ResetPasswordContent() {
               {status === "signing-in" ? (
                 <Loader2 className="h-12 w-12 text-primary animate-spin" />
               ) : (
-                <CheckCircle className="h-12 w-12 text-green-600" />
+                <CheckCircle className="h-12 w-12 text-primary" />
               )}
               <div className="text-center space-y-2">
-                <p className="text-lg font-medium text-green-600">
+                <p className="text-lg font-medium text-primary">
                   {successMessage || "Password reset successfully!"}
                 </p>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   {status === "signing-in" ? "Please wait..." : "Redirecting to login..."}
                 </p>
               </div>
@@ -261,12 +261,12 @@ function ResetPasswordContent() {
               <XCircle className="h-12 w-12 text-red-600" />
               <div className="text-center space-y-2">
                 <p className="text-lg font-medium text-red-600">Reset failed</p>
-                <p className="text-gray-600">{errorMessage}</p>
+                <p className="text-muted-foreground">{errorMessage}</p>
               </div>
               <Link href="/forgot-password">
                 <Button variant="outline" className="mt-4">
                   <KeyRound className="h-4 w-4 mr-2" />
-                  Request a new reset link
+                  Request a New Reset Link
                 </Button>
               </Link>
             </div>
@@ -281,7 +281,7 @@ export default function ResetPasswordPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+        <div className="min-h-screen flex items-center justify-center bg-background px-4">
           <Card className="w-full max-w-md">
             <CardHeader className="text-center">
               <CardTitle className="text-2xl font-bold">Reset Password</CardTitle>
@@ -289,7 +289,7 @@ export default function ResetPasswordPage() {
             <CardContent>
               <div className="flex flex-col items-center py-8 space-y-4">
                 <Loader2 className="h-12 w-12 text-primary animate-spin" />
-                <p className="text-gray-600">Loading...</p>
+                <p className="text-muted-foreground">Loading...</p>
               </div>
             </CardContent>
           </Card>

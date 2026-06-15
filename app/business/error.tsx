@@ -18,7 +18,7 @@ export default function BusinessError({
     <div className="min-h-[60vh] flex items-center justify-center px-4">
       <div className="text-center max-w-md">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          Could not load business
+          Could Not Load Business
         </h2>
         <p className="text-gray-600 mb-6">
           This business page encountered an error. It may have been removed or

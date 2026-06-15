@@ -6,7 +6,7 @@ import { getRequestUser } from "@/lib/api/auth-user";
 const updateSchema = z.object({
   name: z.string().min(1).max(200).optional(),
   query: z.string().max(500).optional(),
-  filters: z.record(z.unknown()).optional(),
+  filters: z.record(z.string(), z.unknown()).optional(),
   alertEnabled: z.boolean().optional(),
 });
 

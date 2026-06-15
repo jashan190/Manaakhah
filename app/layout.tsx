@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { MockSessionProvider } from "@/components/mock-session-provider";
 import { RoleSwitcher } from "@/components/role-switcher";
@@ -8,22 +7,20 @@ import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 import { QueryProvider } from "@/components/query-provider";
 import Script from "next/script";
 
-const inter = Inter({ subsets: ["latin"] });
-
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#111827" },
+    { media: "(prefers-color-scheme: light)", color: "#1f5638" },
+    { media: "(prefers-color-scheme: dark)", color: "#11140f" },
   ],
 };
 
 export const metadata: Metadata = {
   title: "Manaakhah - Connect with Muslim Businesses",
-  description: "Keep Muslim money within the Muslim community. Find halal services, Muslim-owned businesses, masjids, and community aid in the Bay Area.",
-  keywords: ["halal", "muslim business", "masjid", "islamic center", "bay area", "fremont", "halal food", "muslim owned"],
+  description: "Keep Muslim money within the Muslim community. Find halal services, Muslim-owned businesses, masjids, and community aid in Sacramento.",
+  keywords: ["halal", "muslim business", "masjid", "islamic center", "sacramento", "halal food", "muslim owned"],
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -39,7 +36,7 @@ export const metadata: Metadata = {
     url: "https://manaakhah.com",
     siteName: "Manaakhah",
     title: "Manaakhah - Connect with Muslim Businesses",
-    description: "Keep Muslim money within the Muslim community. Find halal services, Muslim-owned businesses, masjids, and community aid in the Bay Area.",
+    description: "Keep Muslim money within the Muslim community. Find halal services, Muslim-owned businesses, masjids, and community aid in Sacramento.",
     images: [
       {
         url: "/og-image.png",
@@ -52,7 +49,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Manaakhah - Connect with Muslim Businesses",
-    description: "Find halal services, Muslim-owned businesses, and masjids in the Bay Area.",
+    description: "Find halal services, Muslim-owned businesses, and masjids in Sacramento.",
     images: ["/twitter-image.png"],
   },
   robots: {
@@ -78,11 +75,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Fonts loaded via <link> (the Turbopack CSS pipeline drops a 2nd remote @import) */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       </head>
-      <body className={inter.className}>
+      <body className="antialiased">
         <QueryProvider>
           <LanguageProvider>
             <MockSessionProvider>
@@ -96,19 +97,22 @@ export default function RootLayout({
           id="register-sw"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
-            __html: `
-              if ('serviceWorker' in navigator) {
-                window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js')
-                    .then(function(registration) {
-                      console.log('ServiceWorker registration successful');
-                    })
-                    .catch(function(err) {
-                      console.log('ServiceWorker registration failed: ', err);
-                    });
-                });
-              }
-            `,
+            __html:
+              process.env.NODE_ENV === "production"
+                ? `if ('serviceWorker' in navigator) {
+                     window.addEventListener('load', function () {
+                       navigator.serviceWorker.register('/sw.js').catch(function () {});
+                     });
+                   }`
+                : `/* dev: never serve a stale build — remove any installed SW + caches */
+                   if ('serviceWorker' in navigator) {
+                     navigator.serviceWorker.getRegistrations().then(function (rs) {
+                       rs.forEach(function (r) { r.unregister(); });
+                     });
+                   }
+                   if (window.caches && caches.keys) {
+                     caches.keys().then(function (ks) { ks.forEach(function (k) { caches.delete(k); }); });
+                   }`,
           }}
         />
       </body>

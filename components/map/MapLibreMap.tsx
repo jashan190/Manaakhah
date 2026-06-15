@@ -286,7 +286,13 @@ export default function MapLibreMap({
                 zoom: 13
               }}
               style={{ width: '100%', height: '100%' }}
-              mapStyle={`https://api.maptiler.com/maps/streets-v2/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_KEY}`}
+              mapStyle={(process.env.NEXT_PUBLIC_MAPTILER_KEY
+                ? `https://api.maptiler.com/maps/streets-v2/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_KEY}`
+                : {
+                    version: 8,
+                    sources: { osm: { type: "raster", tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"], tileSize: 256, attribution: "© OpenStreetMap contributors" } },
+                    layers: [{ id: "osm", type: "raster", source: "osm" }],
+                  }) as any}
               interactiveLayerIds={['clusters', 'unclustered-point']}
               onClick={onMapClick}
               onMoveEnd={handleMoveEnd}
@@ -308,7 +314,7 @@ export default function MapLibreMap({
                 }}
                 disabled={isLocating}
                 className="absolute top-24 right-2 z-10 bg-white p-2 rounded-lg shadow-md hover:bg-gray-50 disabled:opacity-50"
-                title="Center on my location"
+                title="Center on My Location"
               >
                 {isLocating ? (
                   <span className="w-5 h-5 block border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
@@ -466,7 +472,7 @@ export default function MapLibreMap({
                       {/* View Details button */}
                       <Link href={`/business/${selectedBusiness.id}`}>
                         <Button className="w-full">
-                          View Details &rarr;
+                          View Details &Rarr;
                         </Button>
                       </Link>
                     </div>
@@ -576,7 +582,7 @@ export default function MapLibreMap({
                 )}
 
                 <Link href={`/business/${selectedBusiness.id}`}>
-                  <Button className="w-full">View Full Details &rarr;</Button>
+                  <Button className="w-full">View Full Details &Rarr;</Button>
                 </Link>
               </div>
             </div>

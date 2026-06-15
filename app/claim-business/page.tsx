@@ -1,416 +1,115 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useMockSession } from "@/components/mock-session-provider";
+import { useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { ManCard, Photo, Tag, Seal } from "@/components/man/primitives";
+import { Select } from "@/components/man/Select";
+import { Search, ArrowLeft } from "lucide-react";
 
-interface ClaimRequest {
-  id: string;
-  businessId: string;
-  businessName: string;
-  status: string;
-  createdAt: string;
-}
+const CITIES = [
+  "Sacramento, CA",
+  "Elk Grove, CA",
+  "Roseville, CA",
+  "Folsom, CA",
+  "Citrus Heights, CA",
+  "West Sacramento, CA",
+  "Rancho Cordova, CA",
+  "Davis, CA",
+].map((c) => ({ value: c, label: c }));
 
-const VERIFICATION_METHODS = [
-  {
-    id: "phone",
-    label: "Phone Verification",
-    description: "We'll call the business phone number on file to verify your ownership",
-    icon: "phone",
-  },
-  {
-    id: "email",
-    label: "Email Verification",
-    description: "We'll send a verification code to the business email on file",
-    icon: "mail",
-  },
-  {
-    id: "document",
-    label: "Document Upload",
-    description: "Upload business documents (license, utility bill, tax documents)",
-    icon: "file",
-  },
-  {
-    id: "google",
-    label: "Google Business Profile",
-    description: "Verify using your Google Business Profile access",
-    icon: "link",
-  },
-];
-
-function ClaimBusinessContent() {
-  const { data: session } = useMockSession();
-  const searchParams = useSearchParams();
-  const businessId = searchParams.get("business");
-
-  const [step, setStep] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<any[]>([]);
-  const [selectedBusiness, setSelectedBusiness] = useState<any>(null);
-  const [verificationMethod, setVerificationMethod] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
-  const [codeSent, setCodeSent] = useState(false);
-  const [additionalInfo, setAdditionalInfo] = useState("");
-  const [myClaims, setMyClaims] = useState<ClaimRequest[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-
-  useEffect(() => {
-    if (session?.user?.id) loadMyClaims();
-    if (businessId) fetchBusiness(businessId);
-  }, [session?.user?.id, businessId]);
-
-  const loadMyClaims = async () => {
-    try {
-      const res = await fetch("/api/claims");
-      if (res.ok) {
-        const data = await res.json();
-        setMyClaims(data.claims || []);
-      }
-    } catch (error) {
-      console.error("Error loading claims:", error);
-    }
-  };
-
-  const fetchBusiness = async (id: string) => {
-    try {
-      const response = await fetch(`/api/businesses/${id}`);
-      if (response.ok) {
-        const data = await response.json();
-        setSelectedBusiness(data);
-        setStep(2);
-      }
-    } catch (error) {
-      console.error("Error fetching business:", error);
-    }
-  };
-
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) return;
-    setLoading(true);
-
-    try {
-      const response = await fetch(`/api/businesses?search=${encodeURIComponent(searchQuery)}&limit=10`);
-      if (response.ok) {
-        const data = await response.json();
-        setSearchResults(data.businesses || []);
-      }
-    } catch (error) {
-      console.error("Error searching:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSelectBusiness = (business: any) => {
-    setSelectedBusiness(business);
-    setStep(2);
-  };
-
-  const handleSendCode = () => {
-    setCodeSent(true);
-    alert(`A verification code has been sent via ${verificationMethod}. (Demo: Use code 123456)`);
-  };
-
-  const handleSubmitClaim = async () => {
-    if (!selectedBusiness || !verificationMethod) return;
-
-    if ((verificationMethod === "phone" || verificationMethod === "email") && verificationCode !== "123456") {
-      alert("Invalid verification code. Please try again. (Demo: Use code 123456)");
-      return;
-    }
-
-    try {
-      const res = await fetch("/api/claims", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          businessId: selectedBusiness.id,
-          verificationMethod,
-          verificationCode: verificationCode || undefined,
-          notes: additionalInfo || undefined,
-        }),
-      });
-
-      if (res.ok) {
-        setSubmitted(true);
-        await loadMyClaims();
-      } else {
-        const err = await res.json();
-        alert(err.error || "Failed to submit claim");
-      }
-    } catch {
-      alert("Network error");
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "approved": return "bg-green-100 text-green-700";
-      case "rejected": return "bg-red-100 text-red-700";
-      case "under_review": return "bg-blue-100 text-blue-700";
-      default: return "bg-yellow-100 text-yellow-700";
-    }
-  };
-
-  if (!session?.user) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <Card>
-          <CardContent className="p-8 text-center">
-            <h2 className="text-2xl font-bold mb-4">Claim Your Business</h2>
-            <p className="text-gray-600 mb-4">Please sign in to claim your business listing.</p>
-            <Link href="/login"><Button>Sign In to Continue</Button></Link>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (submitted) {
-    return (
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <Card>
-          <CardContent className="p-8 text-center">
-            <h2 className="text-2xl font-bold mb-2">Claim Request Submitted!</h2>
-            <p className="text-gray-600 mb-6">
-              Thank you for submitting your claim for <strong>{selectedBusiness?.name}</strong>.
-              We&apos;ll review your request and get back to you within 2-3 business days.
-            </p>
-            <div className="flex gap-4 justify-center">
-              <Link href="/dashboard"><Button>Go to Dashboard</Button></Link>
-              <Button variant="outline" onClick={() => {
-                setSubmitted(false);
-                setStep(1);
-                setSelectedBusiness(null);
-                setVerificationMethod("");
-                setVerificationCode("");
-                setCodeSent(false);
-                setAdditionalInfo("");
-              }}>Claim Another Business</Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  return (
-    <div className="container mx-auto px-4 py-8 max-w-3xl">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-2">Claim Your Business</h1>
-        <p className="text-gray-600">
-          Verify ownership of your business to manage your listing, respond to reviews, and access analytics.
-        </p>
-      </div>
-
-      {/* Progress Steps */}
-      <div className="flex items-center justify-center mb-8">
-        <div className="flex items-center">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 1 ? "bg-green-600 text-white" : "bg-gray-200"}`}>1</div>
-          <div className={`w-16 h-1 ${step >= 2 ? "bg-green-600" : "bg-gray-200"}`} />
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 2 ? "bg-green-600 text-white" : "bg-gray-200"}`}>2</div>
-          <div className={`w-16 h-1 ${step >= 3 ? "bg-green-600" : "bg-gray-200"}`} />
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 3 ? "bg-green-600 text-white" : "bg-gray-200"}`}>3</div>
-        </div>
-      </div>
-
-      {/* Step 1: Find Business */}
-      {step === 1 && (
-        <Card>
-          <CardHeader><CardTitle>Step 1: Find Your Business</CardTitle></CardHeader>
-          <CardContent>
-            <div className="flex gap-2 mb-4">
-              <Input
-                placeholder="Search by business name..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                className="flex-1"
-              />
-              <Button onClick={handleSearch} disabled={loading}>{loading ? "Searching..." : "Search"}</Button>
-            </div>
-
-            {searchResults.length > 0 && (
-              <div className="space-y-2 mt-4">
-                <p className="text-sm text-gray-500">{searchResults.length} businesses found</p>
-                {searchResults.map((business) => (
-                  <div key={business.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer" onClick={() => handleSelectBusiness(business)}>
-                    <div>
-                      <p className="font-semibold">{business.name}</p>
-                      <p className="text-sm text-gray-500">{business.address}, {business.city}</p>
-                    </div>
-                    <Button size="sm">Select</Button>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-              <p className="text-sm text-gray-600">
-                <strong>Can&apos;t find your business?</strong>{" "}
-                <Link href="/business/register" className="text-green-600 hover:underline">Add it to Manaakhah</Link>
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Step 2: Choose Verification Method */}
-      {step === 2 && selectedBusiness && (
-        <Card>
-          <CardHeader><CardTitle>Step 2: Verify Your Ownership</CardTitle></CardHeader>
-          <CardContent>
-            <div className="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
-              <p className="text-sm text-gray-600">Claiming:</p>
-              <p className="font-semibold text-lg">{selectedBusiness.name}</p>
-              <p className="text-sm text-gray-500">{selectedBusiness.address}, {selectedBusiness.city}</p>
-              <Button variant="link" size="sm" className="p-0 h-auto text-green-600" onClick={() => { setStep(1); setSelectedBusiness(null); }}>Change</Button>
-            </div>
-
-            <p className="text-gray-600 mb-4">Choose how you&apos;d like to verify your ownership:</p>
-
-            <div className="space-y-3">
-              {VERIFICATION_METHODS.map((method) => (
-                <div key={method.id} className={`p-4 border rounded-lg cursor-pointer transition-colors ${verificationMethod === method.id ? "border-green-500 bg-green-50" : "hover:border-gray-300"}`} onClick={() => { setVerificationMethod(method.id); setCodeSent(false); setVerificationCode(""); }}>
-                  <div className="flex items-start gap-3">
-                    <div>
-                      <p className="font-semibold">{method.label}</p>
-                      <p className="text-sm text-gray-600">{method.description}</p>
-                    </div>
-                    <div className="ml-auto">
-                      <input type="radio" name="verification" checked={verificationMethod === method.id} onChange={() => setVerificationMethod(method.id)} className="w-4 h-4" />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {verificationMethod && (
-              <div className="mt-6">
-                <Button className="w-full" onClick={() => setStep(3)}>
-                  Continue with {VERIFICATION_METHODS.find((m) => m.id === verificationMethod)?.label}
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Step 3: Complete Verification */}
-      {step === 3 && selectedBusiness && (
-        <Card>
-          <CardHeader><CardTitle>Step 3: Complete Verification</CardTitle></CardHeader>
-          <CardContent>
-            {(verificationMethod === "phone" || verificationMethod === "email") && (
-              <div className="space-y-4">
-                <p className="text-gray-600">
-                  {verificationMethod === "phone"
-                    ? `We'll call the phone number ending in ${selectedBusiness.phone?.slice(-4) || "****"} with a verification code.`
-                    : `We'll send a code to the email associated with this business.`}
-                </p>
-
-                {!codeSent ? (
-                  <Button onClick={handleSendCode}>
-                    {verificationMethod === "phone" ? "Request Call" : "Send Code"}
-                  </Button>
-                ) : (
-                  <div className="space-y-4">
-                    <p className="text-green-600 text-sm">
-                      {verificationMethod === "phone"
-                        ? "We're calling you now. Please enter the code you hear."
-                        : "Code sent! Please check your email."}
-                    </p>
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Enter Verification Code</label>
-                      <Input placeholder="Enter 6-digit code" value={verificationCode} onChange={(e) => setVerificationCode(e.target.value)} maxLength={6} />
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {verificationMethod === "document" && (
-              <div className="space-y-4">
-                <p className="text-gray-600">Please upload one of the following documents to verify your ownership:</p>
-                <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
-                  <li>Business license or registration</li>
-                  <li>Utility bill showing business name and address</li>
-                  <li>Tax documents (EIN letter, tax return)</li>
-                  <li>Lease agreement</li>
-                </ul>
-                <div className="border-2 border-dashed rounded-lg p-8 text-center">
-                  <p className="text-gray-600 mb-2">Drag and drop files here, or</p>
-                  <Button variant="outline">Browse Files</Button>
-                  <p className="text-xs text-gray-500 mt-2">Max file size: 10MB. Supported formats: PDF, JPG, PNG</p>
-                </div>
-              </div>
-            )}
-
-            {verificationMethod === "google" && (
-              <div className="space-y-4">
-                <p className="text-gray-600">If you have access to this business&apos;s Google Business Profile, we can verify your ownership instantly.</p>
-                <Button className="w-full" variant="outline">Connect with Google Business</Button>
-              </div>
-            )}
-
-            <div className="mt-6">
-              <label className="block text-sm font-medium mb-1">Additional Information (Optional)</label>
-              <Textarea placeholder="Any additional details that might help us verify your ownership..." value={additionalInfo} onChange={(e) => setAdditionalInfo(e.target.value)} />
-            </div>
-
-            <div className="flex gap-2 mt-6">
-              <Button variant="outline" onClick={() => setStep(2)} className="flex-1">Back</Button>
-              <Button onClick={handleSubmitClaim} className="flex-1" disabled={(verificationMethod === "phone" || verificationMethod === "email") && (!codeSent || !verificationCode)}>
-                Submit Claim
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* My Claims */}
-      {myClaims.length > 0 && step === 1 && (
-        <Card className="mt-8">
-          <CardHeader><CardTitle>My Claim Requests</CardTitle></CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {myClaims.map((claim) => (
-                <div key={claim.id} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div>
-                    <p className="font-semibold">{claim.businessName}</p>
-                    <p className="text-sm text-gray-500">Submitted: {new Date(claim.createdAt).toLocaleDateString()}</p>
-                  </div>
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(claim.status)}`}>
-                    {claim.status.charAt(0).toUpperCase() + claim.status.slice(1)}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-    </div>
-  );
-}
+const fs = { borderColor: "var(--card-edge)" } as const;
 
 export default function ClaimBusinessPage() {
+  const [query, setQuery] = useState("");
+  const [city, setCity] = useState("Sacramento, CA");
+  const [matches, setMatches] = useState<any[]>([]);
+  const [searched, setSearched] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const runSearch = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    setLoading(true);
+    setSearched(true);
+    try {
+      const params = new URLSearchParams({ status: "PUBLISHED", limit: "8", lat: "38.5816", lng: "-121.4944" });
+      if (query.trim()) params.set("search", query.trim());
+      const r = await fetch(`/api/businesses?${params}`);
+      const d = await r.json();
+      setMatches((d.businesses || []).slice(0, 5));
+    } catch {
+      setMatches([]);
+    }
+    setLoading(false);
+  };
+
   return (
-    <Suspense fallback={
-      <div className="container mx-auto px-4 py-8 max-w-3xl">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
-        </div>
+    <div style={{ background: "var(--paper)" }} className="px-6 py-8 md:px-14">
+      <div className="mx-auto max-w-[900px]">
+        <Link href="/for-business" className="t-body-sm inline-flex items-center gap-1" style={{ color: "var(--ink-500)" }}><ArrowLeft size={14} /> Back</Link>
+        <h1 className="t-h2" style={{ color: "var(--ink-900)", marginTop: 14 }}>Claim Your Business</h1>
+        <p className="t-body" style={{ color: "var(--ink-500)", marginTop: 6 }}>Search for your business to claim it — we&apos;ll guide you through proving ownership next.</p>
+
+        <ManCard style={{ padding: 22, marginTop: 18 }}>
+          <form onSubmit={runSearch} className="flex flex-col gap-2.5 sm:flex-row">
+            <div className="flex flex-1 items-center gap-2 rounded-[10px] border bg-white px-3.5" style={fs}>
+              <Search size={18} style={{ color: "var(--ink-400)" }} />
+              <input value={query} onChange={(e) => setQuery(e.target.value)} className="w-full bg-transparent py-2.5 t-body outline-none" style={{ color: "var(--ink-900)" }} placeholder="Search your business name…" />
+            </div>
+            <Select value={city} onChange={setCity} options={CITIES} className="sm:w-56" />
+            <Button type="submit">Search</Button>
+          </form>
+        </ManCard>
+
+        {/* Results — only after a search has run */}
+        {searched && (
+          loading ? (
+            <div className="mt-10 text-center t-body-sm" style={{ color: "var(--ink-500)" }}>Searching…</div>
+          ) : matches.length > 0 ? (
+            <>
+              <div className="mt-6 t-body-sm" style={{ color: "var(--ink-500)" }}>
+                {matches.length} {matches.length === 1 ? "match" : "matches"} in {city}
+              </div>
+              <div className="mt-3 grid gap-3">
+                {matches.map((b, i) => (
+                  <ManCard key={b.id} style={{ padding: 14, border: i === 0 ? "1.5px solid var(--moss-700)" : "1px solid var(--card-edge)" }} className="flex items-center gap-4">
+                    <Photo src={b.coverImage} seed={b.name} w={80} h={60} radius={8} />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <Seal size={16} />
+                        <div className="t-label" style={{ color: "var(--ink-900)" }}>{b.name}</div>
+                        {i === 0 ? <Tag tone="moss">Best Match</Tag> : i === 3 ? <Tag tone="warn">Already Claimed</Tag> : null}
+                      </div>
+                      <div className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 2 }}>{b.address ? `${b.address}, ${b.city}` : `${b.city}, ${b.state}`}</div>
+                    </div>
+                    {i === 3 ? (
+                      <Button variant="outline" size="sm">Dispute</Button>
+                    ) : (
+                      <Link href="/register?role=owner&next=%2Fdashboard%2Fverification"><Button size="sm">Claim</Button></Link>
+                    )}
+                  </ManCard>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="mt-10 text-center">
+              <div className="t-label" style={{ color: "var(--ink-900)" }}>No matches found</div>
+              <p className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 4 }}>Try a different name, or add your business from scratch.</p>
+            </div>
+          )
+        )}
+
+        {/* Add new — offered once a search has run */}
+        {searched && !loading && (
+          <ManCard style={{ padding: 18, marginTop: 16, background: "var(--paper-2)" }} className="flex items-center justify-between gap-4">
+            <div>
+              <div className="t-label" style={{ color: "var(--ink-900)" }}>Don&apos;t see your business?</div>
+              <div className="t-body-sm" style={{ color: "var(--ink-500)" }}>Add it from scratch — we&apos;ll route it through verification.</div>
+            </div>
+            <Link href="/register?role=owner&next=%2Fdashboard%2Fnew-listing"><Button variant="outline" size="sm">Add a New Business</Button></Link>
+          </ManCard>
+        )}
       </div>
-    }>
-      <ClaimBusinessContent />
-    </Suspense>
+    </div>
   );
 }

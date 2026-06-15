@@ -28,7 +28,7 @@ export default function GlobalError({
         >
           <div style={{ textAlign: "center", maxWidth: "400px" }}>
             <h2 style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>
-              Something went wrong
+              Something Went Wrong
             </h2>
             <p style={{ color: "#666", marginBottom: "1.5rem" }}>
               A critical error occurred. Please try again.

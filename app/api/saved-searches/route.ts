@@ -6,7 +6,7 @@ import { getRequestUser } from "@/lib/api/auth-user";
 const createSchema = z.object({
   name: z.string().min(1).max(200),
   query: z.string().max(500).default(""),
-  filters: z.record(z.unknown()).default({}),
+  filters: z.record(z.string(), z.unknown()).default({}),
   alertEnabled: z.boolean().default(false),
 });
 
