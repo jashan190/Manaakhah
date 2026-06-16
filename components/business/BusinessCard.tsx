@@ -54,7 +54,7 @@ export function BusinessCard({
           <div className="flex min-w-0 flex-1 flex-col">
             <div className="flex items-start justify-between gap-2">
               <h3 className="t-label line-clamp-1" style={{ color: "var(--ink-900)" }}>{business.name}</h3>
-              <button onClick={onToggleFavorite} aria-label="Save" className="-mr-0.5 flex-shrink-0">
+              <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleFavorite?.(e); }} aria-label="Save" className="-mr-0.5 flex-shrink-0">
                 <Heart size={15} fill={isFavorite ? "var(--clay-500)" : "none"} stroke={isFavorite ? "var(--clay-500)" : "var(--ink-400)"} />
               </button>
             </div>
@@ -95,7 +95,7 @@ export function BusinessCard({
             </div>
           )}
 
-          <button onClick={onToggleFavorite} aria-label="Save"
+          <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleFavorite?.(e); }} aria-label="Save"
             className="absolute right-2.5 top-2.5 flex h-8 w-8 items-center justify-center rounded-full shadow-md transition-transform hover:scale-110"
             style={{ background: "#ffffff" }}>
             <Heart size={15} fill={isFavorite ? "var(--clay-500)" : "none"} stroke={isFavorite ? "var(--clay-500)" : "var(--ink-500)"} />
