@@ -1,16 +1,9 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Tag, Photo, Avatar, ManCard } from "@/components/man/primitives";
+import { Tag, Photo } from "@/components/man/primitives";
 import { SiteFooter } from "@/components/site-footer";
 
 const ABOUT_IMG = "https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&w=900&q=70";
-
-const team = [
-  { n: "Aisha Mahmood", r: "Co-founder, CEO" },
-  { n: "Bilal Rahman", r: "Co-founder, CTO" },
-  { n: "Sana Patel", r: "Head of Verification" },
-  { n: "Omar Idris", r: "Head of Community" },
-];
 
 export default function AboutPage() {
   return (
@@ -34,20 +27,6 @@ export default function AboutPage() {
             </p>
             <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginTop: 28 }}>Founded</div>
             <div className="t-body" style={{ color: "var(--ink-700)", marginTop: 4 }}>Started in Sacramento, growing city by city across California.</div>
-          </div>
-        </div>
-
-        <div className="mt-14">
-          <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>Team</div>
-          <h2 className="t-h2" style={{ color: "var(--ink-900)", marginTop: 6 }}>Built by People Who Needed It.</h2>
-          <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {team.map((p) => (
-              <ManCard key={p.n} style={{ padding: 18 }}>
-                <Avatar name={p.n} size={48} />
-                <div className="t-label" style={{ color: "var(--ink-900)", marginTop: 12 }}>{p.n}</div>
-                <div className="t-body-xs" style={{ color: "var(--ink-500)", marginTop: 2 }}>{p.r}</div>
-              </ManCard>
-            ))}
           </div>
         </div>
 
