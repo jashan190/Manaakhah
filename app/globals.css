@@ -114,4 +114,5 @@
   border-color: var(--moss-700);
   box-shadow: 0 0 0 3px var(--moss-100);
 }
+.man-field-wrap { border-color: var(--card-edge); }
 .man-focusable:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--moss-100); border-radius: 6px; }

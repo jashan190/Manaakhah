@@ -18,8 +18,8 @@ export default function ContactPage() {
   useEffect(() => { fetch(`/api/businesses/${id}`).then((r) => r.json()).then(setBiz).catch(() => {}); }, [id]);
   const name = biz?.name || "this business";
 
-  const field = "w-full rounded-[10px] border bg-white px-3.5 py-2.5 t-body outline-none";
-  const fieldStyle = { borderColor: "var(--card-edge)", color: "var(--ink-900)" } as const;
+  const field = "man-field w-full px-3.5 py-2.5 t-body";
+  const fieldStyle = { color: "var(--ink-900)" } as const;
 
   return (
     <div style={{ background: "var(--paper)" }} className="px-6 py-8 md:px-14">

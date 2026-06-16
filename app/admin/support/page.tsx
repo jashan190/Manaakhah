@@ -73,7 +73,7 @@ export default function OwnerSupportPage() {
               ))}
             </div>
             <div className="flex items-end gap-2 p-4" style={{ borderTop: "1px solid var(--card-edge)" }}>
-              <textarea value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Reply to owner…" className="flex-1 rounded-[12px] border bg-white px-3.5 py-2.5 t-body-sm outline-none" style={{ borderColor: "var(--card-edge)", color: "var(--ink-900)", minHeight: 44, resize: "none" }} />
+              <textarea value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Reply to owner…" className="man-field flex-1 px-3.5 py-2.5 t-body-sm" style={{ color: "var(--ink-900)", minHeight: 44, resize: "none" }} />
               <Button size="sm"><Send className="h-4 w-4" /></Button>
               <Button variant="outline" size="sm">Resolve</Button>
             </div>

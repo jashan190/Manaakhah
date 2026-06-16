@@ -67,7 +67,7 @@ export default function VerificationPage() {
             {method === "phone" && (
               <div className="mt-5">
                 <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 8 }}>Enter code</div>
-                <div className="flex gap-2">{[0, 1, 2, 3, 4, 5].map((i) => <input key={i} maxLength={1} className="h-12 w-12 rounded-[10px] border bg-white text-center t-h4 outline-none" style={{ borderColor: "var(--card-edge)", color: "var(--ink-900)" }} />)}</div>
+                <div className="flex gap-2">{[0, 1, 2, 3, 4, 5].map((i) => <input key={i} maxLength={1} className="man-field h-12 w-12 text-center t-h4" style={{ color: "var(--ink-900)" }} />)}</div>
               </div>
             )}
             <div className="mt-6 flex items-center justify-between">

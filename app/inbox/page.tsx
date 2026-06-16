@@ -45,7 +45,7 @@ export default function InboxPage() {
           {/* Thread list */}
           <div className="flex w-[340px] flex-shrink-0 flex-col" style={{ borderRight: "1px solid var(--card-edge)" }}>
             <div className="flex h-[69px] items-center px-4" style={{ borderBottom: "1px solid var(--card-edge)" }}>
-              <div className="flex w-full items-center gap-2 rounded-[10px] border px-3 py-2" style={{ borderColor: "var(--card-edge)", background: "#ffffff" }}>
+              <div className="man-field-wrap flex w-full items-center gap-2 rounded-[10px] border px-3 py-2" style={{ background: "#ffffff" }}>
                 <Search size={15} style={{ color: "var(--ink-400)" }} /><input placeholder="Search messages" className="w-full bg-transparent t-body-sm outline-none" style={{ color: "var(--ink-900)" }} />
               </div>
             </div>
@@ -97,7 +97,7 @@ export default function InboxPage() {
                   <button key={q} onClick={() => setDraft(q)} className="t-body-xs rounded-full px-2.5 py-1" style={{ background: "var(--paper-2)", color: "var(--ink-700)" }}>{q}</button>
                 ))}
               </div>
-              <div className="flex items-center gap-2 rounded-[10px] border bg-white px-3" style={{ borderColor: "var(--card-edge)" }}>
+              <div className="man-field-wrap flex items-center gap-2 rounded-[10px] border bg-white px-3">
                 <Paperclip size={18} style={{ color: "var(--ink-400)" }} />
                 <input value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Write a message…" className="w-full bg-transparent py-2.5 t-body-sm outline-none" style={{ color: "var(--ink-900)" }} />
                 <button className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full" style={{ background: "var(--moss-700)" }}><Send size={15} style={{ color: "var(--bone)" }} /></button>

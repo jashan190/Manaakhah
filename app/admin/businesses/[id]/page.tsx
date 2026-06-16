@@ -72,7 +72,7 @@ export default function VerificationDetailPage() {
           <div className="grid gap-3.5">
             <ManCard style={{ padding: 22 }}>
               <div className="t-h4" style={{ color: "var(--ink-900)" }}>Decision</div>
-              <textarea placeholder="Add a note (sent to the owner if rejected)…" className="mt-3 w-full rounded-[10px] border bg-white px-3 py-2.5 t-body-sm outline-none" style={{ borderColor: "var(--card-edge)", color: "var(--ink-900)", minHeight: 80, resize: "vertical" }} />
+              <textarea placeholder="Add a note (sent to the owner if rejected)…" className="man-field mt-3 w-full px-3 py-2.5 t-body-sm" style={{ color: "var(--ink-900)", minHeight: 80, resize: "vertical" }} />
               <div className="mt-3 grid gap-2">
                 <Button onClick={() => setDecision("approved")}><Check className="mr-1.5 h-4 w-4" /> Approve & Issue Seal</Button>
                 <Button variant="outline" size="sm" onClick={() => setDecision("rejected")} style={{ color: "var(--err-500)", borderColor: "var(--err-500)" }}><X className="mr-1.5 h-4 w-4" /> Reject</Button>

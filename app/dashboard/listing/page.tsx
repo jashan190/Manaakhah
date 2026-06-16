@@ -13,8 +13,8 @@ const selOpts = (...l: string[]) => l.map((s) => ({ value: s, label: s }));
 
 const TABS = ["Overview", "Photos", "Menu", "Halal details", "Hours", "Amenities"];
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const fieldCls = "w-full rounded-[10px] border bg-white px-3.5 py-2.5 t-body outline-none";
-const fs = { borderColor: "var(--card-edge)", color: "var(--ink-900)" } as const;
+const fieldCls = "man-field w-full px-3.5 py-2.5 t-body";
+const fs = { color: "var(--ink-900)" } as const;
 const completeness = [
   ["Business basics", true], ["Address & hours", true], ["Cover photo", true],
   ["5+ gallery photos", true], ["Menu uploaded", false], ["Halal certificate", true], ["Amenities tagged", false],
@@ -113,9 +113,9 @@ export default function ListingProfilePage() {
                   {DAYS.map((d, i) => (
                     <div key={d} className="flex items-center gap-3">
                       <span className="t-body-sm" style={{ color: "var(--ink-700)", width: 44 }}>{d}</span>
-                      <input className="rounded-[8px] border bg-white px-2.5 py-1.5 t-body-sm outline-none" style={fs} defaultValue="11:00" disabled={i === 6} />
+                      <input className="man-field px-2.5 py-1.5 t-body-sm" style={fs} defaultValue="11:00" disabled={i === 6} />
                       <span className="t-body-sm" style={{ color: "var(--ink-400)" }}>–</span>
-                      <input className="rounded-[8px] border bg-white px-2.5 py-1.5 t-body-sm outline-none" style={fs} defaultValue="22:00" disabled={i === 6} />
+                      <input className="man-field px-2.5 py-1.5 t-body-sm" style={fs} defaultValue="22:00" disabled={i === 6} />
                       <Checkbox className="ml-auto" defaultChecked={i === 6} label="Closed" />
                     </div>
                   ))}

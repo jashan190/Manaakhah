@@ -29,7 +29,7 @@ export default function HelpPage() {
         <div className="mx-auto max-w-[1100px]">
           <Tag>Help Center</Tag>
           <h1 className="t-h1" style={{ color: "var(--ink-900)", marginTop: 12, fontSize: 44 }}>How Can We Help?</h1>
-          <div className="mt-5 flex max-w-[600px] items-center gap-2 rounded-full border bg-white px-4 py-3" style={{ borderColor: "var(--card-edge)" }}>
+          <div className="man-field-wrap mt-5 flex max-w-[600px] items-center gap-2 rounded-full border bg-white px-4 py-3">
             <Search size={18} style={{ color: "var(--ink-400)" }} />
             <input placeholder="Search articles, e.g. 'how to claim my listing'" className="w-full bg-transparent t-body outline-none" style={{ color: "var(--ink-900)" }} />
           </div>

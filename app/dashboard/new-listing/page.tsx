@@ -13,8 +13,8 @@ import { ArrowLeft, ArrowRight, Check, Plus, MapPin, Clock, Image as ImageIcon, 
 
 const STEPS = ["Basics", "Address & hours", "Halal details", "Photos", "Review"];
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-const fieldCls = "w-full rounded-[10px] border bg-white px-3.5 py-2.5 t-body outline-none";
-const fs = { borderColor: "var(--card-edge)", color: "var(--ink-900)" } as const;
+const fieldCls = "man-field w-full px-3.5 py-2.5 t-body";
+const fs = { color: "var(--ink-900)" } as const;
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (

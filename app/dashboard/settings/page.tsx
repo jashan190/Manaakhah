@@ -7,8 +7,8 @@ import { Select } from "@/components/man/Select";
 import { Button } from "@/components/ui/button";
 import { Plus, AlertTriangle } from "lucide-react";
 
-const fieldCls = "w-full rounded-[10px] border bg-white px-3.5 py-2.5 t-body outline-none";
-const fs = { borderColor: "var(--card-edge)", color: "var(--ink-900)" } as const;
+const fieldCls = "man-field w-full px-3.5 py-2.5 t-body";
+const fs = { color: "var(--ink-900)" } as const;
 const TEAM = [
   { n: "Yusuf A.", email: "yusuf@famouskabob.com", role: "Owner" },
   { n: "Mariam A.", email: "mariam@famouskabob.com", role: "Manager" },

@@ -34,7 +34,7 @@ export default function LeadsPage() {
           {/* Conversation list */}
           <div className="flex w-[320px] flex-shrink-0 flex-col" style={{ borderRight: "1px solid var(--card-edge)" }}>
             <div className="flex h-[69px] items-center px-4" style={{ borderBottom: "1px solid var(--card-edge)" }}>
-              <div className="flex w-full items-center gap-2 rounded-[10px] border px-3 py-2" style={{ borderColor: "var(--card-edge)", background: "#ffffff" }}>
+              <div className="man-field-wrap flex w-full items-center gap-2 rounded-[10px] border px-3 py-2" style={{ background: "#ffffff" }}>
                 <Search size={15} style={{ color: "var(--ink-400)" }} /><input placeholder="Search leads" className="w-full bg-transparent t-body-sm outline-none" style={{ color: "var(--ink-900)" }} />
               </div>
             </div>
@@ -81,7 +81,7 @@ export default function LeadsPage() {
                 {QUICK.map((q) => <button key={q} onClick={() => setDraft(q)} className="t-body-xs rounded-full px-2.5 py-1" style={{ background: "var(--paper-2)", color: "var(--ink-700)" }}>{q}</button>)}
               </div>
               <div className="flex items-end gap-2">
-                <textarea value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Write a reply…" className="flex-1 rounded-[12px] border bg-white px-3.5 py-2.5 t-body-sm outline-none" style={{ borderColor: "var(--card-edge)", color: "var(--ink-900)", minHeight: 44, resize: "none" }} />
+                <textarea value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Write a reply…" className="man-field flex-1 px-3.5 py-2.5 t-body-sm" style={{ color: "var(--ink-900)", minHeight: 44, resize: "none" }} />
                 <Button size="sm"><Send className="h-4 w-4" /></Button>
               </div>
             </div>

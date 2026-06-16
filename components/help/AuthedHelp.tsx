@@ -47,7 +47,7 @@ export function AuthedHelp({ role }: { role: "consumer" | "owner" }) {
         <div className="grid gap-3.5">
           {/* Search */}
           <ManCard style={{ padding: 18 }}>
-            <div className="flex items-center gap-2 rounded-[10px] border bg-white px-3.5 py-2.5" style={{ borderColor: "var(--card-edge)" }}>
+            <div className="man-field-wrap flex items-center gap-2 rounded-[10px] border bg-white px-3.5 py-2.5">
               <Search size={18} style={{ color: "var(--ink-400)" }} />
               <input placeholder="Search help articles…" className="w-full bg-transparent t-body outline-none" style={{ color: "var(--ink-900)" }} />
             </div>
