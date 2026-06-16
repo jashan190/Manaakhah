@@ -22,7 +22,7 @@ import {
   DEFAULT_LOCATION,
 } from "@/lib/constants";
 import { useMockSession } from "@/components/mock-session-provider";
-import { useMapSearch, type Business, type MapBounds } from "@/hooks/useMapSearch";
+import { useMapSearch, type MapBounds } from "@/hooks/useMapSearch";
 import { ViewToggle, type ViewMode } from "@/components/search/ViewToggle";
 import { FilterRail } from "@/components/search/FilterRail";
 import { BusinessCard } from "@/components/business/BusinessCard";
@@ -283,11 +283,19 @@ function SearchContent() {
           {/* Results */}
           <div>
             {isLoading ? (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <BusinessCardSkeleton key={i} variant="grid" />
-                ))}
-              </div>
+              viewMode === "split" ? (
+                <div className="flex flex-col gap-1">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <BusinessCardSkeleton key={i} variant="compact" />
+                  ))}
+                </div>
+              ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <BusinessCardSkeleton key={i} variant="grid" />
+                  ))}
+                </div>
+              )
             ) : sortedBusinesses.length === 0 ? (
               <EmptyState
                 Icon={Search}
@@ -338,7 +346,7 @@ function SearchContent() {
                       ))}
                     </div>
                     {/* Map on right */}
-                    <div className="h-[600px] rounded-lg overflow-hidden border sticky top-24">
+                    <div className="h-[600px] rounded-lg overflow-hidden border sticky top-24" style={{ borderColor: "var(--card-edge)" }}>
                       <MapLibreMap
                         businesses={businessesForMap}
                         userLat={userLocation?.lat ?? 37.5485}
