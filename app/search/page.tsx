@@ -10,7 +10,7 @@ const MapLibreMap = dynamic(() => import("@/components/map/MapLibreMap"), {
   ssr: false,
   loading: () => (
     <div className="h-[600px] rounded-lg flex items-center justify-center" style={{ background: "var(--paper-2)" }}>
-      <p className="text-muted-foreground">Loading map...</p>
+      <p className="t-body-sm" style={{ color: "var(--ink-500)" }}>Loading map…</p>
     </div>
   ),
 });
@@ -26,8 +26,10 @@ import { useMapSearch, type Business, type MapBounds } from "@/hooks/useMapSearc
 import { ViewToggle, type ViewMode } from "@/components/search/ViewToggle";
 import { FilterRail } from "@/components/search/FilterRail";
 import { BusinessCard } from "@/components/business/BusinessCard";
+import { BusinessCardSkeleton } from "@/components/man/Skeleton";
+import { EmptyState } from "@/components/man/EmptyState";
 import { categoriesForGroup } from "@/lib/category-groups";
-import { Bookmark, MessageCircle, SlidersHorizontal, ChevronDown, X } from "lucide-react";
+import { Bookmark, MessageCircle, SlidersHorizontal, ChevronDown, X, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 function SearchContent() {
@@ -281,21 +283,22 @@ function SearchContent() {
           {/* Results */}
           <div>
             {isLoading ? (
-              <div className="text-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-                <p className="text-muted-foreground">Finding businesses near you...</p>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <BusinessCardSkeleton key={i} />
+                ))}
               </div>
             ) : sortedBusinesses.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="text-6xl mb-4">🔍</div>
-                <p className="text-muted-foreground mb-4">No businesses found</p>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Try adjusting your search filters or expanding your search radius
-                </p>
-                <Button variant="outline" onClick={clearFilters}>
-                  Clear Filters
-                </Button>
-              </div>
+              <EmptyState
+                Icon={Search}
+                title="No businesses found"
+                description="Try adjusting your search filters or expanding your search radius."
+                action={
+                  <Button variant="outline" onClick={clearFilters}>
+                    Clear Filters
+                  </Button>
+                }
+              />
             ) : (
               <>
                 <div className="flex items-center justify-between mb-6">
@@ -376,10 +379,13 @@ function SearchContent() {
 export default function SearchPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--moss-700)] mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading search...</p>
+      <div className="min-h-screen" style={{ background: "var(--paper)" }}>
+        <div className="container mx-auto max-w-6xl py-8 px-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <BusinessCardSkeleton key={i} />
+            ))}
+          </div>
         </div>
       </div>
     }>
