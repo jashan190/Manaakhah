@@ -7,11 +7,11 @@
 | Token | Value | Used for |
 |---|---|---|
 | `xs` | **4px** | checkboxes, tiny chips, focus-halo corners |
-| `sm` | **8px** | inputs/fields, icon buttons, search containers |
-| `md` | **12px** | buttons, cards, panels, dropdowns, containers |
+| `sm` | **8px** | **controls: buttons + inputs/fields**, icon buttons, search containers |
+| `md` | **12px** | cards, panels, dropdowns, large selection tiles, upload drop-zones |
 | `full` | — | pills, toggles, avatars |
 
-(Buttons and cards both land on 12 — intentional, per decision to keep cards at 12.)
+Buttons and input fields share the 8px **controls** tier so adjacent control rows (e.g. an input + its Search button) have matching corners. Cards/containers sit one step up at 12px. (Large dashed upload drop-zones and selectable method tiles are treated as containers → 12.)
 
 ## Mapping (old → new)
 - `5`, `6` → **4**
