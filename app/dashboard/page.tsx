@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useMockSession } from "@/components/mock-session-provider";
 import { Button } from "@/components/ui/button";
@@ -45,13 +45,18 @@ export default function DashboardPage() {
   const { data: session } = useMockSession();
   const owner = (session?.user?.name || "Yusuf").split(" ")[0];
   const [tab, setTab] = useState<"overview" | "analytics">("overview");
+  // Computed client-side to avoid server/client timezone hydration mismatch
+  const [today, setToday] = useState("");
+  useEffect(() => {
+    setToday(new Date().toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }));
+  }, []);
 
   return (
     <OwnerShell active="dashboard">
       <div className="px-6 py-7 md:px-8">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>Today · Mon Feb 10</div>
+            <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>Today{today ? ` · ${today}` : ""}</div>
             <h1 className="t-h3" style={{ color: "var(--ink-900)", marginTop: 4 }}>Salaam {owner} — here&apos;s your week</h1>
           </div>
           <div className="flex gap-2">

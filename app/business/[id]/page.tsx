@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ManCard, Tag, Seal, Avatar } from "@/components/man/primitives";
+import { Skeleton } from "@/components/man/Skeleton";
 import { BUSINESS_TAGS, PRICE_RANGES } from "@/lib/constants";
 import {
   Phone, MessageCircle, MapPin, Globe, Heart, Share2, Star, Clock,
@@ -90,7 +91,26 @@ export default function BusinessDetailPage() {
   };
 
   if (loading) {
-    return <div className="flex min-h-[60vh] items-center justify-center" style={{ background: "var(--paper)" }}><div className="h-8 w-8 animate-spin rounded-full border-b-2" style={{ borderColor: "var(--moss-700)" }} /></div>;
+    return (
+      <div style={{ background: "var(--paper)" }} className="min-h-screen">
+        <Skeleton style={{ height: 320, width: "100%", borderRadius: 0 }} />
+        <div className="mx-auto max-w-[1100px] px-5 py-6 md:px-8">
+          <div className="flex flex-col gap-3">
+            <Skeleton style={{ height: 32, width: "45%" }} />
+            <Skeleton style={{ height: 16, width: "30%" }} />
+          </div>
+          <div className="mt-8 grid gap-6 lg:grid-cols-[1.7fr_1fr]">
+            <div className="flex flex-col gap-3">
+              <Skeleton style={{ height: 16, width: "100%" }} />
+              <Skeleton style={{ height: 16, width: "90%" }} />
+              <Skeleton style={{ height: 16, width: "80%" }} />
+              <Skeleton style={{ height: 200, width: "100%", borderRadius: 12, marginTop: 8 }} />
+            </div>
+            <Skeleton style={{ height: 260, width: "100%", borderRadius: 12 }} />
+          </div>
+        </div>
+      </div>
+    );
   }
   if (!business) {
     return (

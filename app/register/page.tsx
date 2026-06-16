@@ -65,8 +65,8 @@ function RegisterContent() {
     const active = formData.role === value;
     return (
       <button type="button" onClick={() => setFormData({ ...formData, role: value })}
-        className="flex-1 rounded-full px-4 py-2 t-label transition-colors"
-        style={active ? { background: "var(--ink-900)", color: "var(--bone)" } : { background: "transparent", color: "var(--ink-500)" }}>
+        className="flex-1 rounded-full px-4 py-2 t-label transition-colors man-focus"
+        style={active ? { background: "var(--moss-700)", color: "var(--bone)" } : { background: "transparent", color: "var(--ink-500)" }}>
         {label}
       </button>
     );

@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AuthShell } from "@/components/auth/AuthShell";
 import { CheckCircle, XCircle, Loader2, Eye, EyeOff, KeyRound } from "lucide-react";
 
 type ResetStatus = "validating" | "valid" | "invalid" | "resetting" | "signing-in" | "success" | "error";
@@ -123,157 +123,156 @@ function ResetPasswordContent() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Reset Password</CardTitle>
-          {status === "valid" && (
-            <CardDescription>
-              Enter your new password below.
-            </CardDescription>
-          )}
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {status === "validating" && (
-            <div className="flex flex-col items-center py-8 space-y-4">
-              <Loader2 className="h-12 w-12 text-primary animate-spin" />
-              <p className="text-muted-foreground">Validating reset link...</p>
+    <AuthShell>
+      <h1 className="t-h1" style={{ color: "var(--ink-900)" }}>Reset Password</h1>
+      {status === "valid" && (
+        <p className="mt-2 t-body" style={{ color: "var(--ink-500)" }}>
+          Enter your new password below.
+        </p>
+      )}
+
+      <div className="mt-8 space-y-4">
+        {status === "validating" && (
+          <div className="flex flex-col items-center py-8 space-y-4">
+            <Loader2 className="h-12 w-12 animate-spin" style={{ color: "var(--moss-700)" }} />
+            <p className="t-body" style={{ color: "var(--ink-500)" }}>Validating reset link...</p>
+          </div>
+        )}
+
+        {status === "invalid" && (
+          <div className="flex flex-col items-center py-8 space-y-4">
+            <XCircle className="h-12 w-12" style={{ color: "var(--err-500)" }} />
+            <div className="text-center space-y-2">
+              <p className="t-body font-medium" style={{ color: "var(--err-500)" }}>Invalid reset link</p>
+              <p className="t-body-sm" style={{ color: "var(--ink-500)" }}>{errorMessage}</p>
             </div>
-          )}
-
-          {status === "invalid" && (
-            <div className="flex flex-col items-center py-8 space-y-4">
-              <XCircle className="h-12 w-12 text-red-600" />
-              <div className="text-center space-y-2">
-                <p className="text-lg font-medium text-red-600">Invalid reset link</p>
-                <p className="text-muted-foreground">{errorMessage}</p>
-              </div>
-              <Link href="/forgot-password">
-                <Button variant="outline" className="mt-4">
-                  <KeyRound className="h-4 w-4 mr-2" />
-                  Request a New Reset Link
-                </Button>
-              </Link>
-            </div>
-          )}
-
-          {(status === "valid" || status === "resetting") && (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {validationError && (
-                <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm">
-                  {validationError}
-                </div>
-              )}
-
-              <div className="space-y-2">
-                <Label htmlFor="password">New Password</Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Minimum 8 characters"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    minLength={8}
-                    className="pr-10"
-                    disabled={status === "resetting"}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    tabIndex={-1}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </button>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Password must be at least 8 characters.
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <div className="relative">
-                  <Input
-                    id="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
-                    placeholder="Confirm your password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                    className="pr-10"
-                    disabled={status === "resetting"}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    tabIndex={-1}
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              <Button type="submit" className="w-full" disabled={status === "resetting"}>
-                {status === "resetting" ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Resetting...
-                  </>
-                ) : (
-                  "Reset Password"
-                )}
+            <Link href="/forgot-password">
+              <Button variant="outline" className="mt-4">
+                <KeyRound className="h-4 w-4 mr-2" />
+                Request a New Reset Link
               </Button>
-            </form>
-          )}
+            </Link>
+          </div>
+        )}
 
-          {(status === "success" || status === "signing-in") && (
-            <div className="flex flex-col items-center py-8 space-y-4">
-              {status === "signing-in" ? (
-                <Loader2 className="h-12 w-12 text-primary animate-spin" />
+        {(status === "valid" || status === "resetting") && (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {validationError && (
+              <div className="rounded-[8px] p-3 t-body-sm" style={{ background: "#fadfdb", color: "#9b2e25" }}>
+                {validationError}
+              </div>
+            )}
+
+            <div className="space-y-1.5">
+              <Label htmlFor="password">New Password</Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Minimum 8 characters"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={8}
+                  className="pr-10"
+                  disabled={status === "resetting"}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2"
+                  style={{ color: "var(--ink-400)" }}
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
+              <p className="t-body-sm" style={{ color: "var(--ink-500)" }}>
+                Password must be at least 8 characters.
+              </p>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <div className="relative">
+                <Input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  className="pr-10"
+                  disabled={status === "resetting"}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2"
+                  style={{ color: "var(--ink-400)" }}
+                  tabIndex={-1}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <Button type="submit" className="w-full" size="lg" disabled={status === "resetting"}>
+              {status === "resetting" ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Resetting...
+                </>
               ) : (
-                <CheckCircle className="h-12 w-12 text-primary" />
+                "Reset Password"
               )}
-              <div className="text-center space-y-2">
-                <p className="text-lg font-medium text-primary">
-                  {successMessage || "Password reset successfully!"}
-                </p>
-                <p className="text-muted-foreground">
-                  {status === "signing-in" ? "Please wait..." : "Redirecting to login..."}
-                </p>
-              </div>
-            </div>
-          )}
+            </Button>
+          </form>
+        )}
 
-          {status === "error" && (
-            <div className="flex flex-col items-center py-8 space-y-4">
-              <XCircle className="h-12 w-12 text-red-600" />
-              <div className="text-center space-y-2">
-                <p className="text-lg font-medium text-red-600">Reset failed</p>
-                <p className="text-muted-foreground">{errorMessage}</p>
-              </div>
-              <Link href="/forgot-password">
-                <Button variant="outline" className="mt-4">
-                  <KeyRound className="h-4 w-4 mr-2" />
-                  Request a New Reset Link
-                </Button>
-              </Link>
+        {(status === "success" || status === "signing-in") && (
+          <div className="flex flex-col items-center py-8 space-y-4">
+            {status === "signing-in" ? (
+              <Loader2 className="h-12 w-12 animate-spin" style={{ color: "var(--moss-700)" }} />
+            ) : (
+              <CheckCircle className="h-12 w-12" style={{ color: "var(--moss-700)" }} />
+            )}
+            <div className="text-center space-y-2">
+              <p className="t-body font-medium" style={{ color: "var(--moss-700)" }}>
+                {successMessage || "Password reset successfully!"}
+              </p>
+              <p className="t-body-sm" style={{ color: "var(--ink-500)" }}>
+                {status === "signing-in" ? "Please wait..." : "Redirecting to login..."}
+              </p>
             </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+          </div>
+        )}
+
+        {status === "error" && (
+          <div className="flex flex-col items-center py-8 space-y-4">
+            <XCircle className="h-12 w-12" style={{ color: "var(--err-500)" }} />
+            <div className="text-center space-y-2">
+              <p className="t-body font-medium" style={{ color: "var(--err-500)" }}>Reset failed</p>
+              <p className="t-body-sm" style={{ color: "var(--ink-500)" }}>{errorMessage}</p>
+            </div>
+            <Link href="/forgot-password">
+              <Button variant="outline" className="mt-4">
+                <KeyRound className="h-4 w-4 mr-2" />
+                Request a New Reset Link
+              </Button>
+            </Link>
+          </div>
+        )}
+      </div>
+    </AuthShell>
   );
 }
 
@@ -281,18 +280,8 @@ export default function ResetPasswordPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-background px-4">
-          <Card className="w-full max-w-md">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl font-bold">Reset Password</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col items-center py-8 space-y-4">
-                <Loader2 className="h-12 w-12 text-primary animate-spin" />
-                <p className="text-muted-foreground">Loading...</p>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="flex min-h-screen items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin" style={{ color: "var(--moss-700)" }} />
         </div>
       }
     >

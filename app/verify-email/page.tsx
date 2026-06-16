@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AuthShell } from "@/components/auth/AuthShell";
 import { CheckCircle, XCircle, Loader2, Mail } from "lucide-react";
 
 type VerificationStatus = "loading" | "success" | "signing-in" | "error" | "resend-form" | "resend-sent";
@@ -154,133 +154,133 @@ function VerifyEmailContent() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Email Verification</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {status === "loading" && (
-            <div className="flex flex-col items-center py-8 space-y-4">
-              <Loader2 className="h-12 w-12 text-primary animate-spin" />
-              <p className="text-muted-foreground">Verifying your email...</p>
-            </div>
-          )}
+    <AuthShell>
+      <h1 className="t-h1" style={{ color: "var(--ink-900)" }}>Email Verification</h1>
 
-          {(status === "success" || status === "signing-in") && (
-            <div className="flex flex-col items-center py-8 space-y-4">
-              {status === "signing-in" ? (
-                <Loader2 className="h-12 w-12 text-primary animate-spin" />
+      <div className="mt-8 space-y-4">
+        {status === "loading" && (
+          <div className="flex flex-col items-center py-8 space-y-4">
+            <Loader2 className="h-12 w-12 animate-spin" style={{ color: "var(--moss-700)" }} />
+            <p className="t-body" style={{ color: "var(--ink-500)" }}>Verifying your email...</p>
+          </div>
+        )}
+
+        {(status === "success" || status === "signing-in") && (
+          <div className="flex flex-col items-center py-8 space-y-4">
+            {status === "signing-in" ? (
+              <Loader2 className="h-12 w-12 animate-spin" style={{ color: "var(--moss-700)" }} />
+            ) : (
+              <CheckCircle className="h-12 w-12" style={{ color: "var(--moss-700)" }} />
+            )}
+            <div className="text-center space-y-2">
+              <p className="t-body font-medium" style={{ color: "var(--moss-700)" }}>
+                {successMessage || "Email verified successfully!"}
+              </p>
+              <p className="t-body-sm" style={{ color: "var(--ink-500)" }}>
+                {status === "signing-in" ? "Please wait..." : "Redirecting to login..."}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {status === "error" && (
+          <div className="flex flex-col items-center py-8 space-y-4">
+            <XCircle className="h-12 w-12" style={{ color: "var(--err-500)" }} />
+            <div className="text-center space-y-2">
+              <p className="t-body font-medium" style={{ color: "var(--err-500)" }}>Verification failed</p>
+              <p className="t-body-sm" style={{ color: "var(--ink-500)" }}>{errorMessage}</p>
+            </div>
+            <Button onClick={handleResendRequest} variant="outline" className="mt-4">
+              <Mail className="h-4 w-4 mr-2" />
+              Request New Verification Link
+            </Button>
+            <Link
+              href="/login"
+              className="t-body-sm font-medium"
+              style={{ color: "var(--moss-700)" }}
+            >
+              Back to login
+            </Link>
+          </div>
+        )}
+
+        {status === "resend-form" && (
+          <form onSubmit={handleResendSubmit} className="space-y-4">
+            <div className="text-center mb-4">
+              <p className="t-body-sm" style={{ color: "var(--ink-500)" }}>Enter your email address to receive a new verification link.</p>
+            </div>
+
+            {resendError && (
+              <div className="rounded-[8px] p-3 t-body-sm" style={{ background: "var(--clay-50)", color: "var(--clay-700)" }}>
+                {resendError}
+              </div>
+            )}
+
+            <div className="space-y-1.5">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="name@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={resendLoading || cooldownSeconds > 0}
+            >
+              {resendLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Sending...
+                </>
+              ) : cooldownSeconds > 0 ? (
+                `Resend in ${cooldownSeconds}s`
               ) : (
-                <CheckCircle className="h-12 w-12 text-primary" />
+                "Send verification link"
               )}
-              <div className="text-center space-y-2">
-                <p className="text-lg font-medium text-primary">
-                  {successMessage || "Email verified successfully!"}
-                </p>
-                <p className="text-muted-foreground">
-                  {status === "signing-in" ? "Please wait..." : "Redirecting to login..."}
-                </p>
-              </div>
+            </Button>
+            <button
+              type="button"
+              onClick={() => {
+                setStatus("error");
+                setResendError("");
+                setCooldownSeconds(0);
+              }}
+              className="w-full t-body-sm"
+              style={{ color: "var(--ink-500)" }}
+            >
+              Cancel
+            </button>
+          </form>
+        )}
+
+        {status === "resend-sent" && (
+          <div className="flex flex-col items-center py-8 space-y-4">
+            <Mail className="h-12 w-12" style={{ color: "var(--moss-700)" }} />
+            <div className="text-center space-y-2">
+              <p className="t-body font-medium" style={{ color: "var(--ink-900)" }}>Check your email</p>
+              <p className="t-body-sm" style={{ color: "var(--ink-500)" }}>
+                If an account exists with this email, we&apos;ve sent a new verification link.
+              </p>
+              <p className="t-body-sm mt-2" style={{ color: "var(--ink-500)" }}>
+                Don&apos;t forget to check your spam folder.
+              </p>
             </div>
-          )}
-
-          {status === "error" && (
-            <div className="flex flex-col items-center py-8 space-y-4">
-              <XCircle className="h-12 w-12 text-red-600" />
-              <div className="text-center space-y-2">
-                <p className="text-lg font-medium text-red-600">Verification failed</p>
-                <p className="text-muted-foreground">{errorMessage}</p>
-              </div>
-              <Button onClick={handleResendRequest} variant="outline" className="mt-4">
-                <Mail className="h-4 w-4 mr-2" />
-                Request New Verification Link
-              </Button>
-              <Link
-                href="/login"
-                className="text-sm text-primary hover:underline"
-              >
-                Back to login
-              </Link>
-            </div>
-          )}
-
-          {status === "resend-form" && (
-            <form onSubmit={handleResendSubmit} className="space-y-4">
-              <div className="text-center mb-4">
-                <p className="text-muted-foreground">Enter your email address to receive a new verification link.</p>
-              </div>
-
-              {resendError && (
-                <div className="bg-amber-50 text-amber-700 p-3 rounded-md text-sm">
-                  {resendError}
-                </div>
-              )}
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="name@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={resendLoading || cooldownSeconds > 0}
-              >
-                {resendLoading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Sending...
-                  </>
-                ) : cooldownSeconds > 0 ? (
-                  `Resend in ${cooldownSeconds}s`
-                ) : (
-                  "Send verification link"
-                )}
-              </Button>
-              <button
-                type="button"
-                onClick={() => {
-                  setStatus("error");
-                  setResendError("");
-                  setCooldownSeconds(0);
-                }}
-                className="w-full text-sm text-muted-foreground hover:text-gray-800"
-              >
-                Cancel
-              </button>
-            </form>
-          )}
-
-          {status === "resend-sent" && (
-            <div className="flex flex-col items-center py-8 space-y-4">
-              <Mail className="h-12 w-12 text-primary" />
-              <div className="text-center space-y-2">
-                <p className="text-lg font-medium">Check your email</p>
-                <p className="text-muted-foreground">
-                  If an account exists with this email, we&apos;ve sent a new verification link.
-                </p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  Don&apos;t forget to check your spam folder.
-                </p>
-              </div>
-              <Link
-                href="/login"
-                className="text-primary font-medium hover:underline mt-4"
-              >
-                Back to login
-              </Link>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+            <Link
+              href="/login"
+              className="t-body-sm font-medium mt-4"
+              style={{ color: "var(--moss-700)" }}
+            >
+              Back to login
+            </Link>
+          </div>
+        )}
+      </div>
+    </AuthShell>
   );
 }
 
@@ -288,18 +288,8 @@ export default function VerifyEmailPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-background px-4">
-          <Card className="w-full max-w-md">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl font-bold">Email Verification</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col items-center py-8 space-y-4">
-                <Loader2 className="h-12 w-12 text-primary animate-spin" />
-                <p className="text-muted-foreground">Loading...</p>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="flex min-h-screen items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin" style={{ color: "var(--moss-700)" }} />
         </div>
       }
     >
