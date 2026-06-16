@@ -96,3 +96,22 @@
 .t-label { font-weight:500; font-size:13px; line-height:1.3; letter-spacing:-.003em; }
 .t-label-sm { font-weight:500; font-size:12px; line-height:1.3; letter-spacing:-.003em; }
 .t-eyebrow { font-weight:600; font-size:10.5px; line-height:1.2; letter-spacing:.14em; text-transform:uppercase; }
+
+/* Unified form-control treatment — moss border + soft halo on focus */
+.man-field {
+  border: 1px solid var(--card-edge);
+  border-radius: 10px;
+  background: #ffffff;
+}
+.man-field:focus,
+.man-field:focus-visible {
+  outline: none;
+  border-color: var(--moss-700);
+  box-shadow: 0 0 0 3px var(--moss-100);
+}
+/* For controls whose visible border lives on a wrapper (search bars, icon+input rows) */
+.man-field-wrap:focus-within {
+  border-color: var(--moss-700);
+  box-shadow: 0 0 0 3px var(--moss-100);
+}
+.man-focusable:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--moss-100); border-radius: 6px; }

@@ -40,7 +40,7 @@ export function Select({
         disabled={disabled}
         onClick={() => setOpen((o) => !o)}
         className="flex w-full items-center justify-between gap-2 rounded-[10px] border bg-white px-3.5 py-2.5 t-body outline-none transition-colors disabled:opacity-50"
-        style={{ borderColor: open ? "var(--moss-700)" : "var(--card-edge)", color: selected ? "var(--ink-900)" : "var(--ink-400)" }}
+        style={{ borderColor: open ? "var(--moss-700)" : "var(--card-edge)", boxShadow: open ? "0 0 0 3px var(--moss-100)" : "none", color: selected ? "var(--ink-900)" : "var(--ink-400)" }}
       >
         <span className="truncate">{selected ? selected.label : placeholder}</span>
         <ChevronDown size={16} style={{ color: "var(--ink-400)", transform: open ? "rotate(180deg)" : "none", transition: "transform 0.15s", flexShrink: 0 }} />
