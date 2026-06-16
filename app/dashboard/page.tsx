@@ -65,7 +65,7 @@ export default function DashboardPage() {
           {([["overview", "Overview"], ["analytics", "Analytics"]] as const).map(([k, l]) => {
             const on = tab === k;
             return (
-              <button key={k} onClick={() => setTab(k)} className="man-focus rounded-[6px] px-4 py-2.5 t-label transition-colors"
+              <button key={k} onClick={() => setTab(k)} className="man-focus rounded-[4px] px-4 py-2.5 t-label transition-colors"
                 style={{ color: on ? "var(--ink-900)" : "var(--ink-500)", borderBottom: on ? "2px solid var(--moss-700)" : "2px solid transparent", marginBottom: -1 }}>
                 {l}
               </button>

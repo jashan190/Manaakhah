@@ -51,7 +51,7 @@ export default function ClaimBusinessPage() {
 
         <ManCard style={{ padding: 22, marginTop: 18 }}>
           <form onSubmit={runSearch} className="flex flex-col gap-2.5 sm:flex-row">
-            <div className="man-field-wrap flex flex-1 items-center gap-2 rounded-[10px] border bg-white px-3.5">
+            <div className="man-field-wrap flex flex-1 items-center gap-2 rounded-[8px] border bg-white px-3.5">
               <Search size={18} style={{ color: "var(--ink-400)" }} />
               <input value={query} onChange={(e) => setQuery(e.target.value)} className="w-full bg-transparent py-2.5 t-body outline-none" style={{ color: "var(--ink-900)" }} placeholder="Search your business name…" />
             </div>

@@ -43,7 +43,7 @@ export default function SubscriptionPage() {
           </ManCard>
 
           {/* Upgrade */}
-          <div className="rounded-[14px] p-6" style={{ background: "var(--clay-50)", border: "1px solid var(--clay-100)" }}>
+          <div className="rounded-[12px] p-6" style={{ background: "var(--clay-50)", border: "1px solid var(--clay-100)" }}>
             <Tag tone="clay">Premier</Tag>
             <div className="t-h3" style={{ color: "var(--ink-900)", marginTop: 10 }}>Go Top of Search</div>
             <p className="t-body-sm" style={{ color: "var(--ink-700)", marginTop: 6 }}>Featured placement, AI review replies, multi-location, and a direct line to our verification team.</p>
@@ -56,7 +56,7 @@ export default function SubscriptionPage() {
           {/* Payment method */}
           <ManCard style={{ padding: 22 }}>
             <div className="t-h4" style={{ color: "var(--ink-900)" }}>Payment Method</div>
-            <div className="mt-3 flex items-center gap-3 rounded-[10px] p-3" style={{ background: "var(--paper-2)" }}>
+            <div className="mt-3 flex items-center gap-3 rounded-[8px] p-3" style={{ background: "var(--paper-2)" }}>
               <CreditCard size={22} style={{ color: "var(--ink-700)" }} />
               <div className="flex-1"><div className="t-label" style={{ color: "var(--ink-900)" }}>Visa ending 4242</div><div className="t-body-xs" style={{ color: "var(--ink-500)" }}>Expires 08/28</div></div>
               <Button variant="outline" size="sm">Update</Button>

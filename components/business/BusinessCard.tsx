@@ -41,7 +41,7 @@ export function BusinessCard({
       <Link href={`/business/${business.id}`} onClick={onView}>
         <div className="flex gap-3 overflow-hidden rounded-[12px] p-2.5 transition-shadow hover:shadow-[var(--shadow-rest)]"
           style={{ background: "#ffffff", border: "1px solid var(--card-edge)" }}>
-          <div className="relative h-[84px] w-[84px] flex-shrink-0 overflow-hidden rounded-[10px]">
+          <div className="relative h-[84px] w-[84px] flex-shrink-0 overflow-hidden rounded-[8px]">
             {img ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={img} alt={business.name} loading="lazy" className="h-full w-full object-cover" />
@@ -82,7 +82,7 @@ export function BusinessCard({
   // Grid = vertical card (default)
   return (
     <Link href={`/business/${business.id}`} onClick={onView}>
-      <div className="h-full overflow-hidden rounded-[14px] transition-shadow hover:shadow-[var(--shadow-lift)]"
+      <div className="h-full overflow-hidden rounded-[12px] transition-shadow hover:shadow-[var(--shadow-lift)]"
         style={{ background: "#ffffff", border: "1px solid var(--card-edge)" }}>
         <div className="relative">
           {img ? (

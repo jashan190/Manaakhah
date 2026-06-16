@@ -74,7 +74,7 @@ export default function CertificationPage() {
               <div className="t-h4" style={{ color: "var(--ink-900)", marginTop: 10 }}>How We Verify</div>
               <p className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 6 }}>We sync certification data nightly from the certifying body and remove badges within 24h if a certification lapses.</p>
             </ManCard>
-            <div className="rounded-[14px] p-5" style={{ background: "var(--clay-50)", border: "1px solid var(--clay-100)" }}>
+            <div className="rounded-[12px] p-5" style={{ background: "var(--clay-50)", border: "1px solid var(--clay-100)" }}>
               <div className="t-h4" style={{ color: "var(--clay-700)" }}>Have Concerns?</div>
               <p className="t-body-sm" style={{ color: "var(--ink-700)", marginTop: 6 }}>If something looks off, report it — halal disputes are reviewed within 48 hours.</p>
             </div>

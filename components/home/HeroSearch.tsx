@@ -33,7 +33,7 @@ export function HeroSearch() {
             Discover and support Muslim-owned businesses near you — restaurants, grocers, salons, services and more, trusted by your community.
           </p>
 
-          <form onSubmit={submit} className="man-field-wrap mt-7 flex w-full flex-col gap-2 rounded-[14px] border bg-white p-2 shadow-[var(--shadow-lift)] sm:flex-row sm:items-center">
+          <form onSubmit={submit} className="man-field-wrap mt-7 flex w-full flex-col gap-2 rounded-[12px] border bg-white p-2 shadow-[var(--shadow-lift)] sm:flex-row sm:items-center">
             <div className="flex flex-1 items-center gap-2 px-3 sm:min-w-[200px]">
               <Search size={18} className="flex-shrink-0" style={{ color: "var(--ink-400)" }} />
               <input value={term} onChange={(e) => setTerm(e.target.value)} placeholder="Search businesses…"

@@ -39,7 +39,7 @@ export default function VerificationPage() {
               {METHODS.map((m) => {
                 const on = method === m.k;
                 return (
-                  <button key={m.k} onClick={() => setMethod(m.k)} className="man-focus flex items-start gap-3.5 rounded-[14px] p-4 text-left transition-colors" style={{ background: "#ffffff", border: on ? "1.5px solid var(--moss-700)" : "1px solid var(--card-edge)" }}>
+                  <button key={m.k} onClick={() => setMethod(m.k)} className="man-focus flex items-start gap-3.5 rounded-[12px] p-4 text-left transition-colors" style={{ background: "#ffffff", border: on ? "1.5px solid var(--moss-700)" : "1px solid var(--card-edge)" }}>
                     <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full" style={{ background: on ? "var(--moss-50)" : "var(--paper-2)" }}><m.Icon size={18} style={{ color: on ? "var(--moss-700)" : "var(--ink-500)" }} /></span>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
@@ -60,7 +60,7 @@ export default function VerificationPage() {
           </>
         ) : (
           <ManCard style={{ padding: 28 }}>
-            <div className="flex items-start gap-3 rounded-[10px] p-3.5" style={{ background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
+            <div className="flex items-start gap-3 rounded-[8px] p-3.5" style={{ background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
               <Seal size={24} />
               <div><div className="t-label" style={{ color: "var(--ink-900)" }}>Verification on its way</div><div className="t-body-sm" style={{ color: "var(--ink-700)", marginTop: 2 }}>{method === "phone" ? "We're calling (916) 483-1700 now — enter the 6-digit code you hear." : method === "email" ? "Check owner@famouskabob.com for a verification link." : "Our team will review your document within 1 business day."}</div></div>
             </div>

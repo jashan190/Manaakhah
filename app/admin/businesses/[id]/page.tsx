@@ -27,7 +27,7 @@ export default function VerificationDetailPage() {
 
         <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
           <div className="flex items-center gap-3.5">
-            <Photo seed="sac-famous-kabob" w={64} h={56} radius={10} />
+            <Photo seed="sac-famous-kabob" w={64} h={56} radius={8} />
             <div>
               <div className="flex items-center gap-2"><h1 className="t-h3" style={{ color: "var(--ink-900)" }}>Famous Kabob</h1><Tag tone="warn">Pending</Tag></div>
               <div className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 2 }}>Restaurant · HFSAA · submitted 4h ago by Yusuf A.</div>
@@ -60,7 +60,7 @@ export default function VerificationDetailPage() {
 
             <ManCard style={{ padding: 22 }}>
               <div className="t-h4" style={{ color: "var(--ink-900)" }}>Submitted Certificate</div>
-              <div className="mt-3 flex items-center gap-3 rounded-[10px] p-3.5" style={{ background: "var(--paper-2)" }}>
+              <div className="mt-3 flex items-center gap-3 rounded-[8px] p-3.5" style={{ background: "var(--paper-2)" }}>
                 <FileText size={22} style={{ color: "var(--ink-700)" }} />
                 <div className="flex-1"><div className="t-label-sm" style={{ color: "var(--ink-900)" }}>HFSAA_cert_2026.pdf</div><div className="t-body-xs" style={{ color: "var(--ink-500)" }}>Issued by Halal Food Standards Alliance of America</div></div>
                 <Button variant="outline" size="sm">Open</Button>

@@ -18,7 +18,7 @@ export default function AboutPage() {
         </p>
 
         <div className="mt-14 grid items-start gap-8 md:grid-cols-2">
-          <Photo src={ABOUT_IMG} alt="Founders" h={320} radius={14} />
+          <Photo src={ABOUT_IMG} alt="Founders" h={320} radius={12} />
           <div>
             <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>Mission</div>
             <h2 className="t-h2" style={{ color: "var(--ink-900)", marginTop: 8 }}>Trust, Made Visible.</h2>

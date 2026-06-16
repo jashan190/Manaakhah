@@ -70,7 +70,7 @@ export default function WriteReviewPage() {
           <div className="mt-5">
             <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 6 }}>Your review</div>
             <textarea value={text} onChange={(e) => setText(e.target.value.slice(0, 1000))} placeholder="Share the details — food, service, halal experience…"
-              className="w-full rounded-[10px] border bg-white px-3.5 py-2.5 t-body outline-none" style={{ borderColor: "var(--card-edge)", color: "var(--ink-900)", minHeight: 120, resize: "vertical" }} />
+              className="w-full rounded-[8px] border bg-white px-3.5 py-2.5 t-body outline-none" style={{ borderColor: "var(--card-edge)", color: "var(--ink-900)", minHeight: 120, resize: "vertical" }} />
             <div className="mt-1 text-right t-body-xs" style={{ color: "var(--ink-400)" }}>{text.length}/1000</div>
           </div>
 
@@ -91,7 +91,7 @@ export default function WriteReviewPage() {
             <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 8 }}>Photos</div>
             <div className="flex gap-2">
               {[0, 1, 2].map((i) => (
-                <button key={i} className="man-focus flex h-20 w-20 items-center justify-center rounded-[10px]" style={{ border: "2px dashed var(--card-edge)", color: "var(--ink-400)" }}><Plus size={18} /></button>
+                <button key={i} className="man-focus flex h-20 w-20 items-center justify-center rounded-[8px]" style={{ border: "2px dashed var(--card-edge)", color: "var(--ink-400)" }}><Plus size={18} /></button>
               ))}
             </div>
           </div>

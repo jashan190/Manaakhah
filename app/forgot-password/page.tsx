@@ -40,7 +40,7 @@ export default function ForgotPasswordPage() {
         <p className="mt-2 t-body" style={{ color: "var(--ink-500)" }}>
           If an account exists with this email, we&apos;ve sent a password reset link. It expires in 1 hour.
         </p>
-        <div className="mt-5 flex items-start gap-2 rounded-[10px] p-3 t-body-sm" style={{ background: "var(--clay-50)", color: "var(--clay-700)" }}>
+        <div className="mt-5 flex items-start gap-2 rounded-[8px] p-3 t-body-sm" style={{ background: "var(--clay-50)", color: "var(--clay-700)" }}>
           <Mail className="mt-0.5 h-4 w-4" /> Don&apos;t forget to check your spam folder.
         </div>
         <Link href="/login" className="mt-6 inline-flex items-center gap-1 t-label" style={{ color: "var(--moss-700)" }}>

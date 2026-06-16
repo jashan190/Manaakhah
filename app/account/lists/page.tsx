@@ -37,7 +37,7 @@ export default function SavedListsPage() {
               </div>
             </ManCard>
           ))}
-          <button className="man-focus flex min-h-[200px] flex-col items-center justify-center gap-2 rounded-[14px]" style={{ border: "2px dashed var(--card-edge)", color: "var(--ink-500)" }}>
+          <button className="man-focus flex min-h-[200px] flex-col items-center justify-center gap-2 rounded-[12px]" style={{ border: "2px dashed var(--card-edge)", color: "var(--ink-500)" }}>
             <Plus size={22} /><span className="t-label">Create a new list</span>
           </button>
         </div>

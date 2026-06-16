@@ -71,11 +71,11 @@ export default function BusinessSettingsPage() {
             <div className="flex items-center justify-between"><div className="t-h4" style={{ color: "var(--ink-900)" }}>Team & Access</div><Button size="sm"><Plus className="mr-1.5 h-4 w-4" /> Invite</Button></div>
             <div className="mt-3.5 grid gap-2">
               {TEAM.map((m) => (
-                <div key={m.email} className="flex items-center gap-3 rounded-[10px] border px-3.5 py-2.5" style={{ borderColor: "var(--card-edge)" }}>
+                <div key={m.email} className="flex items-center gap-3 rounded-[8px] border px-3.5 py-2.5" style={{ borderColor: "var(--card-edge)" }}>
                   <Avatar name={m.n} size={34} />
                   <div className="flex-1"><div className="t-label-sm" style={{ color: "var(--ink-900)" }}>{m.n}</div><div className="t-body-xs" style={{ color: "var(--ink-500)" }}>{m.email}</div></div>
                   <Tag tone={m.role === "Owner" ? "moss" : "default"}>{m.role}</Tag>
-                  {m.role !== "Owner" && <button className="man-focus rounded-[6px] t-body-sm" style={{ color: "var(--ink-500)" }}>Remove</button>}
+                  {m.role !== "Owner" && <button className="man-focus rounded-[4px] t-body-sm" style={{ color: "var(--ink-500)" }}>Remove</button>}
                 </div>
               ))}
             </div>

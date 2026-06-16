@@ -152,7 +152,7 @@ export function Header() {
             </div>
           </>
         )}
-        <button className="man-focus rounded-[6px] md:hidden" onClick={() => setMobileOpen((o) => !o)} aria-label="Menu">
+        <button className="man-focus rounded-[4px] md:hidden" onClick={() => setMobileOpen((o) => !o)} aria-label="Menu">
           {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </div>

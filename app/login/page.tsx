@@ -68,20 +68,20 @@ function LoginContent() {
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-4">
         {(verified || reset) && (
-          <div className="flex items-center gap-2 rounded-[10px] p-3 t-body-sm"
+          <div className="flex items-center gap-2 rounded-[8px] p-3 t-body-sm"
             style={{ background: "var(--moss-50)", color: "var(--moss-700)" }}>
             <CheckCircle className="h-4 w-4" />
             {verified ? "Email verified! Please sign in." : "Password reset! Sign in with your new password."}
           </div>
         )}
         {registered && (
-          <div className="flex items-center gap-2 rounded-[10px] p-3 t-body-sm"
+          <div className="flex items-center gap-2 rounded-[8px] p-3 t-body-sm"
             style={{ background: "var(--clay-50)", color: "var(--clay-700)" }}>
             <Mail className="h-4 w-4" /> Registration successful! Check your email to verify.
           </div>
         )}
         {error && (
-          <div className="rounded-[10px] p-3 t-body-sm" style={{ background: "#fadfdb", color: "#9b2e25" }}>{error}</div>
+          <div className="rounded-[8px] p-3 t-body-sm" style={{ background: "#fadfdb", color: "#9b2e25" }}>{error}</div>
         )}
 
         {/* Which experience to sign into */}

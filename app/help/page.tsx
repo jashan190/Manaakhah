@@ -69,7 +69,7 @@ export default function HelpPage() {
               </details>
             </ManCard>
           ))}
-          <div className="mt-4 rounded-[14px] p-[22px]" style={{ background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
+          <div className="mt-4 rounded-[12px] p-[22px]" style={{ background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
             <div className="t-h4" style={{ color: "var(--ink-900)" }}>Still Need Help?</div>
             <p className="t-body-sm" style={{ color: "var(--ink-700)", marginTop: 6 }}>Our team replies within one business day.</p>
             <div className="mt-3.5 flex flex-wrap items-center gap-3">

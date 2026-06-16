@@ -57,7 +57,7 @@ export function PH({ title, sub, right }: { title: string; sub?: string; right?:
 /* ── Card ──────────────────────────────────────────────────────── */
 export function ManCard({ children, className = "", style, id }: { children: React.ReactNode; className?: string; style?: React.CSSProperties; id?: string }) {
   return (
-    <div id={id} className={className} style={{ background: "#ffffff", border: "1px solid var(--card-edge)", borderRadius: 14, boxShadow: "var(--shadow-soft)", ...style }}>
+    <div id={id} className={className} style={{ background: "#ffffff", border: "1px solid var(--card-edge)", borderRadius: 12, boxShadow: "var(--shadow-soft)", ...style }}>
       {children}
     </div>
   );

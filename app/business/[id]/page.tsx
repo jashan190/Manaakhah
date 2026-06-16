@@ -269,7 +269,7 @@ export default function BusinessDetailPage() {
                     {rv.title && <div className="mt-2 t-label-sm" style={{ color: "var(--ink-900)" }}>{rv.title}</div>}
                     <p className="mt-1.5 t-body-sm" style={{ color: "var(--ink-700)", lineHeight: 1.6 }}>{rv.content || rv.text}</p>
                     {rv.ownerResponse && (
-                      <div className="mt-3 rounded-[10px] p-3.5" style={{ background: "var(--paper-2)" }}>
+                      <div className="mt-3 rounded-[8px] p-3.5" style={{ background: "var(--paper-2)" }}>
                         <div className="flex items-center gap-1.5 t-eyebrow" style={{ color: "var(--ink-500)" }}><Seal size={13} /> Response from {business.name}</div>
                         <p className="mt-1.5 t-body-sm" style={{ color: "var(--ink-700)" }}>{rv.ownerResponse}</p>
                       </div>

@@ -45,7 +45,7 @@ export default function InboxPage() {
           {/* Thread list */}
           <div className="flex w-[340px] flex-shrink-0 flex-col" style={{ borderRight: "1px solid var(--card-edge)" }}>
             <div className="flex h-[69px] items-center px-4" style={{ borderBottom: "1px solid var(--card-edge)" }}>
-              <div className="man-field-wrap flex w-full items-center gap-2 rounded-[10px] border px-3 py-2" style={{ background: "#ffffff" }}>
+              <div className="man-field-wrap flex w-full items-center gap-2 rounded-[8px] border px-3 py-2" style={{ background: "#ffffff" }}>
                 <Search size={15} style={{ color: "var(--ink-400)" }} /><input placeholder="Search messages" className="w-full bg-transparent t-body-sm outline-none" style={{ color: "var(--ink-900)" }} />
               </div>
             </div>
@@ -82,7 +82,7 @@ export default function InboxPage() {
               <div className="mb-4 text-center t-body-xs" style={{ color: "var(--ink-400)" }}>Conversation started</div>
               {t.msgs.map((m, i) => (
                 <div key={i} className={`mb-3 flex ${m.me ? "justify-end" : "justify-start"}`}>
-                  <div className="max-w-[70%] rounded-[14px] px-3.5 py-2.5"
+                  <div className="max-w-[70%] rounded-[12px] px-3.5 py-2.5"
                     style={m.me ? { background: "var(--moss-700)", color: "var(--bone)" } : { background: "#ffffff", border: "1px solid var(--card-edge)", color: "var(--ink-900)" }}>
                     <div className="t-body">{m.text}</div>
                     <div className="t-body-xs mt-1" style={{ color: m.me ? "rgba(255,255,255,0.7)" : "var(--ink-400)" }}>{m.time}</div>
@@ -97,7 +97,7 @@ export default function InboxPage() {
                   <button key={q} onClick={() => setDraft(q)} className="man-focus t-body-xs rounded-full px-2.5 py-1" style={{ background: "var(--paper-2)", color: "var(--ink-700)" }}>{q}</button>
                 ))}
               </div>
-              <div className="man-field-wrap flex items-center gap-2 rounded-[10px] border bg-white px-3">
+              <div className="man-field-wrap flex items-center gap-2 rounded-[8px] border bg-white px-3">
                 <Paperclip size={18} style={{ color: "var(--ink-400)" }} />
                 <input value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Write a message…" className="w-full bg-transparent py-2.5 t-body-sm outline-none" style={{ color: "var(--ink-900)" }} />
                 <button className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full" style={{ background: "var(--moss-700)" }}><Send size={15} style={{ color: "var(--bone)" }} /></button>

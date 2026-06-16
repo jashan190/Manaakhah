@@ -40,7 +40,7 @@ export default function ForBusinessPage() {
             <p className="t-body" style={{ color: "var(--ink-500)", marginTop: 6 }}>
               We&apos;ve already indexed 110+ Sacramento businesses. Search yours, prove ownership, and take over the listing.
             </p>
-            <div style={{ marginTop: 16, padding: 14, background: "var(--paper-2)", borderRadius: 10 }}>
+            <div style={{ marginTop: 16, padding: 14, background: "var(--paper-2)", borderRadius: 8 }}>
               <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>What you&apos;ll need</div>
               <div className="mt-2 grid gap-1.5">
                 {claimNeeds.map((t) => (
@@ -59,7 +59,7 @@ export default function ForBusinessPage() {
             <p className="t-body" style={{ color: "var(--ink-500)", marginTop: 6 }}>
               Brand new, recently moved, or just not on Manaakhah yet? Create the listing and we&apos;ll route it through verification.
             </p>
-            <div style={{ marginTop: 16, padding: 14, background: "var(--paper-2)", borderRadius: 10 }}>
+            <div style={{ marginTop: 16, padding: 14, background: "var(--paper-2)", borderRadius: 8 }}>
               <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>What you&apos;ll need</div>
               <div className="mt-2 grid gap-1.5">
                 {addNeeds.map((t) => (

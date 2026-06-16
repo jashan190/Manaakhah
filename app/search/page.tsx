@@ -237,7 +237,7 @@ function SearchContent() {
               </Button>
               {filtersOpen && (
                 <div
-                  className="absolute left-0 z-50 mt-2 w-[min(340px,calc(100vw-2rem))] overflow-auto rounded-[14px] border p-2 sm:left-auto sm:right-0"
+                  className="absolute left-0 z-50 mt-2 w-[min(340px,calc(100vw-2rem))] overflow-auto rounded-[12px] border p-2 sm:left-auto sm:right-0"
                   style={{ background: "#ffffff", borderColor: "var(--card-edge)", boxShadow: "var(--shadow-lift)", maxHeight: "70vh" }}
                 >
                   <FilterRail filters={filters} setFilters={setFilters} clearFilters={clearFilters} activeCount={activeFilterCount} />
@@ -258,7 +258,7 @@ function SearchContent() {
       <div className="container mx-auto max-w-6xl py-8 px-4">
         {/* Guest rail — limited, but intentional (not broken) */}
         {!session && !guestDismissed && (
-          <div className="relative mb-6 flex flex-wrap items-center gap-4 rounded-[14px] py-4 pl-5 pr-12"
+          <div className="relative mb-6 flex flex-wrap items-center gap-4 rounded-[12px] py-4 pl-5 pr-12"
             style={{ background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
             <div className="flex items-center gap-2.5">
               <span className="flex h-9 w-9 items-center justify-center rounded-full" style={{ background: "var(--moss-700)" }}><Bookmark size={16} style={{ color: "var(--bone)" }} /></span>

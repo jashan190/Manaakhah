@@ -15,7 +15,7 @@ const promos = [
 ];
 
 export default function PromotionsPage() {
-  const field = "w-full rounded-[10px] border bg-white px-3.5 py-2.5 t-body outline-none";
+  const field = "w-full rounded-[8px] border bg-white px-3.5 py-2.5 t-body outline-none";
   const fs = { borderColor: "var(--card-edge)", color: "var(--ink-900)" } as const;
   return (
     <OwnerShell active="promos">
