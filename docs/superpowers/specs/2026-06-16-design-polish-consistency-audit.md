@@ -98,9 +98,9 @@ Organized by impact. P0 items are the ones most responsible for the vibe-coded f
 
 ### P2 — Polish & content
 
-- [ ] **P2-1. Audit remaining pages for the same tells.** Sweep favorites, lists, settings, dashboard sub-pages, and admin pages for stray shadcn defaults, emoji, spinners, and magic-number spacing; fix to match.
-- [ ] **P2-2. Standardize loading/empty/error states app-wide.** Once `EmptyState` and `Skeleton` exist, ensure every async surface uses them rather than ad-hoc treatments.
-- [ ] **P2-3. Replace or clearly label demo content.** Swap hardcoded stats, static dates, and invented testimonials for real data, or mark them as sample data, so the app stops reading as a demo (§3.9).
+- [x] **P2-1. Audit remaining pages for the same tells.** ✅ The two un-skinned holdouts (`verify-email`, `reset-password`) brought onto the design system; auth role-toggle pills corrected (ink-900 → moss + `man-focus`). Inventory found no remaining emoji; magic-number spacing already handled in P1-1.
+- [x] **P2-2. Standardize loading/empty/error states.** ✅ Business profile now loads with a `Skeleton` screen instead of a spinner. Remaining spinners are legitimate transient states (auth verification, map controls) and were tokenized, not removed.
+- [x] **P2-3. Replace or clearly label demo content.** ✅ Public-facing fabricated claims made honest: hero stats → true descriptors, invented homepage testimonial → non-attributed "Why Manaakhah" statement, "110+" claim dropped, dashboard date made dynamic. Internal owner/admin mock data ("Famous Kabob" demo account) intentionally kept as sample data.
 
 ---
 
