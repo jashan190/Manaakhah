@@ -106,12 +106,12 @@ export function Header() {
         ) : (
           <>
             {!isAdmin && (
-              <Link href={notifHref} className="hidden rounded-full p-2 hover:bg-[var(--paper-2)] md:block" aria-label="Notifications">
+              <Link href={notifHref} className="man-focus hidden rounded-full p-2 hover:bg-[var(--paper-2)] md:block" aria-label="Notifications">
                 <Bell className="h-5 w-5" style={{ color: "var(--ink-500)" }} />
               </Link>
             )}
             <div ref={acctRef} className="relative">
-              <button onClick={() => setAcctOpen((o) => !o)} className="flex items-center gap-1.5" aria-label="Account menu">
+              <button onClick={() => setAcctOpen((o) => !o)} className="man-focus flex items-center gap-1.5 rounded-full" aria-label="Account menu">
                 <Avatar name={session?.user?.name || "User"} size={32} />
                 <ChevronDown className="hidden h-4 w-4 md:block" style={{ color: "var(--ink-400)", transform: acctOpen ? "rotate(180deg)" : "none", transition: "transform 0.15s" }} />
               </button>
@@ -152,7 +152,7 @@ export function Header() {
             </div>
           </>
         )}
-        <button className="md:hidden" onClick={() => setMobileOpen((o) => !o)} aria-label="Menu">
+        <button className="man-focus rounded-[6px] md:hidden" onClick={() => setMobileOpen((o) => !o)} aria-label="Menu">
           {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </div>
@@ -162,7 +162,7 @@ export function Header() {
         <div className="absolute left-0 right-0 top-16 border-b bg-white p-4 md:hidden" style={{ borderColor: "var(--card-edge)" }}>
           <nav className="flex flex-col gap-1">
             {tabs.map((t) => (
-              <Link key={t.href} href={t.href} onClick={() => setMobileOpen(false)} className="rounded-lg px-3 py-2 t-body" style={{ color: "var(--ink-700)" }}>{t.l}</Link>
+              <Link key={t.href} href={t.href} onClick={() => setMobileOpen(false)} className="man-focus rounded-lg px-3 py-2 t-body" style={{ color: "var(--ink-700)" }}>{t.l}</Link>
             ))}
             {!signedIn && (
               <div className="mt-2 flex gap-2 border-t pt-3" style={{ borderColor: "var(--card-edge)" }}>

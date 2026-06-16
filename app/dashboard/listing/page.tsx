@@ -39,7 +39,7 @@ export default function ListingProfilePage() {
         {/* Tabs */}
         <div className="mb-5 flex flex-wrap gap-2 border-b" style={{ borderColor: "var(--card-edge)" }}>
           {TABS.map((t) => (
-            <button key={t} onClick={() => setTab(t)} className="man-focus t-body-sm -mb-px border-b-2 px-1 pb-2.5"
+            <button key={t} onClick={() => setTab(t)} className="man-focus rounded-[6px] t-body-sm -mb-px border-b-2 px-1 pb-2.5"
               style={tab === t ? { borderColor: "var(--moss-700)", color: "var(--ink-900)", fontWeight: 600 } : { borderColor: "transparent", color: "var(--ink-500)" }}>{t}</button>
           ))}
         </div>

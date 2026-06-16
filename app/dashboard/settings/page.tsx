@@ -75,7 +75,7 @@ export default function BusinessSettingsPage() {
                   <Avatar name={m.n} size={34} />
                   <div className="flex-1"><div className="t-label-sm" style={{ color: "var(--ink-900)" }}>{m.n}</div><div className="t-body-xs" style={{ color: "var(--ink-500)" }}>{m.email}</div></div>
                   <Tag tone={m.role === "Owner" ? "moss" : "default"}>{m.role}</Tag>
-                  {m.role !== "Owner" && <button className="t-body-sm" style={{ color: "var(--ink-500)" }}>Remove</button>}
+                  {m.role !== "Owner" && <button className="man-focus rounded-[6px] t-body-sm" style={{ color: "var(--ink-500)" }}>Remove</button>}
                 </div>
               ))}
             </div>

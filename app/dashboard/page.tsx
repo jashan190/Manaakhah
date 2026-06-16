@@ -65,7 +65,7 @@ export default function DashboardPage() {
           {([["overview", "Overview"], ["analytics", "Analytics"]] as const).map(([k, l]) => {
             const on = tab === k;
             return (
-              <button key={k} onClick={() => setTab(k)} className="man-focus px-4 py-2.5 t-label transition-colors"
+              <button key={k} onClick={() => setTab(k)} className="man-focus rounded-[6px] px-4 py-2.5 t-label transition-colors"
                 style={{ color: on ? "var(--ink-900)" : "var(--ink-500)", borderBottom: on ? "2px solid var(--moss-700)" : "2px solid transparent", marginBottom: -1 }}>
                 {l}
               </button>
@@ -149,7 +149,7 @@ export default function DashboardPage() {
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <p className="t-body-sm" style={{ color: "var(--ink-500)" }}>How people discover and engage with your listing</p>
               <div className="flex gap-2">
-                <button className="flex items-center gap-2 rounded-[8px] border bg-white px-3 py-2 t-body-sm" style={{ borderColor: "var(--card-edge)", color: "var(--ink-700)" }}><Calendar size={15} /> Last 30 days</button>
+                <button className="man-focus flex items-center gap-2 rounded-[12px] border bg-white px-3 py-2 t-body-sm" style={{ borderColor: "var(--card-edge)", color: "var(--ink-700)" }}><Calendar size={15} /> Last 30 days</button>
                 <Button variant="outline" size="sm"><Download className="mr-1.5 h-4 w-4" /> Export</Button>
               </div>
             </div>

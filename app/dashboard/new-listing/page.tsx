@@ -39,7 +39,7 @@ export default function NewListingPage() {
         <div className="mb-6 flex items-center gap-1.5">
           {STEPS.map((s, i) => (
             <div key={s} className="flex flex-1 items-center gap-1.5">
-              <button onClick={() => setStep(i)} className="man-focus flex items-center gap-2">
+              <button onClick={() => setStep(i)} className="man-focus rounded-[10px] flex items-center gap-2">
                 <span className="flex h-6 w-6 items-center justify-center rounded-full t-body-xs" style={i < step ? { background: "var(--moss-700)", color: "var(--bone)" } : i === step ? { background: "var(--ink-900)", color: "var(--bone)" } : { background: "var(--paper-2)", color: "var(--ink-400)", border: "1px solid var(--card-edge)" }}>
                   {i < step ? <Check size={12} /> : i + 1}
                 </span>
