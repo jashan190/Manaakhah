@@ -96,7 +96,7 @@ export function BusinessCard({
           )}
 
           <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleFavorite?.(e); }} aria-label="Save"
-            className="absolute right-2.5 top-2.5 flex h-8 w-8 items-center justify-center rounded-full shadow-md transition-transform hover:scale-110"
+            className="absolute right-2.5 top-2.5 flex h-8 w-8 items-center justify-center rounded-full shadow-[var(--shadow-rest)] transition-transform hover:scale-110"
             style={{ background: "#ffffff" }}>
             <Heart size={15} fill={isFavorite ? "var(--clay-500)" : "none"} stroke={isFavorite ? "var(--clay-500)" : "var(--ink-500)"} />
           </button>

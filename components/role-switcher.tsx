@@ -28,14 +28,14 @@ export function RoleSwitcher() {
         <Button
           onClick={() => setIsOpen(true)}
           variant="outline"
-          className="shadow-lg bg-yellow-100 border-yellow-300 hover:bg-yellow-200"
+          className="shadow-[var(--shadow-lift)] bg-yellow-100 border-yellow-300 hover:bg-yellow-200"
         >
           🎭 Mock Mode ({session?.user.role || "None"})
         </Button>
       )}
 
       {isOpen && (
-        <Card className="shadow-xl w-80">
+        <Card className="shadow-[var(--shadow-lift)] w-80">
           <CardHeader className="bg-yellow-50">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm">🎭 Role Switcher (Mock Mode)</CardTitle>
