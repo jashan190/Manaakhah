@@ -48,8 +48,8 @@ export default function ContactPage() {
             <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>What's this about?</div>
             <div className="mt-2 flex flex-wrap gap-2">
               {purposes.map((p) => (
-                <button key={p} onClick={() => setPurpose(p)} className="t-body-sm rounded-full px-3 py-1.5"
-                  style={purpose === p ? { background: "var(--ink-900)", color: "var(--bone)" } : { background: "var(--paper-2)", color: "var(--ink-700)" }}>{p}</button>
+                <button key={p} onClick={() => setPurpose(p)} className="man-focus t-body-sm rounded-full px-3 py-1.5"
+                  style={purpose === p ? { background: "var(--moss-700)", color: "var(--bone)" } : { background: "var(--paper-2)", color: "var(--ink-700)" }}>{p}</button>
               ))}
             </div>
             <div className="mt-5 space-y-3">

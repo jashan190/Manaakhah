@@ -94,7 +94,7 @@ export default function InboxPage() {
             <div className="px-6 py-4" style={{ borderTop: "1px solid var(--card-edge)", background: "#ffffff" }}>
               <div className="mb-2 flex flex-wrap gap-2">
                 {QUICK.map((q) => (
-                  <button key={q} onClick={() => setDraft(q)} className="t-body-xs rounded-full px-2.5 py-1" style={{ background: "var(--paper-2)", color: "var(--ink-700)" }}>{q}</button>
+                  <button key={q} onClick={() => setDraft(q)} className="man-focus t-body-xs rounded-full px-2.5 py-1" style={{ background: "var(--paper-2)", color: "var(--ink-700)" }}>{q}</button>
                 ))}
               </div>
               <div className="man-field-wrap flex items-center gap-2 rounded-[10px] border bg-white px-3">

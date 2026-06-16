@@ -23,7 +23,7 @@ export function ViewToggle({ value, onChange }: ViewToggleProps) {
           <button
             key={m.key}
             onClick={() => onChange(m.key)}
-            className="flex items-center gap-1.5 px-3 py-1.5 t-label transition-colors"
+            className="man-focus flex items-center gap-1.5 px-3 py-1.5 t-label transition-colors"
             style={on ? { background: "var(--moss-700)", color: "var(--bone)" } : { background: "#ffffff", color: "var(--ink-500)" }}
           >
             <m.Icon className="h-4 w-4" />

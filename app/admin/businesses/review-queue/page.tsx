@@ -35,8 +35,8 @@ export default function VerificationQueuePage() {
 
         <div className="my-5 flex flex-wrap items-center gap-2">
           {FILTERS.map((f) => (
-            <button key={f} onClick={() => setFilter(f)} className="t-body-sm rounded-full px-3 py-1.5"
-              style={filter === f ? { background: "var(--ink-900)", color: "var(--bone)" } : { background: "var(--card)", border: "1px solid var(--card-edge)", color: "var(--ink-700)" }}>{f}</button>
+            <button key={f} onClick={() => setFilter(f)} className="man-focus t-body-sm rounded-full px-3 py-1.5"
+              style={filter === f ? { background: "var(--moss-700)", color: "var(--bone)" } : { background: "var(--card)", border: "1px solid var(--card-edge)", color: "var(--ink-700)" }}>{f}</button>
           ))}
           <div className="man-field-wrap ml-auto flex items-center gap-2 rounded-[10px] border bg-white px-3 py-1.5">
             <Search size={15} style={{ color: "var(--ink-400)" }} /><input placeholder="Search business" className="w-40 bg-transparent t-body-sm outline-none" style={{ color: "var(--ink-900)" }} />

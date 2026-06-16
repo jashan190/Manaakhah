@@ -78,7 +78,7 @@ export default function LeadsPage() {
             <div className="px-6 py-4" style={{ borderTop: "1px solid var(--card-edge)", background: "#ffffff" }}>
               <div className="mb-2 flex flex-wrap items-center gap-2">
                 <span className="inline-flex items-center gap-1 t-body-xs" style={{ color: "var(--moss-700)" }}><Sparkles size={12} /> Quick replies</span>
-                {QUICK.map((q) => <button key={q} onClick={() => setDraft(q)} className="t-body-xs rounded-full px-2.5 py-1" style={{ background: "var(--paper-2)", color: "var(--ink-700)" }}>{q}</button>)}
+                {QUICK.map((q) => <button key={q} onClick={() => setDraft(q)} className="man-focus t-body-xs rounded-full px-2.5 py-1" style={{ background: "var(--paper-2)", color: "var(--ink-700)" }}>{q}</button>)}
               </div>
               <div className="flex items-end gap-2">
                 <textarea value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Write a reply…" className="man-field flex-1 px-3.5 py-2.5 t-body-sm" style={{ color: "var(--ink-900)", minHeight: 44, resize: "none" }} />

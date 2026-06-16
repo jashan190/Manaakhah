@@ -80,7 +80,7 @@ export default function WriteReviewPage() {
               {halalTags.map((t) => {
                 const on = tags.includes(t);
                 return (
-                  <button key={t} onClick={() => toggle(t)} className="t-body-sm rounded-full px-3 py-1.5"
+                  <button key={t} onClick={() => toggle(t)} className="man-focus t-body-sm rounded-full px-3 py-1.5"
                     style={on ? { background: "var(--moss-700)", color: "var(--bone)" } : { background: "var(--paper-2)", color: "var(--ink-700)" }}>{t}</button>
                 );
               })}
