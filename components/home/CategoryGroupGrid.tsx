@@ -23,7 +23,7 @@ export function CategoryGroupGrid() {
           const Icon = ICONS[g.icon] ?? Briefcase;
           return (
             <Link key={g.key} href={`/search?group=${g.key}`}>
-              <ManCard style={{ padding: 18 }} className="flex h-full items-center gap-3.5 transition-shadow hover:shadow-[var(--shadow-lift)]">
+              <ManCard style={{ padding: 20 }} className="flex h-full items-center gap-3.5 transition-shadow hover:shadow-[var(--shadow-lift)]">
                 <span className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl" style={{ background: "var(--moss-50)" }}>
                   <Icon size={20} style={{ color: "var(--moss-700)" }} />
                 </span>

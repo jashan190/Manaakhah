@@ -56,8 +56,8 @@ export function DatePicker({
         type="button"
         disabled={disabled}
         onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center justify-between gap-2 rounded-[10px] border bg-white px-3.5 py-2.5 t-body outline-none disabled:opacity-50"
-        style={{ borderColor: open ? "var(--moss-700)" : "var(--card-edge)", color: cur ? "var(--ink-900)" : "var(--ink-400)" }}
+        className="flex w-full items-center justify-between gap-2 rounded-[8px] border bg-white px-3.5 py-2.5 t-body outline-none disabled:opacity-50"
+        style={{ borderColor: open ? "var(--moss-700)" : "var(--card-edge)", boxShadow: open ? "0 0 0 3px var(--moss-100)" : "none", color: cur ? "var(--ink-900)" : "var(--ink-400)" }}
       >
         <span>{cur ? fmt(cur) : placeholder}</span>
         <Calendar size={16} style={{ color: "var(--ink-400)", flexShrink: 0 }} />

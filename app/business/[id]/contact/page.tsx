@@ -18,8 +18,8 @@ export default function ContactPage() {
   useEffect(() => { fetch(`/api/businesses/${id}`).then((r) => r.json()).then(setBiz).catch(() => {}); }, [id]);
   const name = biz?.name || "this business";
 
-  const field = "w-full rounded-[10px] border bg-white px-3.5 py-2.5 t-body outline-none";
-  const fieldStyle = { borderColor: "var(--card-edge)", color: "var(--ink-900)" } as const;
+  const field = "man-field w-full px-3.5 py-2.5 t-body";
+  const fieldStyle = { color: "var(--ink-900)" } as const;
 
   return (
     <div style={{ background: "var(--paper)" }} className="px-6 py-8 md:px-14">
@@ -27,7 +27,7 @@ export default function ContactPage() {
         <Link href={`/business/${id}`} className="t-body-sm inline-flex items-center gap-1" style={{ color: "var(--ink-500)" }}>
           <ArrowLeft size={14} /> Back to {name}
         </Link>
-        <h1 className="t-h2" style={{ color: "var(--ink-900)", marginTop: 14 }}>Message {name}</h1>
+        <h1 className="t-h2" style={{ color: "var(--ink-900)", marginTop: 12 }}>Message {name}</h1>
 
         {sent ? (
           <ManCard style={{ padding: 40, marginTop: 24, textAlign: "center" }} className="mx-auto max-w-[520px]">
@@ -48,8 +48,8 @@ export default function ContactPage() {
             <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>What's this about?</div>
             <div className="mt-2 flex flex-wrap gap-2">
               {purposes.map((p) => (
-                <button key={p} onClick={() => setPurpose(p)} className="t-body-sm rounded-full px-3 py-1.5"
-                  style={purpose === p ? { background: "var(--ink-900)", color: "var(--bone)" } : { background: "var(--paper-2)", color: "var(--ink-700)" }}>{p}</button>
+                <button key={p} onClick={() => setPurpose(p)} className="man-focus t-body-sm rounded-full px-3 py-1.5"
+                  style={purpose === p ? { background: "var(--moss-700)", color: "var(--bone)" } : { background: "var(--paper-2)", color: "var(--ink-700)" }}>{p}</button>
               ))}
             </div>
             <div className="mt-5 space-y-3">
@@ -71,18 +71,18 @@ export default function ContactPage() {
 
           {/* Aside */}
           <div className="space-y-4">
-            <ManCard style={{ padding: 18 }} className="flex items-center gap-3">
+            <ManCard style={{ padding: 20 }} className="flex items-center gap-3">
               <Seal size={36} />
               <div>
                 <div className="t-label" style={{ color: "var(--ink-900)" }}>{name}</div>
                 <div className="t-body-xs" style={{ color: "var(--ink-500)" }}>{biz ? `${biz.city}, ${biz.state}` : "Sacramento, CA"}</div>
               </div>
             </ManCard>
-            <ManCard style={{ padding: 18 }}>
+            <ManCard style={{ padding: 20 }}>
               <div className="flex items-center gap-2 t-label" style={{ color: "var(--ink-900)" }}><Clock size={15} style={{ color: "var(--moss-700)" }} /> Replies in ~2 hours</div>
-              <p className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 6 }}>92% of messages answered within a day.</p>
+              <p className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 4 }}>92% of messages answered within a day.</p>
             </ManCard>
-            <ManCard style={{ padding: 18 }}>
+            <ManCard style={{ padding: 20 }}>
               <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>Other ways to reach</div>
               <div className="mt-3 space-y-2">
                 <a href={biz?.phone ? `tel:${biz.phone}` : undefined} className="flex items-center gap-2 t-body-sm" style={{ color: "var(--ink-700)" }}><Phone size={15} style={{ color: "var(--moss-700)" }} /> {biz?.phone || "Call the business"}</a>

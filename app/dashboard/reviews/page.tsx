@@ -23,7 +23,7 @@ export default function ReviewsPage() {
         <PH title="Reviews & Responses" sub="Respond fast — replied businesses convert 2× better" />
 
         <div className="grid gap-3.5 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
-          <ManCard style={{ padding: 18 }}>
+          <ManCard style={{ padding: 20 }}>
             <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>Rating distribution</div>
             <div className="mt-3 grid gap-1.5">
               {dist.map(([s, p]) => (
@@ -42,13 +42,13 @@ export default function ReviewsPage() {
 
         <div className="my-5 flex flex-wrap gap-2">
           {filters.map((f) => (
-            <button key={f} onClick={() => setFilter(f)} className="t-body-sm rounded-full px-3 py-1.5"
-              style={filter === f ? { background: "var(--ink-900)", color: "var(--bone)" } : { background: "var(--card)", border: "1px solid var(--card-edge)", color: "var(--ink-700)" }}>{f}</button>
+            <button key={f} onClick={() => setFilter(f)} className="man-focus t-body-sm rounded-full px-3 py-1.5"
+              style={filter === f ? { background: "var(--moss-700)", color: "var(--bone)" } : { background: "var(--card)", border: "1px solid var(--card-edge)", color: "var(--ink-700)" }}>{f}</button>
           ))}
         </div>
 
         {/* Awaiting response — AI suggested reply */}
-        <ManCard style={{ padding: 22, marginBottom: 14 }}>
+        <ManCard style={{ padding: 20, marginBottom: 12 }}>
           <div className="flex items-start gap-3">
             <Avatar name="Hassan K" size={40} />
             <div className="flex-1">
@@ -60,7 +60,7 @@ export default function ReviewsPage() {
               <p className="t-body" style={{ color: "var(--ink-700)", marginTop: 8 }}>Great kabobs and the prayer space was a real plus for our family. Service was a touch slow on a busy Friday.</p>
               <div className="mt-2 flex flex-wrap gap-1.5"><Tag tone="moss">Prayer Space</Tag><Tag tone="moss">Family Seating</Tag></div>
 
-              <div className="mt-4 rounded-[10px] p-3.5" style={{ background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
+              <div className="mt-4 rounded-[8px] p-3.5" style={{ background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
                 <div className="flex items-center gap-1.5 t-eyebrow" style={{ color: "var(--moss-700)" }}><Sparkles size={13} /> AI-suggested reply</div>
                 <textarea value={draft} onChange={(e) => setDraft(e.target.value)} className="mt-2 w-full bg-transparent t-body outline-none" style={{ color: "var(--ink-900)", minHeight: 70, resize: "vertical" }} />
                 <div className="mt-2 flex justify-end gap-2">
@@ -73,7 +73,7 @@ export default function ReviewsPage() {
         </ManCard>
 
         {/* Replied */}
-        <ManCard style={{ padding: 22 }}>
+        <ManCard style={{ padding: 20 }}>
           <div className="flex items-start gap-3">
             <Avatar name="Mariam T" size={40} />
             <div className="flex-1">
@@ -83,7 +83,7 @@ export default function ReviewsPage() {
               </div>
               <div className="mt-1"><Stars n={5} /></div>
               <p className="t-body" style={{ color: "var(--ink-700)", marginTop: 8 }}>Best mixed grill in Sacramento. Certification gave me total peace of mind.</p>
-              <div className="mt-3 rounded-[10px] p-3.5" style={{ background: "var(--paper-2)" }}>
+              <div className="mt-3 rounded-[8px] p-3.5" style={{ background: "var(--paper-2)" }}>
                 <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>Your reply</div>
                 <p className="t-body-sm" style={{ color: "var(--ink-700)", marginTop: 4 }}>Thank you so much, Mariam! It means a lot that the certification matters to you — see you next time!</p>
               </div>

@@ -45,7 +45,7 @@ export default function CertSourcesPage() {
                 <span className="t-body-sm" style={{ color: "var(--ink-700)" }}>{s.certs}</span>
                 <div className="flex items-center gap-2 md:ml-0 ml-auto">
                   <span className="t-body-sm" style={{ color: "var(--ink-500)" }}>{s.last}</span>
-                  <button className="rounded-lg p-1.5 hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-500)" }}><RefreshCw size={15} /></button>
+                  <button className="man-focus rounded-lg p-1.5 hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-500)" }}><RefreshCw size={15} /></button>
                 </div>
               </div>
             </div>

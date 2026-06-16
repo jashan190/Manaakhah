@@ -38,7 +38,7 @@ export function FilterSheet({
         style={{ background: "var(--paper)", transform: open ? "translateX(0)" : "translateX(100%)" }}>
         <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: "1px solid var(--card-edge)", background: "var(--card)" }}>
           <div className="flex items-center gap-2"><SlidersHorizontal size={18} style={{ color: "var(--moss-700)" }} /><span className="t-h4" style={{ color: "var(--ink-900)" }}>Filters</span>{activeCount > 0 && <ManTag tone="moss">{activeCount}</ManTag>}</div>
-          <button onClick={onClose} className="rounded-lg p-1.5 hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-500)" }}><X size={18} /></button>
+          <button onClick={onClose} className="man-focus rounded-lg p-1.5 hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-500)" }}><X size={18} /></button>
         </div>
 
         <div className="flex-1 overflow-auto px-5">

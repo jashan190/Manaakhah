@@ -15,7 +15,7 @@ const promos = [
 ];
 
 export default function PromotionsPage() {
-  const field = "w-full rounded-[10px] border bg-white px-3.5 py-2.5 t-body outline-none";
+  const field = "w-full rounded-[8px] border bg-white px-3.5 py-2.5 t-body outline-none";
   const fs = { borderColor: "var(--card-edge)", color: "var(--ink-900)" } as const;
   return (
     <OwnerShell active="promos">
@@ -48,7 +48,7 @@ export default function PromotionsPage() {
             </div>
           </div>
 
-          <ManCard style={{ padding: 22 }}>
+          <ManCard style={{ padding: 20 }}>
             <div className="t-h4" style={{ color: "var(--ink-900)" }}>Quick Promotion</div>
             <div className="mt-3.5 grid gap-3">
               <input className={field} style={fs} placeholder="Title (e.g. Friday iftar special)" />

@@ -50,7 +50,7 @@ export default function SystemHealthPage() {
           </ManCard>
 
           {/* Traffic chart */}
-          <ManCard style={{ padding: 22 }}>
+          <ManCard style={{ padding: 20 }}>
             <div className="flex items-baseline justify-between">
               <div><div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>Requests / min</div><div className="t-h3" style={{ color: "var(--ink-900)", marginTop: 4 }}>Last 24 Hours</div></div>
               <span className="inline-flex items-center gap-1 t-body-sm" style={{ color: "var(--moss-700)" }}><CheckCircle2 size={14} /> Healthy</span>
@@ -60,7 +60,7 @@ export default function SystemHealthPage() {
         </div>
 
         {/* Incidents */}
-        <ManCard style={{ padding: 0, marginTop: 14 }}>
+        <ManCard style={{ padding: 0, marginTop: 12 }}>
           <div className="px-5 py-3.5 t-h4" style={{ color: "var(--ink-900)", borderBottom: "1px solid var(--card-edge)" }}>Recent Incidents</div>
           {INCIDENTS.map((inc, i) => (
             <div key={inc.t} className="flex items-center gap-3 px-5 py-3.5" style={{ borderBottom: i === INCIDENTS.length - 1 ? "none" : "1px solid var(--card-edge)" }}>

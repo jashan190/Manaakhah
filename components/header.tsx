@@ -88,7 +88,7 @@ export function Header() {
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           {tabs.map((t) => (
-            <Link key={t.href} href={t.href} className="rounded-lg px-3 py-2"
+            <Link key={t.href} href={t.href} className="man-focus rounded-lg px-3 py-2"
               style={{ fontSize: 13, fontWeight: 500, color: isActive(t.href) ? "var(--ink-900)" : "var(--ink-500)", background: isActive(t.href) ? "#ffffff" : "transparent" }}>
               {t.l}
             </Link>
@@ -106,12 +106,12 @@ export function Header() {
         ) : (
           <>
             {!isAdmin && (
-              <Link href={notifHref} className="hidden rounded-full p-2 hover:bg-[var(--paper-2)] md:block" aria-label="Notifications">
+              <Link href={notifHref} className="man-focus hidden rounded-full p-2 hover:bg-[var(--paper-2)] md:block" aria-label="Notifications">
                 <Bell className="h-5 w-5" style={{ color: "var(--ink-500)" }} />
               </Link>
             )}
             <div ref={acctRef} className="relative">
-              <button onClick={() => setAcctOpen((o) => !o)} className="flex items-center gap-1.5" aria-label="Account menu">
+              <button onClick={() => setAcctOpen((o) => !o)} className="man-focus flex items-center gap-1.5 rounded-full" aria-label="Account menu">
                 <Avatar name={session?.user?.name || "User"} size={32} />
                 <ChevronDown className="hidden h-4 w-4 md:block" style={{ color: "var(--ink-400)", transform: acctOpen ? "rotate(180deg)" : "none", transition: "transform 0.15s" }} />
               </button>
@@ -127,7 +127,7 @@ export function Header() {
                   {isConsumer && (
                     <div className="py-1" style={{ borderBottom: "1px solid var(--card-edge)" }}>
                       {acctLinks.map((it) => (
-                        <Link key={it.href} href={it.href} onClick={() => setAcctOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}>
+                        <Link key={it.href} href={it.href} onClick={() => setAcctOpen(false)} className="man-focus flex items-center gap-2.5 px-4 py-2.5 t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}>
                           <it.Icon size={16} style={{ color: "var(--ink-500)" }} /> {it.l}
                         </Link>
                       ))}
@@ -136,23 +136,23 @@ export function Header() {
                   {!isAdmin && (
                     <div className="py-1" style={{ borderTop: "1px solid var(--card-edge)" }}>
                       <div className="px-4 pb-1 pt-1.5 t-eyebrow" style={{ color: "var(--ink-500)" }}>Switch account</div>
-                      <button onClick={() => switchTo("CONSUMER")} className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}>
+                      <button onClick={() => switchTo("CONSUMER")} className="man-focus flex w-full items-center gap-2.5 px-4 py-2.5 text-left t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}>
                         <User size={16} style={{ color: "var(--ink-500)" }} /> <span className="flex-1">Customer</span> {role === "CONSUMER" && <Check size={15} style={{ color: "var(--moss-700)" }} />}
                       </button>
-                      <button onClick={() => switchTo("BUSINESS_OWNER")} className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}>
+                      <button onClick={() => switchTo("BUSINESS_OWNER")} className="man-focus flex w-full items-center gap-2.5 px-4 py-2.5 text-left t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}>
                         <Store size={16} style={{ color: "var(--ink-500)" }} /> <span className="flex-1">Business</span> {role === "BUSINESS_OWNER" && <Check size={15} style={{ color: "var(--moss-700)" }} />}
                       </button>
                     </div>
                   )}
                   <div className="py-1" style={{ borderTop: "1px solid var(--card-edge)" }}>
-                    <button onClick={() => { setAcctOpen(false); signOut(); }} className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--err-500)" }}><LogOut size={16} /> Sign Out</button>
+                    <button onClick={() => { setAcctOpen(false); signOut(); }} className="man-focus flex w-full items-center gap-2.5 px-4 py-2.5 text-left t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--err-500)" }}><LogOut size={16} /> Sign Out</button>
                   </div>
                 </div>
               )}
             </div>
           </>
         )}
-        <button className="md:hidden" onClick={() => setMobileOpen((o) => !o)} aria-label="Menu">
+        <button className="man-focus rounded-[4px] md:hidden" onClick={() => setMobileOpen((o) => !o)} aria-label="Menu">
           {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </div>
@@ -162,7 +162,7 @@ export function Header() {
         <div className="absolute left-0 right-0 top-16 border-b bg-white p-4 md:hidden" style={{ borderColor: "var(--card-edge)" }}>
           <nav className="flex flex-col gap-1">
             {tabs.map((t) => (
-              <Link key={t.href} href={t.href} onClick={() => setMobileOpen(false)} className="rounded-lg px-3 py-2 t-body" style={{ color: "var(--ink-700)" }}>{t.l}</Link>
+              <Link key={t.href} href={t.href} onClick={() => setMobileOpen(false)} className="man-focus rounded-lg px-3 py-2 t-body" style={{ color: "var(--ink-700)" }}>{t.l}</Link>
             ))}
             {!signedIn && (
               <div className="mt-2 flex gap-2 border-t pt-3" style={{ borderColor: "var(--card-edge)" }}>

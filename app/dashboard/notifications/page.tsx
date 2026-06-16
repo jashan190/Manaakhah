@@ -34,8 +34,8 @@ export default function OwnerNotificationsPage() {
 
         <div className="mb-5 flex flex-wrap gap-2">
           {FILTERS.map((f) => (
-            <button key={f} onClick={() => setFilter(f)} className="t-body-sm rounded-full px-3 py-1.5"
-              style={filter === f ? { background: "var(--ink-900)", color: "var(--bone)" } : { background: "var(--card)", border: "1px solid var(--card-edge)", color: "var(--ink-700)" }}>{f}</button>
+            <button key={f} onClick={() => setFilter(f)} className="man-focus t-body-sm rounded-full px-3 py-1.5"
+              style={filter === f ? { background: "var(--moss-700)", color: "var(--bone)" } : { background: "var(--card)", border: "1px solid var(--card-edge)", color: "var(--ink-700)" }}>{f}</button>
           ))}
         </div>
 

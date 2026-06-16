@@ -33,8 +33,8 @@ export default function ContentModerationPage() {
 
         <div className="my-5 flex flex-wrap gap-2">
           {FILTERS.map((f) => (
-            <button key={f} onClick={() => setFilter(f)} className="t-body-sm rounded-full px-3 py-1.5"
-              style={filter === f ? { background: "var(--ink-900)", color: "var(--bone)" } : { background: "var(--card)", border: "1px solid var(--card-edge)", color: "var(--ink-700)" }}>{f}</button>
+            <button key={f} onClick={() => setFilter(f)} className="man-focus t-body-sm rounded-full px-3 py-1.5"
+              style={filter === f ? { background: "var(--moss-700)", color: "var(--bone)" } : { background: "var(--card)", border: "1px solid var(--card-edge)", color: "var(--ink-700)" }}>{f}</button>
           ))}
         </div>
 
@@ -66,7 +66,7 @@ export default function ContentModerationPage() {
           {rows.length === 0 && (
             <ManCard style={{ padding: 40 }} className="text-center">
               <Check size={28} style={{ color: "var(--moss-700)", margin: "0 auto" }} />
-              <div className="t-h4" style={{ color: "var(--ink-900)", marginTop: 10 }}>Queue Clear</div>
+              <div className="t-h4" style={{ color: "var(--ink-900)", marginTop: 8 }}>Queue Clear</div>
               <div className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 4 }}>No flagged reviews match this filter.</div>
             </ManCard>
           )}

@@ -26,14 +26,14 @@ export function HeroSearch() {
         {/* Left: brand + search (left-aligned — our signature, not Taawun's centered hero) */}
         <div>
           <Tag tone="moss">Sacramento&apos;s Muslim Business Directory</Tag>
-          <h1 className="t-display" style={{ color: "var(--ink-900)", marginTop: 18 }}>
+          <h1 className="t-display" style={{ color: "var(--ink-900)", marginTop: 16 }}>
             Where the Muslim Community<br className="hidden sm:block" /> <span style={{ fontStyle: "italic" }}>does business</span>.
           </h1>
           <p className="t-body-lg" style={{ color: "var(--ink-500)", marginTop: 16, maxWidth: 520 }}>
             Discover and support Muslim-owned businesses near you — restaurants, grocers, salons, services and more, trusted by your community.
           </p>
 
-          <form onSubmit={submit} className="mt-7 flex w-full flex-col gap-2 rounded-[14px] border bg-white p-2 shadow-[var(--shadow-lift)] sm:flex-row sm:items-center" style={{ borderColor: "var(--card-edge)" }}>
+          <form onSubmit={submit} className="man-field-wrap mt-7 flex w-full flex-col gap-2 rounded-[12px] border bg-white p-2 shadow-[var(--shadow-lift)] sm:flex-row sm:items-center">
             <div className="flex flex-1 items-center gap-2 px-3 sm:min-w-[200px]">
               <Search size={18} className="flex-shrink-0" style={{ color: "var(--ink-400)" }} />
               <input value={term} onChange={(e) => setTerm(e.target.value)} placeholder="Search businesses…"

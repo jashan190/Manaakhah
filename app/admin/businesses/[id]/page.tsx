@@ -27,7 +27,7 @@ export default function VerificationDetailPage() {
 
         <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
           <div className="flex items-center gap-3.5">
-            <Photo seed="sac-famous-kabob" w={64} h={56} radius={10} />
+            <Photo seed="sac-famous-kabob" w={64} h={56} radius={8} />
             <div>
               <div className="flex items-center gap-2"><h1 className="t-h3" style={{ color: "var(--ink-900)" }}>Famous Kabob</h1><Tag tone="warn">Pending</Tag></div>
               <div className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 2 }}>Restaurant · HFSAA · submitted 4h ago by Yusuf A.</div>
@@ -46,7 +46,7 @@ export default function VerificationDetailPage() {
         <div className="mt-5 grid gap-3.5 lg:grid-cols-[1.5fr_1fr]">
           {/* Checks */}
           <div className="grid gap-3.5">
-            <ManCard style={{ padding: 22 }}>
+            <ManCard style={{ padding: 20 }}>
               <div className="flex items-baseline justify-between"><div className="t-h4" style={{ color: "var(--ink-900)" }}>Automated Checks</div><span className="t-body-sm" style={{ color: passed === CHECKS.length ? "var(--moss-700)" : "var(--clay-700)" }}>{passed}/{CHECKS.length} passed</span></div>
               <div className="mt-3.5 grid gap-2.5">
                 {CHECKS.map((c) => (
@@ -58,9 +58,9 @@ export default function VerificationDetailPage() {
               </div>
             </ManCard>
 
-            <ManCard style={{ padding: 22 }}>
+            <ManCard style={{ padding: 20 }}>
               <div className="t-h4" style={{ color: "var(--ink-900)" }}>Submitted Certificate</div>
-              <div className="mt-3 flex items-center gap-3 rounded-[10px] p-3.5" style={{ background: "var(--paper-2)" }}>
+              <div className="mt-3 flex items-center gap-3 rounded-[8px] p-3.5" style={{ background: "var(--paper-2)" }}>
                 <FileText size={22} style={{ color: "var(--ink-700)" }} />
                 <div className="flex-1"><div className="t-label-sm" style={{ color: "var(--ink-900)" }}>HFSAA_cert_2026.pdf</div><div className="t-body-xs" style={{ color: "var(--ink-500)" }}>Issued by Halal Food Standards Alliance of America</div></div>
                 <Button variant="outline" size="sm">Open</Button>
@@ -70,9 +70,9 @@ export default function VerificationDetailPage() {
 
           {/* Decision + meta */}
           <div className="grid gap-3.5">
-            <ManCard style={{ padding: 22 }}>
+            <ManCard style={{ padding: 20 }}>
               <div className="t-h4" style={{ color: "var(--ink-900)" }}>Decision</div>
-              <textarea placeholder="Add a note (sent to the owner if rejected)…" className="mt-3 w-full rounded-[10px] border bg-white px-3 py-2.5 t-body-sm outline-none" style={{ borderColor: "var(--card-edge)", color: "var(--ink-900)", minHeight: 80, resize: "vertical" }} />
+              <textarea placeholder="Add a note (sent to the owner if rejected)…" className="man-field mt-3 w-full px-3 py-2.5 t-body-sm" style={{ color: "var(--ink-900)", minHeight: 80, resize: "vertical" }} />
               <div className="mt-3 grid gap-2">
                 <Button onClick={() => setDecision("approved")}><Check className="mr-1.5 h-4 w-4" /> Approve & Issue Seal</Button>
                 <Button variant="outline" size="sm" onClick={() => setDecision("rejected")} style={{ color: "var(--err-500)", borderColor: "var(--err-500)" }}><X className="mr-1.5 h-4 w-4" /> Reject</Button>
@@ -80,7 +80,7 @@ export default function VerificationDetailPage() {
               </div>
             </ManCard>
 
-            <ManCard style={{ padding: 22 }}>
+            <ManCard style={{ padding: 20 }}>
               <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>Business details</div>
               <div className="mt-3 grid gap-2.5 t-body-sm" style={{ color: "var(--ink-700)" }}>
                 <div className="flex items-center gap-2"><MapPin size={14} style={{ color: "var(--ink-400)" }} /> 1290 Fulton Ave, Sacramento, CA</div>

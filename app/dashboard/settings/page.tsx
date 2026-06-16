@@ -7,8 +7,8 @@ import { Select } from "@/components/man/Select";
 import { Button } from "@/components/ui/button";
 import { Plus, AlertTriangle } from "lucide-react";
 
-const fieldCls = "w-full rounded-[10px] border bg-white px-3.5 py-2.5 t-body outline-none";
-const fs = { borderColor: "var(--card-edge)", color: "var(--ink-900)" } as const;
+const fieldCls = "man-field w-full px-3.5 py-2.5 t-body";
+const fs = { color: "var(--ink-900)" } as const;
 const TEAM = [
   { n: "Yusuf A.", email: "yusuf@famouskabob.com", role: "Owner" },
   { n: "Mariam A.", email: "mariam@famouskabob.com", role: "Manager" },
@@ -19,7 +19,7 @@ function Toggle({ on, set, label, sub }: { on: boolean; set: (v: boolean) => voi
   return (
     <div className="flex items-center justify-between py-2.5">
       <div className="pr-4"><div className="t-label-sm" style={{ color: "var(--ink-900)" }}>{label}</div><div className="t-body-xs" style={{ color: "var(--ink-500)", marginTop: 1 }}>{sub}</div></div>
-      <button onClick={() => set(!on)} className="relative h-6 w-11 flex-shrink-0 rounded-full transition-colors" style={{ background: on ? "var(--moss-700)" : "var(--card-edge)" }}>
+      <button onClick={() => set(!on)} className="man-focus relative h-6 w-11 flex-shrink-0 rounded-full transition-colors" style={{ background: on ? "var(--moss-700)" : "var(--card-edge)" }}>
         <span className="absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all" style={{ left: on ? 22 : 2 }} />
       </button>
     </div>
@@ -27,7 +27,7 @@ function Toggle({ on, set, label, sub }: { on: boolean; set: (v: boolean) => voi
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 5 }}>{label}</div>{children}</div>;
+  return <div><div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 4 }}>{label}</div>{children}</div>;
 }
 
 export default function BusinessSettingsPage() {
@@ -53,7 +53,7 @@ export default function BusinessSettingsPage() {
 
           {/* Business details */}
           <ManCard style={{ padding: 24 }}>
-            <div className="t-h4" style={{ color: "var(--ink-900)", marginBottom: 14 }}>Business Account</div>
+            <div className="t-h4" style={{ color: "var(--ink-900)", marginBottom: 12 }}>Business Account</div>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Legal business name"><input className={fieldCls} style={fs} defaultValue="Famous Kabob LLC" /></Field>
               <Field label="EIN / tax ID"><input className={fieldCls} style={fs} defaultValue="••-•••4821" /></Field>
@@ -71,11 +71,11 @@ export default function BusinessSettingsPage() {
             <div className="flex items-center justify-between"><div className="t-h4" style={{ color: "var(--ink-900)" }}>Team & Access</div><Button size="sm"><Plus className="mr-1.5 h-4 w-4" /> Invite</Button></div>
             <div className="mt-3.5 grid gap-2">
               {TEAM.map((m) => (
-                <div key={m.email} className="flex items-center gap-3 rounded-[10px] border px-3.5 py-2.5" style={{ borderColor: "var(--card-edge)" }}>
+                <div key={m.email} className="flex items-center gap-3 rounded-[8px] border px-3.5 py-2.5" style={{ borderColor: "var(--card-edge)" }}>
                   <Avatar name={m.n} size={34} />
                   <div className="flex-1"><div className="t-label-sm" style={{ color: "var(--ink-900)" }}>{m.n}</div><div className="t-body-xs" style={{ color: "var(--ink-500)" }}>{m.email}</div></div>
                   <Tag tone={m.role === "Owner" ? "moss" : "default"}>{m.role}</Tag>
-                  {m.role !== "Owner" && <button className="t-body-sm" style={{ color: "var(--ink-500)" }}>Remove</button>}
+                  {m.role !== "Owner" && <button className="man-focus rounded-[4px] t-body-sm" style={{ color: "var(--ink-500)" }}>Remove</button>}
                 </div>
               ))}
             </div>

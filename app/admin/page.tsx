@@ -30,7 +30,7 @@ export default function AdminHomePage() {
           <div className="grid gap-3">
             {QUEUES.map((q) => (
               <Link key={q.t} href={q.href}>
-                <ManCard style={{ padding: 18 }} className="flex items-center gap-4">
+                <ManCard style={{ padding: 20 }} className="flex items-center gap-4">
                   <span className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl" style={{ background: "var(--paper-2)" }}><q.Icon size={20} style={{ color: "var(--ink-700)" }} /></span>
                   <div className="flex-1">
                     <div className="flex items-center gap-2"><span className="t-label" style={{ color: "var(--ink-900)" }}>{q.t}</span><Tag tone={q.tone}>{q.badge}</Tag></div>
@@ -42,7 +42,7 @@ export default function AdminHomePage() {
             ))}
           </div>
 
-          <ManCard style={{ padding: 22 }}>
+          <ManCard style={{ padding: 20 }}>
             <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>Seals issued</div>
             <div className="t-h3" style={{ color: "var(--ink-900)", marginTop: 4 }}>Last 14 Days</div>
             <div className="mt-4"><MiniLine data={[6, 9, 7, 12, 10, 14, 11, 16, 13, 18, 15, 20, 17, 22]} height={180} /></div>

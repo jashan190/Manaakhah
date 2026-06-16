@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
   return (
-    <button onClick={onClick} className="relative h-5 w-9 rounded-full transition-colors" style={{ background: on ? "var(--moss-700)" : "var(--paper-3)" }} aria-pressed={on}>
+    <button onClick={onClick} className="man-focus relative h-5 w-9 rounded-full transition-colors" style={{ background: on ? "var(--moss-700)" : "var(--paper-3)" }} aria-pressed={on}>
       <span className="absolute top-0.5 h-4 w-4 rounded-full bg-white transition-all" style={{ left: on ? 18 : 2 }} />
     </button>
   );

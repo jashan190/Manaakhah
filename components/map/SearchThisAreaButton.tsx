@@ -13,7 +13,7 @@ export function SearchThisAreaButton({ onClick, isLoading }: SearchThisAreaButto
     <Button
       onClick={onClick}
       disabled={isLoading}
-      className="shadow-lg"
+      className="shadow-[var(--shadow-lift)]"
     >
       {isLoading ? (
         <>

@@ -80,7 +80,7 @@ function RegisterContent() {
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         {error && (
-          <div className="rounded-[10px] p-3 t-body-sm" style={{ background: "#fadfdb", color: "#9b2e25" }}>{error}</div>
+          <div className="rounded-[8px] p-3 t-body-sm" style={{ background: "#fadfdb", color: "#9b2e25" }}>{error}</div>
         )}
 
         {/* role chooser — only on the generic sign-up (Claim/Add presets the role) */}

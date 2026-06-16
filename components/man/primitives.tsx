@@ -57,7 +57,7 @@ export function PH({ title, sub, right }: { title: string; sub?: string; right?:
 /* ── Card ──────────────────────────────────────────────────────── */
 export function ManCard({ children, className = "", style, id }: { children: React.ReactNode; className?: string; style?: React.CSSProperties; id?: string }) {
   return (
-    <div id={id} className={className} style={{ background: "#ffffff", border: "1px solid var(--card-edge)", borderRadius: 14, boxShadow: "var(--shadow-soft)", ...style }}>
+    <div id={id} className={className} style={{ background: "#ffffff", border: "1px solid var(--card-edge)", borderRadius: 12, boxShadow: "var(--shadow-soft)", ...style }}>
       {children}
     </div>
   );
@@ -92,7 +92,7 @@ export function Photo({ src, alt = "", seed = "x", h = 220, w, radius = 12, labe
 /* ── StatCard: KPI tile ────────────────────────────────────────── */
 export function StatCard({ label, value, sub, delta, deltaTone = "ok", Icon }: { label: string; value: string; sub?: string; delta?: string; deltaTone?: "ok" | "err"; Icon?: React.ComponentType<any> }) {
   return (
-    <ManCard style={{ padding: 18 }}>
+    <ManCard style={{ padding: 20 }}>
       <div className="flex items-start justify-between">
         <span className="t-eyebrow" style={{ color: "var(--ink-500)" }}>{label}</span>
         {Icon && <Icon size={16} style={{ color: "var(--ink-400)" }} />}

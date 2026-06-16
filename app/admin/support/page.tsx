@@ -65,7 +65,7 @@ export default function OwnerSupportPage() {
             <div className="flex-1 space-y-3 p-5" style={{ minHeight: 220 }}>
               {active.thread.map((m, i) => (
                 <div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}>
-                  <div className="max-w-[80%] rounded-[14px] px-3.5 py-2.5" style={m.me ? { background: "var(--moss-700)", color: "var(--bone)" } : { background: "var(--paper-2)", color: "var(--ink-900)" }}>
+                  <div className="max-w-[80%] rounded-[12px] px-3.5 py-2.5" style={m.me ? { background: "var(--moss-700)", color: "var(--bone)" } : { background: "var(--paper-2)", color: "var(--ink-900)" }}>
                     <div className="t-body-sm">{m.t}</div>
                     <div className="t-body-xs mt-1" style={{ color: m.me ? "rgba(255,255,255,0.7)" : "var(--ink-400)" }}>{m.time}</div>
                   </div>
@@ -73,7 +73,7 @@ export default function OwnerSupportPage() {
               ))}
             </div>
             <div className="flex items-end gap-2 p-4" style={{ borderTop: "1px solid var(--card-edge)" }}>
-              <textarea value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Reply to owner…" className="flex-1 rounded-[12px] border bg-white px-3.5 py-2.5 t-body-sm outline-none" style={{ borderColor: "var(--card-edge)", color: "var(--ink-900)", minHeight: 44, resize: "none" }} />
+              <textarea value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Reply to owner…" className="man-field flex-1 px-3.5 py-2.5 t-body-sm" style={{ color: "var(--ink-900)", minHeight: 44, resize: "none" }} />
               <Button size="sm"><Send className="h-4 w-4" /></Button>
               <Button variant="outline" size="sm">Resolve</Button>
             </div>

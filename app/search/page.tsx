@@ -10,28 +10,26 @@ const MapLibreMap = dynamic(() => import("@/components/map/MapLibreMap"), {
   ssr: false,
   loading: () => (
     <div className="h-[600px] rounded-lg flex items-center justify-center" style={{ background: "var(--paper-2)" }}>
-      <p className="text-muted-foreground">Loading map...</p>
+      <p className="t-body-sm" style={{ color: "var(--ink-500)" }}>Loading map…</p>
     </div>
   ),
 });
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tag } from "@/components/man/primitives";
 import {
-  BUSINESS_CATEGORIES,
-  BUSINESS_TAGS,
   DISTANCE_OPTIONS,
   SORT_OPTIONS,
-  PRICE_RANGES,
   DEFAULT_LOCATION,
 } from "@/lib/constants";
 import { useMockSession } from "@/components/mock-session-provider";
-import { useMapSearch, type Business, type MapBounds } from "@/hooks/useMapSearch";
+import { useMapSearch, type MapBounds } from "@/hooks/useMapSearch";
 import { ViewToggle, type ViewMode } from "@/components/search/ViewToggle";
 import { FilterRail } from "@/components/search/FilterRail";
+import { BusinessCard } from "@/components/business/BusinessCard";
+import { BusinessCardSkeleton } from "@/components/man/Skeleton";
+import { EmptyState } from "@/components/man/EmptyState";
 import { categoriesForGroup } from "@/lib/category-groups";
-import { Bookmark, MessageCircle, Heart, Star, Store, SlidersHorizontal, ChevronDown, X } from "lucide-react";
+import { Bookmark, MessageCircle, SlidersHorizontal, ChevronDown, X, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 function SearchContent() {
@@ -206,128 +204,6 @@ function SearchContent() {
       }));
   }, [sortedBusinesses]);
 
-  // Render business card
-  const renderBusinessCard = (business: Business, compact: boolean = false) => {
-    const img = (business as any).coverImage || (typeof (business as any).photos?.[0] === "string" ? (business as any).photos[0] : (business as any).photos?.[0]?.url);
-    const cat = BUSINESS_CATEGORIES.find((c) => c.value === business.category)?.label;
-    const price = PRICE_RANGES.find((p) => p.value === business.priceRange)?.label;
-    const fav = favorites.includes(business.id);
-    const knownTags = ((business as any).tags || [])
-      .map((t: any) => BUSINESS_TAGS.find((b) => b.value === t.tag))
-      .filter(Boolean) as { value: string; label: string }[];
-
-    // Compact = short horizontal row (used in split view alongside the map)
-    if (compact) {
-      return (
-        <Link href={`/business/${business.id}`} key={business.id} onClick={() => addToRecentlyViewed(business.id)}>
-          <div className="flex gap-3 overflow-hidden rounded-[12px] p-2.5 transition-shadow hover:shadow-[var(--shadow-rest)]"
-            style={{ background: "#ffffff", border: "1px solid var(--card-edge)" }}>
-            {/* Thumbnail */}
-            <div className="relative h-[84px] w-[84px] flex-shrink-0 overflow-hidden rounded-[10px]">
-              {img ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={img} alt={business.name} loading="lazy" className="h-full w-full object-cover" />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center" style={{ background: "linear-gradient(135deg, var(--moss-100), var(--moss-200))" }}>
-                  <Store size={20} style={{ color: "var(--moss-700)" }} />
-                </div>
-              )}
-            </div>
-            {/* Content */}
-            <div className="flex min-w-0 flex-1 flex-col">
-              <div className="flex items-start justify-between gap-2">
-                <h3 className="t-label line-clamp-1" style={{ color: "var(--ink-900)" }}>{business.name}</h3>
-                <button onClick={(e) => toggleFavorite(business.id, e)} aria-label="Save" className="-mr-0.5 flex-shrink-0">
-                  <Heart size={15} fill={fav ? "var(--clay-500)" : "none"} stroke={fav ? "var(--clay-500)" : "var(--ink-400)"} />
-                </button>
-              </div>
-              <div className="mt-0.5 flex flex-wrap items-center gap-x-2 t-body-xs" style={{ color: "var(--ink-500)" }}>
-                {business.averageRating > 0 && (
-                  <span className="inline-flex items-center gap-1" style={{ color: "var(--ink-700)" }}>
-                    <Star size={12} fill="var(--clay-500)" stroke="none" />
-                    <span style={{ fontWeight: 600 }}>{business.averageRating.toFixed(1)}</span>
-                    <span style={{ color: "var(--ink-400)" }}>({business.reviewCount})</span>
-                  </span>
-                )}
-                {cat && <span>{cat}</span>}
-                {price && <span>· {price}</span>}
-              </div>
-              <p className="mt-auto pt-1 t-body-xs line-clamp-1" style={{ color: "var(--ink-500)" }}>
-                {[business.address, business.city].filter(Boolean).join(", ")}
-                {business.distance !== undefined && ` · ${business.distance.toFixed(1)} mi`}
-              </p>
-            </div>
-          </div>
-        </Link>
-      );
-    }
-
-    return (
-    <Link href={`/business/${business.id}`} key={business.id} onClick={() => addToRecentlyViewed(business.id)}>
-      <div className="h-full overflow-hidden rounded-[14px] transition-shadow hover:shadow-[var(--shadow-lift)]"
-        style={{ background: "#ffffff", border: "1px solid var(--card-edge)" }}>
-        <div className="relative">
-          {img ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={img} alt={business.name} loading="lazy" className={`${compact ? 'aspect-[16/9]' : 'aspect-video'} w-full object-cover`} />
-          ) : (
-            <div className={`${compact ? 'aspect-[16/9]' : 'aspect-video'} flex items-center justify-center`}
-              style={{ background: "linear-gradient(135deg, var(--moss-100), var(--moss-200))" }}>
-              <Store size={26} style={{ color: "var(--moss-700)" }} />
-            </div>
-          )}
-
-          <button onClick={(e) => toggleFavorite(business.id, e)} aria-label="Save"
-            className="absolute right-2.5 top-2.5 flex h-8 w-8 items-center justify-center rounded-full shadow-md transition-transform hover:scale-110"
-            style={{ background: "#ffffff" }}>
-            <Heart size={15} fill={fav ? "var(--clay-500)" : "none"} stroke={fav ? "var(--clay-500)" : "var(--ink-500)"} />
-          </button>
-
-          {price && (
-            <div className="absolute bottom-2.5 left-2.5 rounded-md px-2 py-0.5"
-              style={{ background: "rgba(17,50,30,0.78)", color: "var(--bone)", fontSize: 11 }}>{price}</div>
-          )}
-        </div>
-
-        <div style={{ padding: compact ? 14 : 16 }}>
-          <div className="flex items-start justify-between gap-2">
-            <h3 className={`${compact ? 't-label-sm' : 't-label'} line-clamp-1`} style={{ color: "var(--ink-900)" }}>{business.name}</h3>
-            {business.distance !== undefined && (
-              <span className="t-body-xs whitespace-nowrap" style={{ color: "var(--ink-500)" }}>{business.distance.toFixed(1)} mi</span>
-            )}
-          </div>
-
-          <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 t-body-sm" style={{ color: "var(--ink-500)" }}>
-            {business.averageRating > 0 && (
-              <span className="inline-flex items-center gap-1" style={{ color: "var(--ink-700)" }}>
-                <Star size={13} fill="var(--clay-500)" stroke="none" />
-                <span style={{ fontWeight: 600 }}>{business.averageRating.toFixed(1)}</span>
-                <span style={{ color: "var(--ink-400)" }}>({business.reviewCount})</span>
-              </span>
-            )}
-            {cat && <span>{cat}</span>}
-          </div>
-
-          {!compact && business.description && (
-            <p className="mt-2 t-body-sm line-clamp-2" style={{ color: "var(--ink-500)" }}>{business.description}</p>
-          )}
-
-          <p className="mt-2 t-body-sm line-clamp-1" style={{ color: "var(--ink-500)" }}>{[business.address, business.city].filter(Boolean).join(", ")}</p>
-
-          {!compact && knownTags.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-1.5">
-              {knownTags.slice(0, 3).map((t) => (
-                <Tag key={t.value} tone="moss">{t.label}</Tag>
-              ))}
-              {knownTags.length > 3 && <Tag>+{knownTags.length - 3}</Tag>}
-            </div>
-          )}
-        </div>
-      </div>
-    </Link>
-    );
-  };
-
   return (
     <div className="min-h-screen" style={{ background: "var(--paper)" }}>
       {/* Search Header */}
@@ -361,7 +237,7 @@ function SearchContent() {
               </Button>
               {filtersOpen && (
                 <div
-                  className="absolute left-0 z-50 mt-2 w-[min(340px,calc(100vw-2rem))] overflow-auto rounded-[14px] border p-2 sm:left-auto sm:right-0"
+                  className="absolute left-0 z-50 mt-2 w-[min(340px,calc(100vw-2rem))] overflow-auto rounded-[12px] border p-2 sm:left-auto sm:right-0"
                   style={{ background: "#ffffff", borderColor: "var(--card-edge)", boxShadow: "var(--shadow-lift)", maxHeight: "70vh" }}
                 >
                   <FilterRail filters={filters} setFilters={setFilters} clearFilters={clearFilters} activeCount={activeFilterCount} />
@@ -382,7 +258,7 @@ function SearchContent() {
       <div className="container mx-auto max-w-6xl py-8 px-4">
         {/* Guest rail — limited, but intentional (not broken) */}
         {!session && !guestDismissed && (
-          <div className="relative mb-6 flex flex-wrap items-center gap-4 rounded-[14px] py-4 pl-5 pr-12"
+          <div className="relative mb-6 flex flex-wrap items-center gap-4 rounded-[12px] py-4 pl-5 pr-12"
             style={{ background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
             <div className="flex items-center gap-2.5">
               <span className="flex h-9 w-9 items-center justify-center rounded-full" style={{ background: "var(--moss-700)" }}><Bookmark size={16} style={{ color: "var(--bone)" }} /></span>
@@ -407,26 +283,35 @@ function SearchContent() {
           {/* Results */}
           <div>
             {isLoading ? (
-              <div className="text-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-                <p className="text-muted-foreground">Finding businesses near you...</p>
-              </div>
+              viewMode === "split" ? (
+                <div className="flex flex-col gap-1">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <BusinessCardSkeleton key={i} variant="compact" />
+                  ))}
+                </div>
+              ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <BusinessCardSkeleton key={i} variant="grid" />
+                  ))}
+                </div>
+              )
             ) : sortedBusinesses.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="text-6xl mb-4">🔍</div>
-                <p className="text-muted-foreground mb-4">No businesses found</p>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Try adjusting your search filters or expanding your search radius
-                </p>
-                <Button variant="outline" onClick={clearFilters}>
-                  Clear Filters
-                </Button>
-              </div>
+              <EmptyState
+                Icon={Search}
+                title="No businesses found"
+                description="Try adjusting your search filters or expanding your search radius."
+                action={
+                  <Button variant="outline" onClick={clearFilters}>
+                    Clear Filters
+                  </Button>
+                }
+              />
             ) : (
               <>
                 <div className="flex items-center justify-between mb-6">
-                  <p className="text-muted-foreground">
-                    Found <strong>{sortedBusinesses.length}</strong> businesses
+                  <p className="t-body-sm" style={{ color: "var(--ink-500)" }}>
+                    Found <strong style={{ color: "var(--ink-900)" }}>{sortedBusinesses.length}</strong> businesses
                     {userLocation && ` within ${filters.distance} miles`}
                   </p>
                   <div className="flex items-center gap-2">
@@ -449,10 +334,19 @@ function SearchContent() {
                       "flex flex-col gap-1 max-h-[600px] overflow-y-auto pr-3 transition-opacity duration-300",
                       isStale ? "opacity-50" : "opacity-100"
                     )}>
-                      {sortedBusinesses.map((business) => renderBusinessCard(business, true))}
+                      {sortedBusinesses.map((business) => (
+                        <BusinessCard
+                          key={business.id}
+                          business={business}
+                          variant="compact"
+                          isFavorite={favorites.includes(business.id)}
+                          onToggleFavorite={(e) => toggleFavorite(business.id, e)}
+                          onView={() => addToRecentlyViewed(business.id)}
+                        />
+                      ))}
                     </div>
                     {/* Map on right */}
-                    <div className="h-[600px] rounded-lg overflow-hidden border sticky top-24">
+                    <div className="h-[600px] rounded-lg overflow-hidden border sticky top-24" style={{ borderColor: "var(--card-edge)" }}>
                       <MapLibreMap
                         businesses={businessesForMap}
                         userLat={userLocation?.lat ?? 37.5485}
@@ -470,7 +364,15 @@ function SearchContent() {
                     "grid md:grid-cols-2 lg:grid-cols-3 gap-6 transition-opacity duration-300",
                     isStale ? "opacity-50" : "opacity-100"
                   )}>
-                    {sortedBusinesses.map((business) => renderBusinessCard(business))}
+                    {sortedBusinesses.map((business) => (
+                      <BusinessCard
+                        key={business.id}
+                        business={business}
+                        isFavorite={favorites.includes(business.id)}
+                        onToggleFavorite={(e) => toggleFavorite(business.id, e)}
+                        onView={() => addToRecentlyViewed(business.id)}
+                      />
+                    ))}
                   </div>
                 )}
               </>
@@ -485,10 +387,13 @@ function SearchContent() {
 export default function SearchPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--moss-700)] mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading search...</p>
+      <div className="min-h-screen" style={{ background: "var(--paper)" }}>
+        <div className="container mx-auto max-w-6xl py-8 px-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <BusinessCardSkeleton key={i} variant="grid" />
+            ))}
+          </div>
         </div>
       </div>
     }>

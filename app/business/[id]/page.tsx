@@ -132,12 +132,12 @@ export default function BusinessDetailPage() {
           ))}
         </div>
         <div className="absolute inset-x-0 top-0 flex items-center justify-between px-5 py-4 md:px-8">
-          <Link href="/search" className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 t-body-sm shadow-sm" style={{ background: "rgba(255,255,255,0.95)", color: "var(--ink-900)" }}><ArrowLeft size={15} /> Back</Link>
+          <Link href="/search" className="man-focus inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 t-body-sm shadow-[var(--shadow-soft)]" style={{ background: "rgba(255,255,255,0.95)", color: "var(--ink-900)" }}><ArrowLeft size={15} /> Back</Link>
           <div className="flex gap-2">
-            <button onClick={toggleFav} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 t-body-sm shadow-sm" style={{ background: "rgba(255,255,255,0.95)", color: "var(--ink-900)" }}>
+            <button onClick={toggleFav} className="man-focus inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 t-body-sm shadow-[var(--shadow-soft)]" style={{ background: "rgba(255,255,255,0.95)", color: "var(--ink-900)" }}>
               <Heart size={15} fill={fav ? "var(--clay-500)" : "none"} stroke={fav ? "var(--clay-500)" : "currentColor"} /> {fav ? "Saved" : "Save"}
             </button>
-            <button onClick={share} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 t-body-sm shadow-sm" style={{ background: "rgba(255,255,255,0.95)", color: "var(--ink-900)" }}>
+            <button onClick={share} className="man-focus inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 t-body-sm shadow-[var(--shadow-soft)]" style={{ background: "rgba(255,255,255,0.95)", color: "var(--ink-900)" }}>
               <Share2 size={15} /> {copied ? "Copied!" : "Share"}
             </button>
           </div>
@@ -184,14 +184,14 @@ export default function BusinessDetailPage() {
         <div className="grid gap-6 pb-10 lg:grid-cols-[1.7fr_1fr]">
           <div className="min-w-0 grid gap-4 content-start">
             {/* About */}
-            <ManCard style={{ padding: 22 }}>
+            <ManCard style={{ padding: 20 }}>
               <div className="t-h4" style={{ color: "var(--ink-900)" }}>About {business.name}</div>
               <p className="mt-2 t-body" style={{ color: "var(--ink-700)", lineHeight: 1.6 }}>{business.description}</p>
             </ManCard>
 
             {/* Highlights */}
             {amenities.length > 0 && (
-              <ManCard style={{ padding: 22 }}>
+              <ManCard style={{ padding: 20 }}>
                 <div className="t-h4" style={{ color: "var(--ink-900)", marginBottom: 12 }}>What This Place Offers</div>
                 <div className="grid gap-2.5 sm:grid-cols-2">
                   {amenities.map((a) => (
@@ -206,7 +206,7 @@ export default function BusinessDetailPage() {
 
             {/* Halal & trust */}
             {verified && (
-              <ManCard style={{ padding: 22, background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
+              <ManCard style={{ padding: 20, background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
                 <div className="flex items-start gap-3.5">
                   <Seal size={30} />
                   <div className="flex-1">
@@ -221,7 +221,7 @@ export default function BusinessDetailPage() {
             )}
 
             {/* Reviews summary */}
-            <ManCard id="reviews" style={{ padding: 22 }}>
+            <ManCard id="reviews" style={{ padding: 20 }}>
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="t-h4" style={{ color: "var(--ink-900)" }}>{business.reviewCount > 0 ? `${business.reviewCount} Reviews` : "Reviews"}</div>
                 <Link href={`/business/${id}/review`}><Button size="sm"><Pencil className="mr-1.5 h-4 w-4" /> Write a Review</Button></Link>
@@ -269,7 +269,7 @@ export default function BusinessDetailPage() {
                     {rv.title && <div className="mt-2 t-label-sm" style={{ color: "var(--ink-900)" }}>{rv.title}</div>}
                     <p className="mt-1.5 t-body-sm" style={{ color: "var(--ink-700)", lineHeight: 1.6 }}>{rv.content || rv.text}</p>
                     {rv.ownerResponse && (
-                      <div className="mt-3 rounded-[10px] p-3.5" style={{ background: "var(--paper-2)" }}>
+                      <div className="mt-3 rounded-[8px] p-3.5" style={{ background: "var(--paper-2)" }}>
                         <div className="flex items-center gap-1.5 t-eyebrow" style={{ color: "var(--ink-500)" }}><Seal size={13} /> Response from {business.name}</div>
                         <p className="mt-1.5 t-body-sm" style={{ color: "var(--ink-700)" }}>{rv.ownerResponse}</p>
                       </div>
@@ -282,7 +282,7 @@ export default function BusinessDetailPage() {
 
           {/* Sticky aside */}
           <aside className="grid h-fit gap-4 lg:sticky lg:top-[88px]">
-            <ManCard style={{ padding: 22 }}>
+            <ManCard style={{ padding: 20 }}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 t-h4" style={{ color: "var(--ink-900)" }}><Clock size={16} style={{ color: "var(--moss-700)" }} /> Hours</div>
                 <span className="rounded-full px-2 py-0.5 t-body-xs" style={{ fontWeight: 600, background: status.open ? "var(--moss-50)" : "var(--paper-2)", color: status.open ? "var(--moss-700)" : "var(--ink-500)" }}>{status.open ? "Open" : "Closed"}</span>
@@ -301,7 +301,7 @@ export default function BusinessDetailPage() {
               </div>
             </ManCard>
 
-            <ManCard style={{ padding: 22 }}>
+            <ManCard style={{ padding: 20 }}>
               <div className="t-h4" style={{ color: "var(--ink-900)" }}>Contact & Location</div>
               <div className="mt-3 grid gap-3 t-body-sm">
                 <div className="flex items-start gap-2.5"><MapPin size={15} style={{ color: "var(--ink-400)", marginTop: 2 }} /><span style={{ color: "var(--ink-700)" }}>{business.address}<br />{business.city}, {business.state} {business.zipCode}</span></div>

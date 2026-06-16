@@ -39,8 +39,8 @@ export default function NotificationsPage() {
         <PH title="Notifications" sub="Updates from your saved searches, messages and the businesses you follow" />
         <div className="mb-5 flex flex-wrap gap-2">
           {filters.map((f) => (
-            <button key={f} onClick={() => setActive(f)} className="t-body-sm rounded-full px-3 py-1.5"
-              style={active === f ? { background: "var(--ink-900)", color: "var(--bone)" } : { background: "#ffffff", border: "1px solid var(--card-edge)", color: "var(--ink-700)" }}>{f}</button>
+            <button key={f} onClick={() => setActive(f)} className="man-focus t-body-sm rounded-full px-3 py-1.5"
+              style={active === f ? { background: "var(--moss-700)", color: "var(--bone)" } : { background: "#ffffff", border: "1px solid var(--card-edge)", color: "var(--ink-700)" }}>{f}</button>
           ))}
         </div>
 
@@ -49,7 +49,7 @@ export default function NotificationsPage() {
             <div className="t-eyebrow mb-2" style={{ color: "var(--ink-500)" }}>{g.label}</div>
             <ManCard>
               {g.items.map((n, i) => (
-                <div key={i} className="flex items-start gap-3.5 px-[18px] py-4"
+                <div key={i} className="flex items-start gap-3.5 px-5 py-4"
                   style={{ borderBottom: i === g.items.length - 1 ? "none" : "1px solid var(--card-edge)", background: n.unread ? "var(--moss-50)" : "transparent" }}>
                   <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full" style={{ background: TONE[n.tone].bg }}>
                     <n.Icon size={16} style={{ color: TONE[n.tone].fg }} />

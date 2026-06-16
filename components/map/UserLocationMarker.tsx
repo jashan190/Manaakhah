@@ -28,7 +28,7 @@ export function UserLocationMarker({ latitude, longitude }: UserLocationMarkerPr
           <div className="absolute inset-0 w-6 h-6 bg-blue-500 rounded-full opacity-30 animate-ping" />
           {/* Solid center dot */}
           <div
-            className="relative w-4 h-4 bg-blue-500 border-2 border-white rounded-full shadow-lg"
+            className="relative w-4 h-4 bg-blue-500 border-2 border-white rounded-full shadow-[var(--shadow-lift)]"
             style={{ margin: '4px' }}
           />
         </div>

@@ -13,15 +13,15 @@ const selOpts = (...l: string[]) => l.map((s) => ({ value: s, label: s }));
 
 const TABS = ["Overview", "Photos", "Menu", "Halal details", "Hours", "Amenities"];
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const fieldCls = "w-full rounded-[10px] border bg-white px-3.5 py-2.5 t-body outline-none";
-const fs = { borderColor: "var(--card-edge)", color: "var(--ink-900)" } as const;
+const fieldCls = "man-field w-full px-3.5 py-2.5 t-body";
+const fs = { color: "var(--ink-900)" } as const;
 const completeness = [
   ["Business basics", true], ["Address & hours", true], ["Cover photo", true],
   ["5+ gallery photos", true], ["Menu uploaded", false], ["Halal certificate", true], ["Amenities tagged", false],
 ] as const;
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 5 }}>{label}</div>{children}</div>;
+  return <div><div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 4 }}>{label}</div>{children}</div>;
 }
 
 export default function ListingProfilePage() {
@@ -39,7 +39,7 @@ export default function ListingProfilePage() {
         {/* Tabs */}
         <div className="mb-5 flex flex-wrap gap-2 border-b" style={{ borderColor: "var(--card-edge)" }}>
           {TABS.map((t) => (
-            <button key={t} onClick={() => setTab(t)} className="t-body-sm -mb-px border-b-2 px-1 pb-2.5"
+            <button key={t} onClick={() => setTab(t)} className="man-focus rounded-[4px] t-body-sm -mb-px border-b-2 px-1 pb-2.5"
               style={tab === t ? { borderColor: "var(--moss-700)", color: "var(--ink-900)", fontWeight: 600 } : { borderColor: "transparent", color: "var(--ink-500)" }}>{t}</button>
           ))}
         </div>
@@ -70,9 +70,9 @@ export default function ListingProfilePage() {
                 <div className="t-h4" style={{ color: "var(--ink-900)", marginBottom: 12 }}>Gallery</div>
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                   {["sac-famous-kabob", "kabob-1", "kabob-2", "kabob-3", "kabob-4"].map((s) => (
-                    <Photo key={s} seed={s} h={120} radius={10} />
+                    <Photo key={s} seed={s} h={120} radius={8} />
                   ))}
-                  <button className="flex h-[120px] flex-col items-center justify-center gap-1.5 rounded-[10px] border-2 border-dashed t-body-xs" style={{ borderColor: "var(--card-edge)", color: "var(--ink-500)" }}><Plus size={20} /> Add photo</button>
+                  <button className="man-focus flex h-[120px] flex-col items-center justify-center gap-1.5 rounded-[8px] border-2 border-dashed t-body-xs" style={{ borderColor: "var(--card-edge)", color: "var(--ink-500)" }}><Plus size={20} /> Add photo</button>
                 </div>
               </ManCard>
             )}
@@ -82,7 +82,7 @@ export default function ListingProfilePage() {
                 <div className="flex items-center justify-between"><div className="t-h4" style={{ color: "var(--ink-900)" }}>Menu</div><Button size="sm"><Plus className="mr-1.5 h-4 w-4" /> Add Item</Button></div>
                 <div className="mt-4 grid gap-2.5">
                   {[["Chicken kabob plate", "$14.99"], ["Lamb chops", "$24.99"], ["Beef koobideh", "$15.99"], ["Mixed grill", "$22.99"]].map(([n, p]) => (
-                    <div key={n} className="flex items-center justify-between rounded-[10px] border px-3.5 py-2.5" style={{ borderColor: "var(--card-edge)" }}>
+                    <div key={n} className="flex items-center justify-between rounded-[8px] border px-3.5 py-2.5" style={{ borderColor: "var(--card-edge)" }}>
                       <span className="t-body-sm" style={{ color: "var(--ink-900)" }}>{n}</span>
                       <span className="t-body-sm" style={{ color: "var(--ink-500)" }}>{p}</span>
                     </div>
@@ -93,14 +93,14 @@ export default function ListingProfilePage() {
 
             {tab === "Halal details" && (
               <ManCard style={{ padding: 24 }}>
-                <div className="flex items-start gap-3 rounded-[10px] p-3.5" style={{ background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
+                <div className="flex items-start gap-3 rounded-[8px] p-3.5" style={{ background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
                   <Seal size={24} />
                   <div className="flex-1"><div className="t-label" style={{ color: "var(--ink-900)" }}>Verified halal · HFSAA active</div><div className="t-body-sm" style={{ color: "var(--ink-700)", marginTop: 2 }}>Certificate expires March 14, 2027.</div></div>
                   <Link href="/business/sac-famous-kabob/certification"><Button variant="outline" size="sm">Manage</Button></Link>
                 </div>
                 <div className="mt-4 grid gap-2 sm:grid-cols-2">
                   {[["All meat is zabihah", true], ["Separate halal kitchen", true], ["No alcohol served", true], ["Vegetarian options", true], ["Vegan options", false]].map(([o, on]) => (
-                    <div key={o as string} className="flex items-center rounded-[10px] border px-3 py-2.5" style={{ borderColor: "var(--card-edge)" }}><Checkbox defaultChecked={on as boolean} label={o} /></div>
+                    <div key={o as string} className="flex items-center rounded-[8px] border px-3 py-2.5" style={{ borderColor: "var(--card-edge)" }}><Checkbox defaultChecked={on as boolean} label={o} /></div>
                   ))}
                 </div>
               </ManCard>
@@ -113,9 +113,9 @@ export default function ListingProfilePage() {
                   {DAYS.map((d, i) => (
                     <div key={d} className="flex items-center gap-3">
                       <span className="t-body-sm" style={{ color: "var(--ink-700)", width: 44 }}>{d}</span>
-                      <input className="rounded-[8px] border bg-white px-2.5 py-1.5 t-body-sm outline-none" style={fs} defaultValue="11:00" disabled={i === 6} />
+                      <input className="man-field px-2.5 py-1.5 t-body-sm" style={fs} defaultValue="11:00" disabled={i === 6} />
                       <span className="t-body-sm" style={{ color: "var(--ink-400)" }}>–</span>
-                      <input className="rounded-[8px] border bg-white px-2.5 py-1.5 t-body-sm outline-none" style={fs} defaultValue="22:00" disabled={i === 6} />
+                      <input className="man-field px-2.5 py-1.5 t-body-sm" style={fs} defaultValue="22:00" disabled={i === 6} />
                       <Checkbox className="ml-auto" defaultChecked={i === 6} label="Closed" />
                     </div>
                   ))}
@@ -128,7 +128,7 @@ export default function ListingProfilePage() {
                 <div className="t-h4" style={{ color: "var(--ink-900)", marginBottom: 12 }}>Amenities</div>
                 <div className="grid gap-2 sm:grid-cols-2">
                   {[["Prayer space", true], ["Family seating", true], ["Parking", true], ["Wheelchair access", true], ["Outdoor seating", false], ["Catering", true], ["Delivery", true], ["Wi-Fi", false]].map(([o, on]) => (
-                    <div key={o as string} className="flex items-center rounded-[10px] border px-3 py-2.5" style={{ borderColor: "var(--card-edge)" }}><Checkbox defaultChecked={on as boolean} label={o} /></div>
+                    <div key={o as string} className="flex items-center rounded-[8px] border px-3 py-2.5" style={{ borderColor: "var(--card-edge)" }}><Checkbox defaultChecked={on as boolean} label={o} /></div>
                   ))}
                 </div>
               </ManCard>
@@ -139,7 +139,7 @@ export default function ListingProfilePage() {
 
           {/* Completeness column */}
           <div className="grid gap-3.5">
-            <ManCard style={{ padding: 22 }}>
+            <ManCard style={{ padding: 20 }}>
               <div className="flex items-baseline justify-between"><div className="t-h4" style={{ color: "var(--ink-900)" }}>Profile Completeness</div><span className="t-h3" style={{ color: "var(--moss-700)" }}>{pct}%</span></div>
               <div className="mt-3 h-2.5 w-full rounded-full" style={{ background: "var(--paper-2)" }}><div className="h-2.5 rounded-full" style={{ width: `${pct}%`, background: "var(--moss-700)" }} /></div>
               <div className="mt-4 grid gap-2.5">
@@ -150,10 +150,10 @@ export default function ListingProfilePage() {
                   </div>
                 ))}
               </div>
-              <p className="t-body-xs" style={{ color: "var(--ink-500)", marginTop: 14 }}>Complete profiles get up to 3× more profile views.</p>
+              <p className="t-body-xs" style={{ color: "var(--ink-500)", marginTop: 12 }}>Complete profiles get up to 3× more profile views.</p>
             </ManCard>
 
-            <ManCard style={{ padding: 22, background: "var(--clay-50)", border: "1px solid var(--clay-100)" }}>
+            <ManCard style={{ padding: 20, background: "var(--clay-50)", border: "1px solid var(--clay-100)" }}>
               <Tag tone="clay">Tip</Tag>
               <div className="t-label" style={{ color: "var(--ink-900)", marginTop: 8 }}>Add your menu</div>
               <p className="t-body-sm" style={{ color: "var(--ink-700)", marginTop: 4 }}>Listings with a menu convert 40% more enquiries. Upload yours under the Menu tab.</p>

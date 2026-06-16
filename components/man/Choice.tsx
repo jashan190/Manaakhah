@@ -26,10 +26,10 @@ export function Checkbox({
       aria-checked={cur}
       disabled={disabled}
       onClick={toggle}
-      className={`inline-flex items-center gap-2 text-left disabled:opacity-50 ${className}`}
+      className={`man-focusable inline-flex items-center gap-2 text-left disabled:opacity-50 ${className}`}
     >
       <span
-        className="flex h-[18px] w-[18px] flex-shrink-0 items-center justify-center rounded-[5px] transition-colors"
+        className="flex h-[18px] w-[18px] flex-shrink-0 items-center justify-center rounded-[4px] transition-colors"
         style={cur
           ? { background: "var(--moss-700)", border: "1.5px solid var(--moss-700)" }
           : { background: "var(--card)", border: "1.5px solid var(--card-edge)" }}
@@ -58,7 +58,7 @@ export function Radio({
       aria-checked={checked}
       disabled={disabled}
       onClick={onChange}
-      className={`inline-flex items-center gap-2 text-left disabled:opacity-50 ${className}`}
+      className={`man-focusable inline-flex items-center gap-2 text-left disabled:opacity-50 ${className}`}
     >
       <span
         className="flex h-[18px] w-[18px] flex-shrink-0 items-center justify-center rounded-full transition-colors"

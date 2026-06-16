@@ -313,7 +313,7 @@ export default function MapLibreMap({
                   }
                 }}
                 disabled={isLocating}
-                className="absolute top-24 right-2 z-10 bg-white p-2 rounded-lg shadow-md hover:bg-gray-50 disabled:opacity-50"
+                className="absolute top-24 right-2 z-10 bg-white p-2 rounded-lg shadow-[var(--shadow-rest)] hover:bg-gray-50 disabled:opacity-50"
                 title="Center on My Location"
               >
                 {isLocating ? (

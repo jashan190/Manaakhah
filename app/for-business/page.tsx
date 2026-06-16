@@ -19,8 +19,8 @@ export default function ForBusinessPage() {
     <div style={{ background: "var(--paper)" }}>
       <section className="mx-auto max-w-[820px] px-6 py-16 text-center">
         <Tag tone="clay">For Owners</Tag>
-        <h1 className="t-h1" style={{ color: "var(--ink-900)", marginTop: 14, fontSize: 48 }}>Get Found, Get Verified, Grow.</h1>
-        <p className="t-body-lg" style={{ color: "var(--ink-500)", margin: "14px auto 0", maxWidth: 580 }}>
+        <h1 className="t-h1" style={{ color: "var(--ink-900)", marginTop: 12, fontSize: 48 }}>Get Found, Get Verified, Grow.</h1>
+        <p className="t-body-lg" style={{ color: "var(--ink-500)", margin: "12px auto 0", maxWidth: 580 }}>
           Claim your listing in 3 minutes. Verify in 7 days. Reach the Sacramento community actively searching for Muslim-owned businesses.
         </p>
         <div className="mt-6 flex justify-center gap-2.5">
@@ -34,13 +34,13 @@ export default function ForBusinessPage() {
         <PH title="Two Ways to Get Listed" sub="Claim an existing listing, or add your business from scratch. Both end with verified status." />
         <div className="grid gap-4 md:grid-cols-2">
           {/* Claim */}
-          <ManCard style={{ padding: 26 }}>
+          <ManCard style={{ padding: 24 }}>
             <Tag tone="moss">Most Owners</Tag>
             <div className="t-h3" style={{ color: "var(--ink-900)", marginTop: 12 }}>Claim an Existing Listing</div>
-            <p className="t-body" style={{ color: "var(--ink-500)", marginTop: 6 }}>
+            <p className="t-body" style={{ color: "var(--ink-500)", marginTop: 4 }}>
               We&apos;ve already indexed 110+ Sacramento businesses. Search yours, prove ownership, and take over the listing.
             </p>
-            <div style={{ marginTop: 16, padding: 14, background: "var(--paper-2)", borderRadius: 10 }}>
+            <div style={{ marginTop: 16, padding: 16, background: "var(--paper-2)", borderRadius: 8 }}>
               <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>What you&apos;ll need</div>
               <div className="mt-2 grid gap-1.5">
                 {claimNeeds.map((t) => (
@@ -53,13 +53,13 @@ export default function ForBusinessPage() {
           </ManCard>
 
           {/* Add new */}
-          <ManCard style={{ padding: 26 }}>
+          <ManCard style={{ padding: 24 }}>
             <Tag>Not Yet Listed</Tag>
             <div className="t-h3" style={{ color: "var(--ink-900)", marginTop: 12 }}>Add a New Business</div>
-            <p className="t-body" style={{ color: "var(--ink-500)", marginTop: 6 }}>
+            <p className="t-body" style={{ color: "var(--ink-500)", marginTop: 4 }}>
               Brand new, recently moved, or just not on Manaakhah yet? Create the listing and we&apos;ll route it through verification.
             </p>
-            <div style={{ marginTop: 16, padding: 14, background: "var(--paper-2)", borderRadius: 10 }}>
+            <div style={{ marginTop: 16, padding: 16, background: "var(--paper-2)", borderRadius: 8 }}>
               <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>What you&apos;ll need</div>
               <div className="mt-2 grid gap-1.5">
                 {addNeeds.map((t) => (
@@ -78,7 +78,7 @@ export default function ForBusinessPage() {
         {props.map(({ Icon, t, d }) => (
           <ManCard key={t} style={{ padding: 20 }}>
             <Icon size={20} style={{ color: "var(--moss-700)" }} />
-            <div className="t-h4" style={{ color: "var(--ink-900)", marginTop: 10 }}>{t}</div>
+            <div className="t-h4" style={{ color: "var(--ink-900)", marginTop: 8 }}>{t}</div>
             <p className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 4 }}>{d}</p>
           </ManCard>
         ))}

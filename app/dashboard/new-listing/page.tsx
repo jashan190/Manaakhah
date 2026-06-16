@@ -13,13 +13,13 @@ import { ArrowLeft, ArrowRight, Check, Plus, MapPin, Clock, Image as ImageIcon, 
 
 const STEPS = ["Basics", "Address & hours", "Halal details", "Photos", "Review"];
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-const fieldCls = "w-full rounded-[10px] border bg-white px-3.5 py-2.5 t-body outline-none";
-const fs = { borderColor: "var(--card-edge)", color: "var(--ink-900)" } as const;
+const fieldCls = "man-field w-full px-3.5 py-2.5 t-body";
+const fs = { color: "var(--ink-900)" } as const;
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 5 }}>{label}</div>
+      <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 4 }}>{label}</div>
       {children}
     </div>
   );
@@ -39,7 +39,7 @@ export default function NewListingPage() {
         <div className="mb-6 flex items-center gap-1.5">
           {STEPS.map((s, i) => (
             <div key={s} className="flex flex-1 items-center gap-1.5">
-              <button onClick={() => setStep(i)} className="flex items-center gap-2">
+              <button onClick={() => setStep(i)} className="man-focus rounded-[8px] flex items-center gap-2">
                 <span className="flex h-6 w-6 items-center justify-center rounded-full t-body-xs" style={i < step ? { background: "var(--moss-700)", color: "var(--bone)" } : i === step ? { background: "var(--ink-900)", color: "var(--bone)" } : { background: "var(--paper-2)", color: "var(--ink-400)", border: "1px solid var(--card-edge)" }}>
                   {i < step ? <Check size={12} /> : i + 1}
                 </span>
@@ -96,11 +96,11 @@ export default function NewListingPage() {
               <Field label="What&apos;s halal here?">
                 <div className="grid gap-2 sm:grid-cols-2">
                   {["All meat is zabihah", "Separate halal kitchen", "No alcohol served", "Vegetarian options"].map((o) => (
-                    <div key={o} className="flex items-center rounded-[10px] border px-3 py-2.5" style={{ borderColor: "var(--card-edge)" }}><Checkbox defaultChecked label={o} /></div>
+                    <div key={o} className="flex items-center rounded-[8px] border px-3 py-2.5" style={{ borderColor: "var(--card-edge)" }}><Checkbox defaultChecked label={o} /></div>
                   ))}
                 </div>
               </Field>
-              <div className="flex items-start gap-3 rounded-[10px] p-3.5" style={{ background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
+              <div className="flex items-start gap-3 rounded-[8px] p-3.5" style={{ background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
                 <Seal size={22} />
                 <p className="t-body-sm" style={{ color: "var(--ink-700)" }}>Upload your certificate on the next step. Our verification team cross-checks it with the issuing body before your Seal goes live.</p>
               </div>
@@ -111,13 +111,13 @@ export default function NewListingPage() {
             <div className="grid gap-4">
               <div className="flex items-center gap-2 t-h4" style={{ color: "var(--ink-900)" }}><ImageIcon size={18} style={{ color: "var(--moss-700)" }} /> Photos & documents</div>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <button className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-[12px] border-2 border-dashed t-body-xs" style={{ borderColor: "var(--card-edge)", color: "var(--ink-500)" }}><Plus size={20} /> Cover photo</button>
+                <button className="man-focus flex aspect-square flex-col items-center justify-center gap-1.5 rounded-[12px] border-2 border-dashed t-body-xs" style={{ borderColor: "var(--card-edge)", color: "var(--ink-500)" }}><Plus size={20} /> Cover photo</button>
                 {[1, 2, 3].map((i) => (
-                  <button key={i} className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-[12px] border-2 border-dashed t-body-xs" style={{ borderColor: "var(--card-edge)", color: "var(--ink-500)" }}><Plus size={20} /> Add photo</button>
+                  <button key={i} className="man-focus flex aspect-square flex-col items-center justify-center gap-1.5 rounded-[12px] border-2 border-dashed t-body-xs" style={{ borderColor: "var(--card-edge)", color: "var(--ink-500)" }}><Plus size={20} /> Add photo</button>
                 ))}
               </div>
               <Field label="Halal certificate (PDF or image)">
-                <button className="flex w-full items-center justify-center gap-2 rounded-[10px] border-2 border-dashed py-5 t-body-sm" style={{ borderColor: "var(--card-edge)", color: "var(--ink-500)" }}><Plus size={16} /> Upload certificate</button>
+                <button className="man-focus flex w-full items-center justify-center gap-2 rounded-[8px] border-2 border-dashed py-5 t-body-sm" style={{ borderColor: "var(--card-edge)", color: "var(--ink-500)" }}><Plus size={16} /> Upload certificate</button>
               </Field>
             </div>
           )}

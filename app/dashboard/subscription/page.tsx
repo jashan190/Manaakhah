@@ -43,10 +43,10 @@ export default function SubscriptionPage() {
           </ManCard>
 
           {/* Upgrade */}
-          <div className="rounded-[14px] p-6" style={{ background: "var(--clay-50)", border: "1px solid var(--clay-100)" }}>
+          <div className="rounded-[12px] p-6" style={{ background: "var(--clay-50)", border: "1px solid var(--clay-100)" }}>
             <Tag tone="clay">Premier</Tag>
-            <div className="t-h3" style={{ color: "var(--ink-900)", marginTop: 10 }}>Go Top of Search</div>
-            <p className="t-body-sm" style={{ color: "var(--ink-700)", marginTop: 6 }}>Featured placement, AI review replies, multi-location, and a direct line to our verification team.</p>
+            <div className="t-h3" style={{ color: "var(--ink-900)", marginTop: 8 }}>Go Top of Search</div>
+            <p className="t-body-sm" style={{ color: "var(--ink-700)", marginTop: 4 }}>Featured placement, AI review replies, multi-location, and a direct line to our verification team.</p>
             <div className="mt-3 t-h2" style={{ color: "var(--ink-900)" }}>$99<span className="t-body" style={{ color: "var(--ink-500)" }}>/mo</span></div>
             <Button className="mt-3">Upgrade to Premier</Button>
           </div>
@@ -54,9 +54,9 @@ export default function SubscriptionPage() {
 
         <div className="mt-5 grid gap-3.5 lg:grid-cols-[1fr_1.4fr]">
           {/* Payment method */}
-          <ManCard style={{ padding: 22 }}>
+          <ManCard style={{ padding: 20 }}>
             <div className="t-h4" style={{ color: "var(--ink-900)" }}>Payment Method</div>
-            <div className="mt-3 flex items-center gap-3 rounded-[10px] p-3" style={{ background: "var(--paper-2)" }}>
+            <div className="mt-3 flex items-center gap-3 rounded-[8px] p-3" style={{ background: "var(--paper-2)" }}>
               <CreditCard size={22} style={{ color: "var(--ink-700)" }} />
               <div className="flex-1"><div className="t-label" style={{ color: "var(--ink-900)" }}>Visa ending 4242</div><div className="t-body-xs" style={{ color: "var(--ink-500)" }}>Expires 08/28</div></div>
               <Button variant="outline" size="sm">Update</Button>
@@ -73,7 +73,7 @@ export default function SubscriptionPage() {
                 <div className="flex-1"><div className="t-label-sm" style={{ color: "var(--ink-900)" }}>{d}</div><div className="t-body-xs" style={{ color: "var(--ink-500)" }}>{p}</div></div>
                 <span className="t-body-sm" style={{ color: "var(--ink-900)" }}>{a}</span>
                 <Tag tone="ok">Paid</Tag>
-                <button className="rounded-lg p-1.5 hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-500)" }}><Download size={16} /></button>
+                <button className="man-focus rounded-lg p-1.5 hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-500)" }}><Download size={16} /></button>
               </div>
             ))}
           </ManCard>

@@ -26,7 +26,7 @@ export function FeaturedRow() {
             <ManCard style={{ padding: 0, overflow: "hidden" }} className="h-full transition-shadow hover:shadow-[var(--shadow-lift)]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={b.coverImage} alt={b.name} loading="lazy" className="aspect-video w-full object-cover" />
-              <div style={{ padding: 14 }}>
+              <div style={{ padding: 16 }}>
                 <div className="t-label line-clamp-1" style={{ color: "var(--ink-900)" }}>{b.name}</div>
                 <div className="mt-1 flex items-center gap-2 t-body-sm" style={{ color: "var(--ink-500)" }}>
                   {b.averageRating > 0 && (

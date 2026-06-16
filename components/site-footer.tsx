@@ -19,7 +19,7 @@ export function SiteFooter() {
         </div>
         {cols.map(([h, items]) => (
           <div key={h}>
-            <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 10 }}>{h}</div>
+            <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 8 }}>{h}</div>
             {items.map(([label, href]) => (
               <div key={label} className="t-body-sm" style={{ color: "var(--ink-700)", padding: "4px 0" }}>
                 <Link href={href} className="hover:underline">{label}</Link>
@@ -28,7 +28,7 @@ export function SiteFooter() {
           </div>
         ))}
       </div>
-      <div className="flex justify-between" style={{ paddingTop: 18, borderTop: "1px solid var(--card-edge)" }}>
+      <div className="flex justify-between" style={{ paddingTop: 20, borderTop: "1px solid var(--card-edge)" }}>
         <span className="t-body-xs" style={{ color: "var(--ink-500)" }}>© 2026 Manaakhah · Sacramento, CA</span>
         <span className="t-body-xs" style={{ color: "var(--ink-500)" }}>English (US) · USD</span>
       </div>

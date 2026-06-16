@@ -11,7 +11,7 @@ export function LanguageSwitcher() {
       <Button variant="outline" size="sm" className="min-w-[80px]">
         {languageNames[language]}
       </Button>
-      <div className="absolute right-0 mt-1 w-32 bg-white border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+      <div className="absolute right-0 mt-1 w-32 bg-white border rounded-lg shadow-[var(--shadow-lift)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
         {availableLanguages.map((lang) => (
           <button
             key={lang}

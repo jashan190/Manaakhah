@@ -24,7 +24,7 @@ export function FeaturedShowcase() {
   const s = slides[i];
 
   return (
-    <div className="relative h-[440px] w-full overflow-hidden rounded-[14px]" style={{ boxShadow: "var(--shadow-lift)" }}>
+    <div className="relative h-[440px] w-full overflow-hidden rounded-[12px]" style={{ boxShadow: "var(--shadow-lift)" }}>
       {/* rotating photo panels with moss scrim for legibility */}
       {slides.map((sl, idx) => (
         <div key={sl.name} className="absolute inset-0 transition-opacity duration-700"
@@ -37,7 +37,7 @@ export function FeaturedShowcase() {
       ))}
 
       {/* floating info card */}
-      <div className="absolute bottom-5 left-5 right-5 rounded-[14px] border bg-white p-4"
+      <div className="absolute bottom-5 left-5 right-5 rounded-[12px] border bg-white p-4"
         style={{ borderColor: "var(--card-edge)", boxShadow: "var(--shadow-lift)" }}>
         <div className="flex items-start justify-between gap-3">
           <div>
