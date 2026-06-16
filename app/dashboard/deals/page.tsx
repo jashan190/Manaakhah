@@ -48,7 +48,7 @@ export default function PromotionsPage() {
             </div>
           </div>
 
-          <ManCard style={{ padding: 22 }}>
+          <ManCard style={{ padding: 20 }}>
             <div className="t-h4" style={{ color: "var(--ink-900)" }}>Quick Promotion</div>
             <div className="mt-3.5 grid gap-3">
               <input className={field} style={fs} placeholder="Title (e.g. Friday iftar special)" />

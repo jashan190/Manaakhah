@@ -28,10 +28,10 @@ export default function WriteReviewPage() {
         <Link href={`/business/${id}`} className="t-body-sm inline-flex items-center gap-1" style={{ color: "var(--ink-500)" }}>
           <ArrowLeft size={14} /> Back to {name}
         </Link>
-        <h1 className="t-h2" style={{ color: "var(--ink-900)", marginTop: 14 }}>Review {name}</h1>
+        <h1 className="t-h2" style={{ color: "var(--ink-900)", marginTop: 12 }}>Review {name}</h1>
 
         {published ? (
-          <ManCard style={{ padding: 40, marginTop: 18, textAlign: "center" }}>
+          <ManCard style={{ padding: 40, marginTop: 16, textAlign: "center" }}>
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full" style={{ background: "var(--moss-50)" }}>
               <CheckCircle2 size={30} style={{ color: "var(--moss-700)" }} />
             </div>
@@ -43,7 +43,7 @@ export default function WriteReviewPage() {
             </div>
           </ManCard>
         ) : (
-        <ManCard style={{ padding: 26, marginTop: 18 }}>
+        <ManCard style={{ padding: 24, marginTop: 16 }}>
           <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>Your rating</div>
           <div className="mt-2 flex gap-1">
             {[1, 2, 3, 4, 5].map((n) => (
@@ -55,11 +55,11 @@ export default function WriteReviewPage() {
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             <div>
-              <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 6 }}>Visit date</div>
+              <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 4 }}>Visit date</div>
               <DatePicker placeholder="Select visit date" />
             </div>
             <div>
-              <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 6 }}>Visit type</div>
+              <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 4 }}>Visit type</div>
               <Select defaultValue="Dine-in" options={["Dine-in", "Takeout", "Delivery", "Catering"].map((s) => ({ value: s, label: s }))} />
             </div>
           </div>
@@ -68,7 +68,7 @@ export default function WriteReviewPage() {
           </div>
 
           <div className="mt-5">
-            <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 6 }}>Your review</div>
+            <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 4 }}>Your review</div>
             <textarea value={text} onChange={(e) => setText(e.target.value.slice(0, 1000))} placeholder="Share the details — food, service, halal experience…"
               className="w-full rounded-[8px] border bg-white px-3.5 py-2.5 t-body outline-none" style={{ borderColor: "var(--card-edge)", color: "var(--ink-900)", minHeight: 120, resize: "vertical" }} />
             <div className="mt-1 text-right t-body-xs" style={{ color: "var(--ink-400)" }}>{text.length}/1000</div>

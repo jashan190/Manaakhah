@@ -27,7 +27,7 @@ function Toggle({ on, set, label, sub }: { on: boolean; set: (v: boolean) => voi
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 5 }}>{label}</div>{children}</div>;
+  return <div><div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 4 }}>{label}</div>{children}</div>;
 }
 
 export default function BusinessSettingsPage() {
@@ -53,7 +53,7 @@ export default function BusinessSettingsPage() {
 
           {/* Business details */}
           <ManCard style={{ padding: 24 }}>
-            <div className="t-h4" style={{ color: "var(--ink-900)", marginBottom: 14 }}>Business Account</div>
+            <div className="t-h4" style={{ color: "var(--ink-900)", marginBottom: 12 }}>Business Account</div>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Legal business name"><input className={fieldCls} style={fs} defaultValue="Famous Kabob LLC" /></Field>
               <Field label="EIN / tax ID"><input className={fieldCls} style={fs} defaultValue="••-•••4821" /></Field>

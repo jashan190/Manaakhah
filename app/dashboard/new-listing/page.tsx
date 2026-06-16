@@ -19,7 +19,7 @@ const fs = { color: "var(--ink-900)" } as const;
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 5 }}>{label}</div>
+      <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 4 }}>{label}</div>
       {children}
     </div>
   );

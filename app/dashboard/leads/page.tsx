@@ -30,7 +30,7 @@ export default function LeadsPage() {
         <h1 className="t-h3" style={{ color: "var(--ink-900)" }}>Lead Inbox</h1>
         <p className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 4 }}>Messages from people who found you on Manaakhah</p>
 
-        <ManCard style={{ padding: 0, overflow: "hidden", marginTop: 18 }} className="flex h-[calc(100vh-200px)] min-h-[480px]">
+        <ManCard style={{ padding: 0, overflow: "hidden", marginTop: 16 }} className="flex h-[calc(100vh-200px)] min-h-[480px]">
           {/* Conversation list */}
           <div className="flex w-[320px] flex-shrink-0 flex-col" style={{ borderRight: "1px solid var(--card-edge)" }}>
             <div className="flex h-[69px] items-center px-4" style={{ borderBottom: "1px solid var(--card-edge)" }}>

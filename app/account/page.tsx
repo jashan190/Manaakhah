@@ -43,7 +43,7 @@ export default function AccountHome() {
           <PH title="Recent Activity" />
           <ManCard>
             {activity.map((a, i) => (
-              <Link key={i} href={a.href} className="flex items-center gap-3.5 px-[18px] py-3.5"
+              <Link key={i} href={a.href} className="flex items-center gap-3.5 px-5 py-3.5"
                 style={{ borderBottom: i === activity.length - 1 ? "none" : "1px solid var(--card-edge)" }}>
                 <div className="flex h-8 w-8 items-center justify-center rounded-full" style={{ background: "var(--moss-50)" }}>
                   <a.Icon size={14} style={{ color: "var(--moss-700)" }} />

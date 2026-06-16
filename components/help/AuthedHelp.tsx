@@ -46,7 +46,7 @@ export function AuthedHelp({ role }: { role: "consumer" | "owner" }) {
       <div className="grid gap-3.5 lg:grid-cols-[1.6fr_1fr]">
         <div className="grid gap-3.5">
           {/* Search */}
-          <ManCard style={{ padding: 18 }}>
+          <ManCard style={{ padding: 20 }}>
             <div className="man-field-wrap flex items-center gap-2 rounded-[8px] border bg-white px-3.5 py-2.5">
               <Search size={18} style={{ color: "var(--ink-400)" }} />
               <input placeholder="Search help articles…" className="w-full bg-transparent t-body outline-none" style={{ color: "var(--ink-900)" }} />
@@ -79,7 +79,7 @@ export function AuthedHelp({ role }: { role: "consumer" | "owner" }) {
             ))}
           </ManCard>
 
-          <ManCard style={{ padding: 22 }}>
+          <ManCard style={{ padding: 20 }}>
             <div className="t-h4" style={{ color: "var(--ink-900)" }}>Contact Support</div>
             <div className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 2 }}>Typical reply within {role === "owner" ? "2 hours" : "1 business day"}.</div>
             <div className="mt-3.5 grid gap-2">

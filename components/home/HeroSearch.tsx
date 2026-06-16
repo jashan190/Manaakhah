@@ -26,7 +26,7 @@ export function HeroSearch() {
         {/* Left: brand + search (left-aligned — our signature, not Taawun's centered hero) */}
         <div>
           <Tag tone="moss">Sacramento&apos;s Muslim Business Directory</Tag>
-          <h1 className="t-display" style={{ color: "var(--ink-900)", marginTop: 18 }}>
+          <h1 className="t-display" style={{ color: "var(--ink-900)", marginTop: 16 }}>
             Where the Muslim Community<br className="hidden sm:block" /> <span style={{ fontStyle: "italic" }}>does business</span>.
           </h1>
           <p className="t-body-lg" style={{ color: "var(--ink-500)", marginTop: 16, maxWidth: 520 }}>

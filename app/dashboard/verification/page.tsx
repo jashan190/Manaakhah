@@ -23,7 +23,7 @@ export default function VerificationPage() {
         <PH title="Verify Ownership" sub="One quick check confirms you represent this business" />
 
         {/* Business being claimed */}
-        <ManCard style={{ padding: 14, marginBottom: 18 }} className="flex items-center gap-4">
+        <ManCard style={{ padding: 16, marginBottom: 16 }} className="flex items-center gap-4">
           <Photo seed="sac-famous-kabob" w={72} h={56} radius={8} />
           <div className="flex-1">
             <div className="flex items-center gap-2"><Seal size={16} /><div className="t-label" style={{ color: "var(--ink-900)" }}>Famous Kabob</div></div>
@@ -34,7 +34,7 @@ export default function VerificationPage() {
 
         {!sent ? (
           <>
-            <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 10 }}>Choose how to verify</div>
+            <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 8 }}>Choose how to verify</div>
             <div className="grid gap-3">
               {METHODS.map((m) => {
                 const on = method === m.k;

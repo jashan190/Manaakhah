@@ -20,7 +20,7 @@ export function EmptyState({
       </span>
       <h3 className="t-h4" style={{ color: "var(--ink-900)", marginTop: 16 }}>{title}</h3>
       {description && (
-        <p className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 6, maxWidth: 360 }}>{description}</p>
+        <p className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 4, maxWidth: 360 }}>{description}</p>
       )}
       {action && <div className="mt-5">{action}</div>}
     </div>

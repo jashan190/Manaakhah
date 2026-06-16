@@ -66,7 +66,7 @@ export default function ContentModerationPage() {
           {rows.length === 0 && (
             <ManCard style={{ padding: 40 }} className="text-center">
               <Check size={28} style={{ color: "var(--moss-700)", margin: "0 auto" }} />
-              <div className="t-h4" style={{ color: "var(--ink-900)", marginTop: 10 }}>Queue Clear</div>
+              <div className="t-h4" style={{ color: "var(--ink-900)", marginTop: 8 }}>Queue Clear</div>
               <div className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 4 }}>No flagged reviews match this filter.</div>
             </ManCard>
           )}

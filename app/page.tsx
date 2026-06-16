@@ -30,10 +30,10 @@ export default function Home() {
           <PH title="How We Build Trust" sub="Three layers of verification, never just one badge" />
           <div className="grid gap-4 md:grid-cols-3">
             {trust.map(({ Icon, t, d }) => (
-              <ManCard key={t} style={{ padding: 22 }}>
+              <ManCard key={t} style={{ padding: 20 }}>
                 <Icon size={22} style={{ color: "var(--moss-700)" }} />
                 <div className="t-h4" style={{ color: "var(--ink-900)", marginTop: 12 }}>{t}</div>
-                <p className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 6 }}>{d}</p>
+                <p className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 4 }}>{d}</p>
               </ManCard>
             ))}
           </div>

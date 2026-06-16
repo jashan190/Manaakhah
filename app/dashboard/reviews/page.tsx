@@ -23,7 +23,7 @@ export default function ReviewsPage() {
         <PH title="Reviews & Responses" sub="Respond fast — replied businesses convert 2× better" />
 
         <div className="grid gap-3.5 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
-          <ManCard style={{ padding: 18 }}>
+          <ManCard style={{ padding: 20 }}>
             <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>Rating distribution</div>
             <div className="mt-3 grid gap-1.5">
               {dist.map(([s, p]) => (
@@ -48,7 +48,7 @@ export default function ReviewsPage() {
         </div>
 
         {/* Awaiting response — AI suggested reply */}
-        <ManCard style={{ padding: 22, marginBottom: 14 }}>
+        <ManCard style={{ padding: 20, marginBottom: 12 }}>
           <div className="flex items-start gap-3">
             <Avatar name="Hassan K" size={40} />
             <div className="flex-1">
@@ -73,7 +73,7 @@ export default function ReviewsPage() {
         </ManCard>
 
         {/* Replied */}
-        <ManCard style={{ padding: 22 }}>
+        <ManCard style={{ padding: 20 }}>
           <div className="flex items-start gap-3">
             <Avatar name="Mariam T" size={40} />
             <div className="flex-1">

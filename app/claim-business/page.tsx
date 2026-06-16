@@ -46,10 +46,10 @@ export default function ClaimBusinessPage() {
     <div style={{ background: "var(--paper)" }} className="px-6 py-8 md:px-14">
       <div className="mx-auto max-w-[900px]">
         <Link href="/for-business" className="t-body-sm inline-flex items-center gap-1" style={{ color: "var(--ink-500)" }}><ArrowLeft size={14} /> Back</Link>
-        <h1 className="t-h2" style={{ color: "var(--ink-900)", marginTop: 14 }}>Claim Your Business</h1>
-        <p className="t-body" style={{ color: "var(--ink-500)", marginTop: 6 }}>Search for your business to claim it — we&apos;ll guide you through proving ownership next.</p>
+        <h1 className="t-h2" style={{ color: "var(--ink-900)", marginTop: 12 }}>Claim Your Business</h1>
+        <p className="t-body" style={{ color: "var(--ink-500)", marginTop: 4 }}>Search for your business to claim it — we&apos;ll guide you through proving ownership next.</p>
 
-        <ManCard style={{ padding: 22, marginTop: 18 }}>
+        <ManCard style={{ padding: 20, marginTop: 16 }}>
           <form onSubmit={runSearch} className="flex flex-col gap-2.5 sm:flex-row">
             <div className="man-field-wrap flex flex-1 items-center gap-2 rounded-[8px] border bg-white px-3.5">
               <Search size={18} style={{ color: "var(--ink-400)" }} />
@@ -71,7 +71,7 @@ export default function ClaimBusinessPage() {
               </div>
               <div className="mt-3 grid gap-3">
                 {matches.map((b, i) => (
-                  <ManCard key={b.id} style={{ padding: 14, border: i === 0 ? "1.5px solid var(--moss-700)" : "1px solid var(--card-edge)" }} className="flex items-center gap-4">
+                  <ManCard key={b.id} style={{ padding: 16, border: i === 0 ? "1.5px solid var(--moss-700)" : "1px solid var(--card-edge)" }} className="flex items-center gap-4">
                     <Photo src={b.coverImage} seed={b.name} w={80} h={60} radius={8} />
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
@@ -100,7 +100,7 @@ export default function ClaimBusinessPage() {
 
         {/* Add new — offered once a search has run */}
         {searched && !loading && (
-          <ManCard style={{ padding: 18, marginTop: 16, background: "var(--paper-2)" }} className="flex items-center justify-between gap-4">
+          <ManCard style={{ padding: 20, marginTop: 16, background: "var(--paper-2)" }} className="flex items-center justify-between gap-4">
             <div>
               <div className="t-label" style={{ color: "var(--ink-900)" }}>Don&apos;t see your business?</div>
               <div className="t-body-sm" style={{ color: "var(--ink-500)" }}>Add it from scratch — we&apos;ll route it through verification.</div>

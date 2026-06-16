@@ -21,7 +21,7 @@ const completeness = [
 ] as const;
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 5 }}>{label}</div>{children}</div>;
+  return <div><div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 4 }}>{label}</div>{children}</div>;
 }
 
 export default function ListingProfilePage() {
@@ -139,7 +139,7 @@ export default function ListingProfilePage() {
 
           {/* Completeness column */}
           <div className="grid gap-3.5">
-            <ManCard style={{ padding: 22 }}>
+            <ManCard style={{ padding: 20 }}>
               <div className="flex items-baseline justify-between"><div className="t-h4" style={{ color: "var(--ink-900)" }}>Profile Completeness</div><span className="t-h3" style={{ color: "var(--moss-700)" }}>{pct}%</span></div>
               <div className="mt-3 h-2.5 w-full rounded-full" style={{ background: "var(--paper-2)" }}><div className="h-2.5 rounded-full" style={{ width: `${pct}%`, background: "var(--moss-700)" }} /></div>
               <div className="mt-4 grid gap-2.5">
@@ -150,10 +150,10 @@ export default function ListingProfilePage() {
                   </div>
                 ))}
               </div>
-              <p className="t-body-xs" style={{ color: "var(--ink-500)", marginTop: 14 }}>Complete profiles get up to 3× more profile views.</p>
+              <p className="t-body-xs" style={{ color: "var(--ink-500)", marginTop: 12 }}>Complete profiles get up to 3× more profile views.</p>
             </ManCard>
 
-            <ManCard style={{ padding: 22, background: "var(--clay-50)", border: "1px solid var(--clay-100)" }}>
+            <ManCard style={{ padding: 20, background: "var(--clay-50)", border: "1px solid var(--clay-100)" }}>
               <Tag tone="clay">Tip</Tag>
               <div className="t-label" style={{ color: "var(--ink-900)", marginTop: 8 }}>Add your menu</div>
               <p className="t-body-sm" style={{ color: "var(--ink-700)", marginTop: 4 }}>Listings with a menu convert 40% more enquiries. Upload yours under the Menu tab.</p>

@@ -27,7 +27,7 @@ export default function ContactPage() {
         <Link href={`/business/${id}`} className="t-body-sm inline-flex items-center gap-1" style={{ color: "var(--ink-500)" }}>
           <ArrowLeft size={14} /> Back to {name}
         </Link>
-        <h1 className="t-h2" style={{ color: "var(--ink-900)", marginTop: 14 }}>Message {name}</h1>
+        <h1 className="t-h2" style={{ color: "var(--ink-900)", marginTop: 12 }}>Message {name}</h1>
 
         {sent ? (
           <ManCard style={{ padding: 40, marginTop: 24, textAlign: "center" }} className="mx-auto max-w-[520px]">
@@ -71,18 +71,18 @@ export default function ContactPage() {
 
           {/* Aside */}
           <div className="space-y-4">
-            <ManCard style={{ padding: 18 }} className="flex items-center gap-3">
+            <ManCard style={{ padding: 20 }} className="flex items-center gap-3">
               <Seal size={36} />
               <div>
                 <div className="t-label" style={{ color: "var(--ink-900)" }}>{name}</div>
                 <div className="t-body-xs" style={{ color: "var(--ink-500)" }}>{biz ? `${biz.city}, ${biz.state}` : "Sacramento, CA"}</div>
               </div>
             </ManCard>
-            <ManCard style={{ padding: 18 }}>
+            <ManCard style={{ padding: 20 }}>
               <div className="flex items-center gap-2 t-label" style={{ color: "var(--ink-900)" }}><Clock size={15} style={{ color: "var(--moss-700)" }} /> Replies in ~2 hours</div>
-              <p className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 6 }}>92% of messages answered within a day.</p>
+              <p className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 4 }}>92% of messages answered within a day.</p>
             </ManCard>
-            <ManCard style={{ padding: 18 }}>
+            <ManCard style={{ padding: 20 }}>
               <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>Other ways to reach</div>
               <div className="mt-3 space-y-2">
                 <a href={biz?.phone ? `tel:${biz.phone}` : undefined} className="flex items-center gap-2 t-body-sm" style={{ color: "var(--ink-700)" }}><Phone size={15} style={{ color: "var(--moss-700)" }} /> {biz?.phone || "Call the business"}</a>

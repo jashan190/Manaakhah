@@ -76,7 +76,7 @@ export default function DashboardPage() {
         {tab === "overview" ? (
           <div className="mt-5">
             {/* Verification banner */}
-            <ManCard style={{ padding: 18, background: "var(--moss-50)", border: "1px solid var(--moss-200)" }} className="flex flex-wrap items-center gap-4">
+            <ManCard style={{ padding: 20, background: "var(--moss-50)", border: "1px solid var(--moss-200)" }} className="flex flex-wrap items-center gap-4">
               <Seal size={28} />
               <div className="flex-1">
                 <div className="t-label" style={{ color: "var(--ink-900)" }}>Verified halal · HFSAA active</div>
@@ -95,7 +95,7 @@ export default function DashboardPage() {
 
             {/* Things to do + leads + reviews */}
             <div className="mt-4 grid gap-3.5 lg:grid-cols-3">
-              <ManCard style={{ padding: 22 }}>
+              <ManCard style={{ padding: 20 }}>
                 <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>For your attention</div>
                 <div className="t-h4" style={{ color: "var(--ink-900)", marginTop: 4 }}>3 Things to Do</div>
                 <div className="mt-3.5 grid gap-3">
@@ -112,7 +112,7 @@ export default function DashboardPage() {
                 </div>
               </ManCard>
 
-              <ManCard style={{ padding: 22 }}>
+              <ManCard style={{ padding: 20 }}>
                 <div className="flex items-baseline justify-between">
                   <div className="t-h4" style={{ color: "var(--ink-900)" }}>Recent Enquiries</div>
                   <Link href="/dashboard/leads" className="t-body-sm" style={{ color: "var(--moss-700)" }}>View inbox →</Link>
@@ -128,7 +128,7 @@ export default function DashboardPage() {
                 </div>
               </ManCard>
 
-              <ManCard style={{ padding: 22 }}>
+              <ManCard style={{ padding: 20 }}>
                 <div className="flex items-baseline justify-between">
                   <div className="t-h4" style={{ color: "var(--ink-900)" }}>Latest Reviews</div>
                   <Link href="/dashboard/reviews" className="t-body-sm" style={{ color: "var(--moss-700)" }}>Respond →</Link>
@@ -164,7 +164,7 @@ export default function DashboardPage() {
 
             <div className="mt-4 grid gap-3.5 lg:grid-cols-[1.4fr_1fr]">
               {/* Funnel */}
-              <ManCard style={{ padding: 22 }}>
+              <ManCard style={{ padding: 20 }}>
                 <div className="t-h4" style={{ color: "var(--ink-900)" }}>Discovery Funnel</div>
                 <p className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 2 }}>From appearing in search to a visit</p>
                 <div className="mt-4 grid gap-3">
@@ -180,7 +180,7 @@ export default function DashboardPage() {
               </ManCard>
 
               {/* Sources */}
-              <ManCard style={{ padding: 22 }}>
+              <ManCard style={{ padding: 20 }}>
                 <div className="t-h4" style={{ color: "var(--ink-900)" }}>Where People Find You</div>
                 <div className="mt-4 grid gap-3">
                   {sources.map((s) => (
@@ -196,7 +196,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Daily traffic bars */}
-            <ManCard style={{ padding: 22, marginTop: 14 }}>
+            <ManCard style={{ padding: 20, marginTop: 12 }}>
               <div className="t-h4" style={{ color: "var(--ink-900)" }}>Daily Traffic</div>
               <div className="mt-4 flex items-end gap-3" style={{ height: 140 }}>
                 {days.map((d, i) => (

@@ -92,7 +92,7 @@ export function Photo({ src, alt = "", seed = "x", h = 220, w, radius = 12, labe
 /* ── StatCard: KPI tile ────────────────────────────────────────── */
 export function StatCard({ label, value, sub, delta, deltaTone = "ok", Icon }: { label: string; value: string; sub?: string; delta?: string; deltaTone?: "ok" | "err"; Icon?: React.ComponentType<any> }) {
   return (
-    <ManCard style={{ padding: 18 }}>
+    <ManCard style={{ padding: 20 }}>
       <div className="flex items-start justify-between">
         <span className="t-eyebrow" style={{ color: "var(--ink-500)" }}>{label}</span>
         {Icon && <Icon size={16} style={{ color: "var(--ink-400)" }} />}

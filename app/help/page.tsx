@@ -43,9 +43,9 @@ export default function HelpPage() {
 
       <section className="mx-auto grid max-w-[1100px] gap-8 px-6 py-12 lg:grid-cols-[260px_1fr]">
         <div>
-          <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 10 }}>Categories</div>
+          <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 8 }}>Categories</div>
           {cats.map(({ Icon, t, n }) => (
-            <ManCard key={t} style={{ padding: 14, marginBottom: 8 }} className="flex items-center gap-3">
+            <ManCard key={t} style={{ padding: 16, marginBottom: 8 }} className="flex items-center gap-3">
               <Icon size={18} style={{ color: "var(--moss-700)" }} />
               <div className="flex-1">
                 <div className="t-label" style={{ color: "var(--ink-900)" }}>{t}</div>
@@ -59,19 +59,19 @@ export default function HelpPage() {
         <div>
           <PH title="Frequently Asked" sub="Updated weekly · most-asked first" />
           {faqs.map(([q, a], i) => (
-            <ManCard key={q} style={{ marginBottom: 10 }}>
-              <details open={i === 0} className="group p-[18px]">
+            <ManCard key={q} style={{ marginBottom: 8 }}>
+              <details open={i === 0} className="group p-5">
                 <summary className="t-h4 flex cursor-pointer list-none items-center justify-between gap-4" style={{ color: "var(--ink-900)", fontSize: 15.5 }}>
                   {q}
                   <span className="t-h4" style={{ color: "var(--ink-500)" }}>+</span>
                 </summary>
-                <p className="t-body" style={{ color: "var(--ink-700)", marginTop: 10 }}>{a}</p>
+                <p className="t-body" style={{ color: "var(--ink-700)", marginTop: 8 }}>{a}</p>
               </details>
             </ManCard>
           ))}
-          <div className="mt-4 rounded-[12px] p-[22px]" style={{ background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
+          <div className="mt-4 rounded-[12px] p-5" style={{ background: "var(--moss-50)", border: "1px solid var(--moss-200)" }}>
             <div className="t-h4" style={{ color: "var(--ink-900)" }}>Still Need Help?</div>
-            <p className="t-body-sm" style={{ color: "var(--ink-700)", marginTop: 6 }}>Our team replies within one business day.</p>
+            <p className="t-body-sm" style={{ color: "var(--ink-700)", marginTop: 4 }}>Our team replies within one business day.</p>
             <div className="mt-3.5 flex flex-wrap items-center gap-3">
               <a href="mailto:support@manaakhah.com"><Button size="sm">Contact Support</Button></a>
               <Link href="/register" className="t-body-sm" style={{ color: "var(--moss-700)", fontWeight: 600 }}>New to Manaakhah? Create a free account →</Link>

@@ -46,7 +46,7 @@ export default function VerificationDetailPage() {
         <div className="mt-5 grid gap-3.5 lg:grid-cols-[1.5fr_1fr]">
           {/* Checks */}
           <div className="grid gap-3.5">
-            <ManCard style={{ padding: 22 }}>
+            <ManCard style={{ padding: 20 }}>
               <div className="flex items-baseline justify-between"><div className="t-h4" style={{ color: "var(--ink-900)" }}>Automated Checks</div><span className="t-body-sm" style={{ color: passed === CHECKS.length ? "var(--moss-700)" : "var(--clay-700)" }}>{passed}/{CHECKS.length} passed</span></div>
               <div className="mt-3.5 grid gap-2.5">
                 {CHECKS.map((c) => (
@@ -58,7 +58,7 @@ export default function VerificationDetailPage() {
               </div>
             </ManCard>
 
-            <ManCard style={{ padding: 22 }}>
+            <ManCard style={{ padding: 20 }}>
               <div className="t-h4" style={{ color: "var(--ink-900)" }}>Submitted Certificate</div>
               <div className="mt-3 flex items-center gap-3 rounded-[8px] p-3.5" style={{ background: "var(--paper-2)" }}>
                 <FileText size={22} style={{ color: "var(--ink-700)" }} />
@@ -70,7 +70,7 @@ export default function VerificationDetailPage() {
 
           {/* Decision + meta */}
           <div className="grid gap-3.5">
-            <ManCard style={{ padding: 22 }}>
+            <ManCard style={{ padding: 20 }}>
               <div className="t-h4" style={{ color: "var(--ink-900)" }}>Decision</div>
               <textarea placeholder="Add a note (sent to the owner if rejected)…" className="man-field mt-3 w-full px-3 py-2.5 t-body-sm" style={{ color: "var(--ink-900)", minHeight: 80, resize: "vertical" }} />
               <div className="mt-3 grid gap-2">
@@ -80,7 +80,7 @@ export default function VerificationDetailPage() {
               </div>
             </ManCard>
 
-            <ManCard style={{ padding: 22 }}>
+            <ManCard style={{ padding: 20 }}>
               <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>Business details</div>
               <div className="mt-3 grid gap-2.5 t-body-sm" style={{ color: "var(--ink-700)" }}>
                 <div className="flex items-center gap-2"><MapPin size={14} style={{ color: "var(--ink-400)" }} /> 1290 Fulton Ave, Sacramento, CA</div>
