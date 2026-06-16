@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { db, isMockMode } from "@/lib/db";
+import { DEFAULT_LOCATION } from "@/lib/constants";
+
+// Guards against pathological input (huge query strings / term explosions)
+const MAX_QUERY_LENGTH = 200;
+const MAX_SEARCH_TERMS = 12;
 
 // GET /api/search - Enhanced search with NLP-like features
 export async function GET(req: Request) {
@@ -9,14 +14,23 @@ export async function GET(req: Request) {
     const session = await auth();
     const { searchParams } = new URL(req.url);
 
-    const query = searchParams.get("q") || "";
+    // Cap query length so a pathological input can't blow up parsing/filtering
+    const query = (searchParams.get("q") || "").slice(0, MAX_QUERY_LENGTH);
     const category = searchParams.get("category");
     const tags = searchParams.get("tags")?.split(",").filter(Boolean);
     const priceRange = searchParams.get("priceRange");
     const verified = searchParams.get("verified") === "true";
     const openNow = searchParams.get("openNow") === "true";
-    const lat = parseFloat(searchParams.get("lat") || "38.5816");
-    const lng = parseFloat(searchParams.get("lng") || "-121.4944");
+    const minRating = parseFloat(searchParams.get("minRating") || "0") || 0;
+
+    // Only filter by distance when the caller actually provided a location.
+    // Otherwise fall back to the default service-area center (Sacramento) for
+    // distance display/sort, but don't constrain results to a radius around it.
+    const latParam = searchParams.get("lat");
+    const lngParam = searchParams.get("lng");
+    const hasLocation = latParam !== null && lngParam !== null;
+    const lat = hasLocation ? parseFloat(latParam) : DEFAULT_LOCATION.latitude;
+    const lng = hasLocation ? parseFloat(lngParam) : DEFAULT_LOCATION.longitude;
     const radius = parseFloat(searchParams.get("radius") || "10"); // miles
     const sortBy = searchParams.get("sortBy") || "relevance";
     const page = parseInt(searchParams.get("page") || "1");
@@ -57,7 +71,7 @@ export async function GET(req: Request) {
       });
     }
 
-    // Distance + radius filter
+    // Distance + radius + rating filter
     let results = candidates
       .map((b: any) => ({
         ...b,
@@ -65,7 +79,12 @@ export async function GET(req: Request) {
         reviewCount: b.totalReviews || 0,
         isOpen: openNow ? isBusinessOpen(b.hours) : undefined,
       }))
-      .filter((b: any) => b.distance <= radius);
+      .filter((b: any) => {
+        // Only constrain by radius when the caller supplied a location
+        if (hasLocation && b.distance > radius) return false;
+        if (minRating > 0 && (b.averageRating || 0) < minRating) return false;
+        return true;
+      });
 
     // Sort
     if (sortBy === "distance") {
@@ -220,6 +239,7 @@ function parseNaturalLanguageQuery(query: string): {
 
   const words = query.toLowerCase().split(/\s+/);
   for (const word of words) {
+    if (searchTerms.length >= MAX_SEARCH_TERMS) break;
     if (!stopWords.has(word) && word.length > 2) {
       searchTerms.push(word);
     }
