@@ -44,7 +44,7 @@ export function HeroSearch() {
           </form>
 
           <div className="mt-8 flex gap-7">
-            {[["110+", "Muslim-owned businesses"], ["Sacramento", "& growing"], ["94%", "Of reviewers return"]].map(([v, l]) => (
+            {[["Owner-verified", "Every listing"], ["Sacramento", "Your community"], ["Free", "To browse & save"]].map(([v, l]) => (
               <div key={l}>
                 <div className="t-h4" style={{ color: "var(--ink-900)" }}>{v}</div>
                 <div className="t-body-xs" style={{ color: "var(--ink-500)" }}>{l}</div>

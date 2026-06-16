@@ -1,7 +1,7 @@
 // app/page.tsx
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ManCard, PH, Tag, Avatar, Photo } from "@/components/man/primitives";
+import { ManCard, PH, Tag, Photo } from "@/components/man/primitives";
 import { HeroSearch } from "@/components/home/HeroSearch";
 import { CategoryGroupGrid } from "@/components/home/CategoryGroupGrid";
 import { FeaturedRow } from "@/components/home/FeaturedRow";
@@ -40,22 +40,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* OWNER STORY */}
+      {/* WHY MANAAKHAH */}
       <section className="mx-auto max-w-[1200px] px-6 py-12">
         <ManCard style={{ padding: 32 }} className="grid items-center gap-8 md:grid-cols-[1fr_1.4fr]">
-          <Photo src={REST_IMG} alt="Owner story" h={220} radius={12} />
+          <Photo src={REST_IMG} alt="" h={220} radius={12} />
           <div>
-            <Tag tone="clay">Owner Story</Tag>
-            <p className="t-h3" style={{ color: "var(--ink-900)", marginTop: 12, fontWeight: 500, fontStyle: "italic", lineHeight: 1.3 }}>
-              &ldquo;We were getting one or two calls a week. After verifying with Manaakhah, we filled our Friday evenings — people walk in already trusting us.&rdquo;
+            <Tag tone="clay">Why Manaakhah</Tag>
+            <p className="t-h3" style={{ color: "var(--ink-900)", marginTop: 12, fontWeight: 500, lineHeight: 1.3 }}>
+              Finding a Muslim-owned business you can trust shouldn&apos;t take a dozen WhatsApp messages. We verify ownership, surface community reviews, and cross-check halal certification — so trust is visible before you walk in.
             </p>
-            <div className="mt-4 flex items-center gap-2.5">
-              <Avatar name="Yusuf Khan" />
-              <div>
-                <div className="t-label" style={{ color: "var(--ink-900)" }}>Yusuf Khan</div>
-                <div className="t-body-xs" style={{ color: "var(--ink-500)" }}>Owner · Famous Kabob, Sacramento</div>
-              </div>
-            </div>
+            <Link href="/about" className="mt-4 inline-block t-body-sm" style={{ color: "var(--moss-700)", fontWeight: 600 }}>
+              Read our story →
+            </Link>
           </div>
         </ManCard>
       </section>

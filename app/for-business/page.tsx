@@ -38,7 +38,7 @@ export default function ForBusinessPage() {
             <Tag tone="moss">Most Owners</Tag>
             <div className="t-h3" style={{ color: "var(--ink-900)", marginTop: 12 }}>Claim an Existing Listing</div>
             <p className="t-body" style={{ color: "var(--ink-500)", marginTop: 4 }}>
-              We&apos;ve already indexed 110+ Sacramento businesses. Search yours, prove ownership, and take over the listing.
+              We&apos;re indexing Muslim-owned businesses across Sacramento. Search yours, prove ownership, and take over the listing.
             </p>
             <div style={{ marginTop: 16, padding: 16, background: "var(--paper-2)", borderRadius: 8 }}>
               <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>What you&apos;ll need</div>
