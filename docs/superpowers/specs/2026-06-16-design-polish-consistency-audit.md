@@ -91,10 +91,10 @@ Organized by impact. P0 items are the ones most responsible for the vibe-coded f
 
 ### P1 — Systemic consistency
 
-- [ ] **P1-1. Define and adopt a spacing scale.** Establish tokens (e.g. 4/8/12/16/20/24/32/40) and replace magic-number paddings/margins/gaps. Start with the card paddings called out in §3.5 so related cards match.
+- [x] **P1-1. Define and adopt a spacing scale.** ✅ Done — `2026-06-16-spacing-scale.md`. Inline magic-number paddings/margins/gaps snapped to the 4px scale; card paddings unified to 20.
 - [x] **P1-2. Reconcile the `Button` radius.** ✅ Done — superseded by the full 4-grid radius scale (`2026-06-16-radius-scale.md`): buttons + inputs at 8px (controls), cards 12px, tiny 4px, pills full.
-- [ ] **P1-3. Pick one styling convention and document it.** Recommended rule: **layout** via Tailwind utilities, **color/typography** via `t-*` + tokens, **inline `style`** only for dynamic/computed values. Capture it in a short `CONTRIBUTING`/`docs` note so new pages don't reintroduce drift.
-- [ ] **P1-4. Define shadow/elevation rules.** Document when each of `--shadow-soft` / `--shadow-rest` / `--shadow-lift` applies (e.g. soft = resting card, lift = hover/raised, rest = interactive list row) and apply consistently.
+- [x] **P1-3. Pick one styling convention and document it.** ✅ Done — `docs/DESIGN_CONVENTIONS.md` consolidates the component layer, styling method, color/radius/spacing scales, focus treatment, pills, elevation, and icon/state rules.
+- [x] **P1-4. Define shadow/elevation rules.** ✅ Done — soft = resting card, rest = raised/interactive, lift = overlay/dropdown/floating. All 14 ad-hoc Tailwind `shadow-*` usages converted to the tokens.
 
 ### P2 — Polish & content
 
