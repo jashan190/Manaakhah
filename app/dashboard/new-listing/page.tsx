@@ -39,7 +39,7 @@ export default function NewListingPage() {
         <div className="mb-6 flex items-center gap-1.5">
           {STEPS.map((s, i) => (
             <div key={s} className="flex flex-1 items-center gap-1.5">
-              <button onClick={() => setStep(i)} className="flex items-center gap-2">
+              <button onClick={() => setStep(i)} className="man-focus flex items-center gap-2">
                 <span className="flex h-6 w-6 items-center justify-center rounded-full t-body-xs" style={i < step ? { background: "var(--moss-700)", color: "var(--bone)" } : i === step ? { background: "var(--ink-900)", color: "var(--bone)" } : { background: "var(--paper-2)", color: "var(--ink-400)", border: "1px solid var(--card-edge)" }}>
                   {i < step ? <Check size={12} /> : i + 1}
                 </span>
@@ -111,13 +111,13 @@ export default function NewListingPage() {
             <div className="grid gap-4">
               <div className="flex items-center gap-2 t-h4" style={{ color: "var(--ink-900)" }}><ImageIcon size={18} style={{ color: "var(--moss-700)" }} /> Photos & documents</div>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <button className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-[12px] border-2 border-dashed t-body-xs" style={{ borderColor: "var(--card-edge)", color: "var(--ink-500)" }}><Plus size={20} /> Cover photo</button>
+                <button className="man-focus flex aspect-square flex-col items-center justify-center gap-1.5 rounded-[12px] border-2 border-dashed t-body-xs" style={{ borderColor: "var(--card-edge)", color: "var(--ink-500)" }}><Plus size={20} /> Cover photo</button>
                 {[1, 2, 3].map((i) => (
-                  <button key={i} className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-[12px] border-2 border-dashed t-body-xs" style={{ borderColor: "var(--card-edge)", color: "var(--ink-500)" }}><Plus size={20} /> Add photo</button>
+                  <button key={i} className="man-focus flex aspect-square flex-col items-center justify-center gap-1.5 rounded-[12px] border-2 border-dashed t-body-xs" style={{ borderColor: "var(--card-edge)", color: "var(--ink-500)" }}><Plus size={20} /> Add photo</button>
                 ))}
               </div>
               <Field label="Halal certificate (PDF or image)">
-                <button className="flex w-full items-center justify-center gap-2 rounded-[10px] border-2 border-dashed py-5 t-body-sm" style={{ borderColor: "var(--card-edge)", color: "var(--ink-500)" }}><Plus size={16} /> Upload certificate</button>
+                <button className="man-focus flex w-full items-center justify-center gap-2 rounded-[10px] border-2 border-dashed py-5 t-body-sm" style={{ borderColor: "var(--card-edge)", color: "var(--ink-500)" }}><Plus size={16} /> Upload certificate</button>
               </Field>
             </div>
           )}

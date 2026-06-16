@@ -88,7 +88,7 @@ export function Header() {
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           {tabs.map((t) => (
-            <Link key={t.href} href={t.href} className="rounded-lg px-3 py-2"
+            <Link key={t.href} href={t.href} className="man-focus rounded-lg px-3 py-2"
               style={{ fontSize: 13, fontWeight: 500, color: isActive(t.href) ? "var(--ink-900)" : "var(--ink-500)", background: isActive(t.href) ? "#ffffff" : "transparent" }}>
               {t.l}
             </Link>
@@ -127,7 +127,7 @@ export function Header() {
                   {isConsumer && (
                     <div className="py-1" style={{ borderBottom: "1px solid var(--card-edge)" }}>
                       {acctLinks.map((it) => (
-                        <Link key={it.href} href={it.href} onClick={() => setAcctOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}>
+                        <Link key={it.href} href={it.href} onClick={() => setAcctOpen(false)} className="man-focus flex items-center gap-2.5 px-4 py-2.5 t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}>
                           <it.Icon size={16} style={{ color: "var(--ink-500)" }} /> {it.l}
                         </Link>
                       ))}
@@ -136,16 +136,16 @@ export function Header() {
                   {!isAdmin && (
                     <div className="py-1" style={{ borderTop: "1px solid var(--card-edge)" }}>
                       <div className="px-4 pb-1 pt-1.5 t-eyebrow" style={{ color: "var(--ink-500)" }}>Switch account</div>
-                      <button onClick={() => switchTo("CONSUMER")} className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}>
+                      <button onClick={() => switchTo("CONSUMER")} className="man-focus flex w-full items-center gap-2.5 px-4 py-2.5 text-left t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}>
                         <User size={16} style={{ color: "var(--ink-500)" }} /> <span className="flex-1">Customer</span> {role === "CONSUMER" && <Check size={15} style={{ color: "var(--moss-700)" }} />}
                       </button>
-                      <button onClick={() => switchTo("BUSINESS_OWNER")} className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}>
+                      <button onClick={() => switchTo("BUSINESS_OWNER")} className="man-focus flex w-full items-center gap-2.5 px-4 py-2.5 text-left t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-700)" }}>
                         <Store size={16} style={{ color: "var(--ink-500)" }} /> <span className="flex-1">Business</span> {role === "BUSINESS_OWNER" && <Check size={15} style={{ color: "var(--moss-700)" }} />}
                       </button>
                     </div>
                   )}
                   <div className="py-1" style={{ borderTop: "1px solid var(--card-edge)" }}>
-                    <button onClick={() => { setAcctOpen(false); signOut(); }} className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--err-500)" }}><LogOut size={16} /> Sign Out</button>
+                    <button onClick={() => { setAcctOpen(false); signOut(); }} className="man-focus flex w-full items-center gap-2.5 px-4 py-2.5 text-left t-body-sm hover:bg-[var(--paper-2)]" style={{ color: "var(--err-500)" }}><LogOut size={16} /> Sign Out</button>
                   </div>
                 </div>
               )}

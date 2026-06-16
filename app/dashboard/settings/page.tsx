@@ -19,7 +19,7 @@ function Toggle({ on, set, label, sub }: { on: boolean; set: (v: boolean) => voi
   return (
     <div className="flex items-center justify-between py-2.5">
       <div className="pr-4"><div className="t-label-sm" style={{ color: "var(--ink-900)" }}>{label}</div><div className="t-body-xs" style={{ color: "var(--ink-500)", marginTop: 1 }}>{sub}</div></div>
-      <button onClick={() => set(!on)} className="relative h-6 w-11 flex-shrink-0 rounded-full transition-colors" style={{ background: on ? "var(--moss-700)" : "var(--card-edge)" }}>
+      <button onClick={() => set(!on)} className="man-focus relative h-6 w-11 flex-shrink-0 rounded-full transition-colors" style={{ background: on ? "var(--moss-700)" : "var(--card-edge)" }}>
         <span className="absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all" style={{ left: on ? 22 : 2 }} />
       </button>
     </div>

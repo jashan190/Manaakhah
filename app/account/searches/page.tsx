@@ -15,7 +15,7 @@ const initial = [
 
 function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
   return (
-    <button onClick={onClick} className="relative h-5 w-9 rounded-full transition-colors" style={{ background: on ? "var(--moss-700)" : "var(--paper-3)" }}>
+    <button onClick={onClick} className="man-focus relative h-5 w-9 rounded-full transition-colors" style={{ background: on ? "var(--moss-700)" : "var(--paper-3)" }}>
       <span className="absolute top-0.5 h-4 w-4 rounded-full bg-white transition-all" style={{ left: on ? 18 : 2 }} />
     </button>
   );
@@ -42,8 +42,8 @@ export default function SavedSearchesPage() {
                 <Toggle on={r.notify} onClick={() => setRows((p) => p.map((x, j) => (j === i ? { ...x, notify: !x.notify } : x)))} />
               </div>
               <div className="flex items-center gap-1">
-                <button className="rounded-lg p-2 hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-500)" }}><Pencil size={16} /></button>
-                <button onClick={() => setRows((p) => p.filter((_, j) => j !== i))} className="rounded-lg p-2 hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-500)" }}><Trash2 size={16} /></button>
+                <button className="man-focus rounded-lg p-2 hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-500)" }}><Pencil size={16} /></button>
+                <button onClick={() => setRows((p) => p.filter((_, j) => j !== i))} className="man-focus rounded-lg p-2 hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-500)" }}><Trash2 size={16} /></button>
               </div>
             </div>
           ))}

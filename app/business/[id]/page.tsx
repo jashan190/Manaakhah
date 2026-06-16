@@ -132,12 +132,12 @@ export default function BusinessDetailPage() {
           ))}
         </div>
         <div className="absolute inset-x-0 top-0 flex items-center justify-between px-5 py-4 md:px-8">
-          <Link href="/search" className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 t-body-sm shadow-sm" style={{ background: "rgba(255,255,255,0.95)", color: "var(--ink-900)" }}><ArrowLeft size={15} /> Back</Link>
+          <Link href="/search" className="man-focus inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 t-body-sm shadow-sm" style={{ background: "rgba(255,255,255,0.95)", color: "var(--ink-900)" }}><ArrowLeft size={15} /> Back</Link>
           <div className="flex gap-2">
-            <button onClick={toggleFav} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 t-body-sm shadow-sm" style={{ background: "rgba(255,255,255,0.95)", color: "var(--ink-900)" }}>
+            <button onClick={toggleFav} className="man-focus inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 t-body-sm shadow-sm" style={{ background: "rgba(255,255,255,0.95)", color: "var(--ink-900)" }}>
               <Heart size={15} fill={fav ? "var(--clay-500)" : "none"} stroke={fav ? "var(--clay-500)" : "currentColor"} /> {fav ? "Saved" : "Save"}
             </button>
-            <button onClick={share} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 t-body-sm shadow-sm" style={{ background: "rgba(255,255,255,0.95)", color: "var(--ink-900)" }}>
+            <button onClick={share} className="man-focus inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 t-body-sm shadow-sm" style={{ background: "rgba(255,255,255,0.95)", color: "var(--ink-900)" }}>
               <Share2 size={15} /> {copied ? "Copied!" : "Share"}
             </button>
           </div>

@@ -39,7 +39,7 @@ export default function ListingProfilePage() {
         {/* Tabs */}
         <div className="mb-5 flex flex-wrap gap-2 border-b" style={{ borderColor: "var(--card-edge)" }}>
           {TABS.map((t) => (
-            <button key={t} onClick={() => setTab(t)} className="t-body-sm -mb-px border-b-2 px-1 pb-2.5"
+            <button key={t} onClick={() => setTab(t)} className="man-focus t-body-sm -mb-px border-b-2 px-1 pb-2.5"
               style={tab === t ? { borderColor: "var(--moss-700)", color: "var(--ink-900)", fontWeight: 600 } : { borderColor: "transparent", color: "var(--ink-500)" }}>{t}</button>
           ))}
         </div>
@@ -72,7 +72,7 @@ export default function ListingProfilePage() {
                   {["sac-famous-kabob", "kabob-1", "kabob-2", "kabob-3", "kabob-4"].map((s) => (
                     <Photo key={s} seed={s} h={120} radius={10} />
                   ))}
-                  <button className="flex h-[120px] flex-col items-center justify-center gap-1.5 rounded-[10px] border-2 border-dashed t-body-xs" style={{ borderColor: "var(--card-edge)", color: "var(--ink-500)" }}><Plus size={20} /> Add photo</button>
+                  <button className="man-focus flex h-[120px] flex-col items-center justify-center gap-1.5 rounded-[10px] border-2 border-dashed t-body-xs" style={{ borderColor: "var(--card-edge)", color: "var(--ink-500)" }}><Plus size={20} /> Add photo</button>
                 </div>
               </ManCard>
             )}

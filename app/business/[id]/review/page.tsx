@@ -91,7 +91,7 @@ export default function WriteReviewPage() {
             <div className="t-eyebrow" style={{ color: "var(--ink-500)", marginBottom: 8 }}>Photos</div>
             <div className="flex gap-2">
               {[0, 1, 2].map((i) => (
-                <button key={i} className="flex h-20 w-20 items-center justify-center rounded-[10px]" style={{ border: "2px dashed var(--card-edge)", color: "var(--ink-400)" }}><Plus size={18} /></button>
+                <button key={i} className="man-focus flex h-20 w-20 items-center justify-center rounded-[10px]" style={{ border: "2px dashed var(--card-edge)", color: "var(--ink-400)" }}><Plus size={18} /></button>
               ))}
             </div>
           </div>

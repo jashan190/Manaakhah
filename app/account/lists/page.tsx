@@ -37,7 +37,7 @@ export default function SavedListsPage() {
               </div>
             </ManCard>
           ))}
-          <button className="flex min-h-[200px] flex-col items-center justify-center gap-2 rounded-[14px]" style={{ border: "2px dashed var(--card-edge)", color: "var(--ink-500)" }}>
+          <button className="man-focus flex min-h-[200px] flex-col items-center justify-center gap-2 rounded-[14px]" style={{ border: "2px dashed var(--card-edge)", color: "var(--ink-500)" }}>
             <Plus size={22} /><span className="t-label">Create a new list</span>
           </button>
         </div>
@@ -66,7 +66,7 @@ export default function SavedListsPage() {
                   <div className="t-body-xs" style={{ color: "var(--ink-500)", marginTop: 2 }}>Personal note: must try the mixed grill</div>
                 </div>
                 {b.averageRating > 0 && <Rating value={b.averageRating} count={b.reviewCount} />}
-                <button style={{ color: "var(--ink-400)" }}><MoreHorizontal size={18} /></button>
+                <button className="man-focus rounded-lg p-1" style={{ color: "var(--ink-400)" }}><MoreHorizontal size={18} /></button>
               </div>
             ))}
           </ManCard>

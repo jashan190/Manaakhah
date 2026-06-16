@@ -73,7 +73,7 @@ export default function SubscriptionPage() {
                 <div className="flex-1"><div className="t-label-sm" style={{ color: "var(--ink-900)" }}>{d}</div><div className="t-body-xs" style={{ color: "var(--ink-500)" }}>{p}</div></div>
                 <span className="t-body-sm" style={{ color: "var(--ink-900)" }}>{a}</span>
                 <Tag tone="ok">Paid</Tag>
-                <button className="rounded-lg p-1.5 hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-500)" }}><Download size={16} /></button>
+                <button className="man-focus rounded-lg p-1.5 hover:bg-[var(--paper-2)]" style={{ color: "var(--ink-500)" }}><Download size={16} /></button>
               </div>
             ))}
           </ManCard>

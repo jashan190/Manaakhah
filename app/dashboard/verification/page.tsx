@@ -39,7 +39,7 @@ export default function VerificationPage() {
               {METHODS.map((m) => {
                 const on = method === m.k;
                 return (
-                  <button key={m.k} onClick={() => setMethod(m.k)} className="flex items-start gap-3.5 rounded-[14px] p-4 text-left transition-colors" style={{ background: "#ffffff", border: on ? "1.5px solid var(--moss-700)" : "1px solid var(--card-edge)" }}>
+                  <button key={m.k} onClick={() => setMethod(m.k)} className="man-focus flex items-start gap-3.5 rounded-[14px] p-4 text-left transition-colors" style={{ background: "#ffffff", border: on ? "1.5px solid var(--moss-700)" : "1px solid var(--card-edge)" }}>
                     <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full" style={{ background: on ? "var(--moss-50)" : "var(--paper-2)" }}><m.Icon size={18} style={{ color: on ? "var(--moss-700)" : "var(--ink-500)" }} /></span>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
