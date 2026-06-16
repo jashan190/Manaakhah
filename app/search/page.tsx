@@ -285,7 +285,7 @@ function SearchContent() {
             {isLoading ? (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <BusinessCardSkeleton key={i} />
+                  <BusinessCardSkeleton key={i} variant="grid" />
                 ))}
               </div>
             ) : sortedBusinesses.length === 0 ? (
@@ -383,7 +383,7 @@ export default function SearchPage() {
         <div className="container mx-auto max-w-6xl py-8 px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
-              <BusinessCardSkeleton key={i} />
+              <BusinessCardSkeleton key={i} variant="grid" />
             ))}
           </div>
         </div>
