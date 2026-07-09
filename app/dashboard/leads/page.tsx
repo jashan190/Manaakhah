@@ -28,7 +28,7 @@ export default function LeadsPage() {
     <OwnerShell active="leads">
       <div className="px-6 py-7 md:px-8">
         <h1 className="t-h3" style={{ color: "var(--ink-900)" }}>Lead Inbox</h1>
-        <p className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 4 }}>Messages from people who found you on Manaakhah</p>
+        <p className="t-body-sm" style={{ color: "var(--ink-500)", marginTop: 4 }}>Messages from people who found you on Minara</p>
 
         <ManCard style={{ padding: 0, overflow: "hidden", marginTop: 16 }} className="flex h-[calc(100vh-200px)] min-h-[480px]">
           {/* Conversation list */}

@@ -6,10 +6,20 @@ import {
   verifyEmailCode,
 } from "@/lib/auth/two-factor";
 import jwt from "jsonwebtoken";
+import { rateLimit } from "@/lib/rate-limit";
 
 // POST /api/auth/2fa/verify - Verify 2FA during login
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "unknown";
+    const { limited, retryAfter } = rateLimit(`2fa-verify:${ip}`, 5, 300_000);
+    if (limited) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429, headers: { "Retry-After": String(retryAfter) } }
+      );
+    }
+
     const body = await req.json();
     const { tempToken, code, isBackupCode } = body;
 

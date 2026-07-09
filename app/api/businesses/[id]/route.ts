@@ -31,7 +31,7 @@ export async function GET(
                 image: true,
               },
             },
-            photos: true,
+            reviewPhotos: true,
           },
           orderBy: {
             createdAt: "desc",

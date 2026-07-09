@@ -38,7 +38,7 @@ class MockStorage {
   constructor() {
     // Load from localStorage if in browser, otherwise use empty data
     if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("manakhaah-mock-data-v6");
+      const stored = localStorage.getItem("minara-mock-data-v6");
       this.data = stored ? JSON.parse(stored, this.dateReviver) : { ...emptyMockData };
     } else {
       this.data = { ...emptyMockData };
@@ -193,7 +193,7 @@ class MockStorage {
   // Persist to localStorage (browser only)
   private persist() {
     if (typeof window !== "undefined") {
-      localStorage.setItem("manakhaah-mock-data-v6", JSON.stringify(this.data));
+      localStorage.setItem("minara-mock-data-v6", JSON.stringify(this.data));
     }
   }
 

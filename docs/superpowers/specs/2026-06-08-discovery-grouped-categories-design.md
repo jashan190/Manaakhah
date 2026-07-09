@@ -1,4 +1,4 @@
-# Manaakhah — Discovery Redesign (Cycle 1: Unified Discovery + Grouped Categories)
+# Minara — Discovery Redesign (Cycle 1: Unified Discovery + Grouped Categories)
 
 **Date:** 2026-06-08
 **Status:** Approved design — ready for implementation planning
@@ -6,15 +6,15 @@
 
 ## 1. Background & motivation
 
-A competitor, **taawun.app** ("Buy Muslim. Build Ummah."), launched recently with the same premise as Manaakhah (a directory of halal restaurants + Muslim-owned businesses). A live UX review of Taawun surfaced clear advantages we can learn from:
+A competitor, **taawun.app** ("Buy Muslim. Build Ummah."), launched recently with the same premise as Minara (a directory of halal restaurants + Muslim-owned businesses). A live UX review of Taawun surfaced clear advantages we can learn from:
 
 1. **Unified, discovery-first homepage** — one hero search (*what + where*) + grouped categories + featured listings; a single **Browse** grid. Minimal difference logged-in vs out.
 2. **Grouped category taxonomy** — parent groups (Food & Drink, Beauty, Auto, Health, Professional…) instead of a flat list.
 3. (Also notable, deferred to a later cycle) an **engagement loop** — points, monthly challenges, log visits, redeem discounts.
 
-Manaakhah today spreads discovery across **three** surfaces — `/` (marketing landing with a "two-paths" fork), `/home` (signed-in home), and `/search` (the Discover tab with map + filters) — and uses a **flat** category list. This redesign consolidates discovery and introduces grouped categories.
+Minara today spreads discovery across **three** surfaces — `/` (marketing landing with a "two-paths" fork), `/home` (signed-in home), and `/search` (the Discover tab with map + filters) — and uses a **flat** category list. This redesign consolidates discovery and introduces grouped categories.
 
-Manaakhah remains **ahead** of Taawun on trust depth (certification detail, audit history, the verification Seal, admin queue) and on having complete role-based flows + a mature design system. This cycle must not regress those.
+Minara remains **ahead** of Taawun on trust depth (certification detail, audit history, the verification Seal, admin queue) and on having complete role-based flows + a mature design system. This cycle must not regress those.
 
 ## 2. Goal
 

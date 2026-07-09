@@ -22,7 +22,7 @@ export default function OnboardingPage() {
     <div style={{ background: "var(--paper)" }} className="px-6 py-10 md:px-14">
       <div className="mx-auto max-w-[720px]">
         <div className="flex items-center gap-2"><Seal size={22} /><Tag tone="moss">Ownership Verified</Tag></div>
-        <h1 className="t-h2" style={{ color: "var(--ink-900)", marginTop: 12 }}>Welcome to Manaakhah, Famous Kabob</h1>
+        <h1 className="t-h2" style={{ color: "var(--ink-900)", marginTop: 12 }}>Welcome to Minara, Famous Kabob</h1>
         <p className="t-body" style={{ color: "var(--ink-500)", marginTop: 4 }}>Finish these steps to get the most out of your listing. You can always come back later.</p>
 
         <ManCard style={{ padding: 20, marginTop: 20 }}>

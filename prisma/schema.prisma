@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // =============================================================================
@@ -213,6 +214,9 @@ enum ViewSource {
   DEAL
   QR_CODE
   SHARE_LINK
+  CALL
+  DIRECTIONS
+  WEBSITE
 }
 
 enum PriceRange {

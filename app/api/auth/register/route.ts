@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import crypto from "crypto";
 import { sendVerificationEmail } from "@/lib/email";
+import { rateLimit } from "@/lib/rate-limit";
 
 const registerSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -16,6 +17,15 @@ const registerSchema = z.object({
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "unknown";
+    const { limited, retryAfter } = rateLimit(`register:${ip}`, 5, 900_000);
+    if (limited) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429, headers: { "Retry-After": String(retryAfter) } }
+      );
+    }
+
     const body = await req.json();
     const validatedData = registerSchema.parse(body);
 

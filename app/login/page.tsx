@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { switchMockRole } from "@/lib/mock-auth";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AuthShell } from "@/components/auth/AuthShell";
-import { Eye, EyeOff, CheckCircle, Mail, Loader2 } from "lucide-react";
+import { Eye, EyeOff, CheckCircle, Mail, Loader2, ShieldCheck } from "lucide-react";
 
 function LoginContent() {
   const searchParams = useSearchParams();
@@ -23,6 +23,22 @@ function LoginContent() {
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState<"CONSUMER" | "BUSINESS_OWNER">(roleParam === "owner" ? "BUSINESS_OWNER" : "CONSUMER");
   const [formData, setFormData] = useState({ email: "", password: "" });
+
+  const [step, setStep] = useState<"password" | "twoFactor">("password");
+  const [twoFactorMethod, setTwoFactorMethod] = useState<string | null>(null);
+  const [code, setCode] = useState("");
+  const [useBackupCode, setUseBackupCode] = useState(false);
+  const [resent, setResent] = useState(false);
+
+  const redirectAfterLogin = async () => {
+    const session = await getSession();
+    const role = (session?.user as any)?.role as string | undefined;
+    const fallback =
+      role === "ADMIN" || role === "SUPER_ADMIN" ? "/admin" :
+      role === "BUSINESS_OWNER" || role === "STAFF" || role === "MODERATOR" ? "/dashboard" :
+      "/";
+    window.location.href = next || fallback;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,6 +54,28 @@ function LoginContent() {
       return;
     }
     try {
+      // Check credentials + whether 2FA is required before touching NextAuth — signIn()
+      // can't tell the client "wrong password" apart from "needs a 2FA code".
+      const precheckRes = await fetch("/api/auth/login-precheck", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email, password: formData.password }),
+      });
+      const precheck = await precheckRes.json();
+
+      if (!precheckRes.ok) {
+        setError(precheck.error || "Invalid email or password");
+        setLoading(false);
+        return;
+      }
+
+      if (precheck.requiresTwoFactor) {
+        setTwoFactorMethod(precheck.method);
+        setStep("twoFactor");
+        setLoading(false);
+        return;
+      }
+
       const result = await signIn("credentials", {
         email: formData.email,
         password: formData.password,
@@ -52,12 +90,101 @@ function LoginContent() {
         setLoading(false);
         return;
       }
-      window.location.href = "/dashboard";
+      await redirectAfterLogin();
     } catch {
       setError("An error occurred. Please try again.");
       setLoading(false);
     }
   };
+
+  const handleVerifyCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      const result = await signIn("credentials", {
+        email: formData.email,
+        password: formData.password,
+        twoFactorCode: code,
+        redirect: false,
+      });
+      if (!result?.ok || result?.error) {
+        setError("Invalid code. Please try again.");
+        setLoading(false);
+        return;
+      }
+      await redirectAfterLogin();
+    } catch {
+      setError("An error occurred. Please try again.");
+      setLoading(false);
+    }
+  };
+
+  const handleResendCode = async () => {
+    setError("");
+    setResent(false);
+    try {
+      const res = await fetch("/api/auth/login-precheck", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email, password: formData.password }),
+      });
+      if (res.ok) setResent(true);
+    } catch {
+      // resend is best-effort; the user can just try again
+    }
+  };
+
+  if (step === "twoFactor") {
+    return (
+      <AuthShell>
+        <h1 className="t-h1" style={{ color: "var(--ink-900)" }}>Verify it's you</h1>
+        <p className="mt-2 t-body" style={{ color: "var(--ink-500)" }}>
+          {useBackupCode
+            ? "Enter one of your backup codes."
+            : twoFactorMethod === "EMAIL"
+              ? `We sent a 6-digit code to ${formData.email}.`
+              : "Enter the 6-digit code from your authenticator app."}
+        </p>
+
+        <form onSubmit={handleVerifyCode} className="mt-8 space-y-4">
+          {error && (
+            <div className="rounded-[8px] p-3 t-body-sm" style={{ background: "#fadfdb", color: "#9b2e25" }}>{error}</div>
+          )}
+          {resent && !error && (
+            <div className="flex items-center gap-2 rounded-[8px] p-3 t-body-sm" style={{ background: "var(--moss-50)", color: "var(--moss-700)" }}>
+              <CheckCircle className="h-4 w-4" /> Code resent.
+            </div>
+          )}
+
+          <div className="space-y-1.5">
+            <Label htmlFor="code">{useBackupCode ? "Backup code" : "Verification code"}</Label>
+            <Input id="code" type="text" inputMode={useBackupCode ? "text" : "numeric"} autoFocus required
+              placeholder={useBackupCode ? "XXXX-XXXX" : "123456"}
+              value={code} onChange={(e) => setCode(e.target.value)} />
+          </div>
+
+          <Button type="submit" className="w-full" size="lg" disabled={loading || !code}>
+            {loading ? "Verifying..." : "Verify"}
+          </Button>
+
+          <div className="flex items-center justify-between t-body-sm">
+            {twoFactorMethod === "EMAIL" && !useBackupCode ? (
+              <button type="button" onClick={handleResendCode} style={{ color: "var(--moss-700)" }}>Resend code</button>
+            ) : <span />}
+            <button type="button" onClick={() => { setUseBackupCode((v) => !v); setCode(""); setError(""); }} style={{ color: "var(--moss-700)" }}>
+              {useBackupCode ? "Use your code instead" : "Use a backup code"}
+            </button>
+          </div>
+
+          <button type="button" onClick={() => { setStep("password"); setCode(""); setError(""); }}
+            className="flex items-center justify-center gap-1.5 w-full t-body-sm" style={{ color: "var(--ink-500)" }}>
+            <ShieldCheck size={14} /> Back to sign in
+          </button>
+        </form>
+      </AuthShell>
+    );
+  }
 
   return (
     <AuthShell>

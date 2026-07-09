@@ -160,7 +160,7 @@ async function main(): Promise<void> {
     process.exit(0);
   }
 
-  console.log("=== Manaakhah Multi-Source Scraper ===\n");
+  console.log("=== Minara Multi-Source Scraper ===\n");
   console.log(`Sources: ${args.sources.join(", ")}`);
   if (args.state) console.log(`State filter: ${args.state}`);
   if (args.region) console.log(`Region filter: ${args.region}`);

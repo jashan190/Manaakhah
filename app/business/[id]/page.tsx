@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/man/Skeleton";
 import { BUSINESS_TAGS, PRICE_RANGES } from "@/lib/constants";
 import {
   Phone, MessageCircle, MapPin, Globe, Heart, Share2, Star, Clock,
-  BadgeCheck, ArrowLeft, Flag, Pencil, Check, Navigation,
+  BadgeCheck, ArrowLeft, Flag, Pencil, Check, Navigation, CalendarDays,
 } from "lucide-react";
 
 const DAYS: [string, string][] = [
@@ -77,6 +77,14 @@ export default function BusinessDetailPage() {
       .catch(() => setLoading(false));
     try { setFav(JSON.parse(localStorage.getItem("favorites") || "[]").includes(id)); } catch {}
   }, [id]);
+
+  const trackAction = (action: string) => {
+    fetch(`/api/business/${id}/analytics`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action }),
+    }).catch(() => {});
+  };
 
   const toggleFav = () => {
     try {
@@ -194,9 +202,10 @@ export default function BusinessDetailPage() {
           )}
           {/* actions */}
           <div className="mt-4 flex flex-wrap gap-2">
-            <a href={`tel:${business.phone}`}><Button size="sm"><Phone className="mr-1.5 h-4 w-4" /> Call Now</Button></a>
+            <a href={`tel:${business.phone}`} onClick={() => trackAction("call")}><Button size="sm"><Phone className="mr-1.5 h-4 w-4" /> Call Now</Button></a>
             <Link href={`/business/${id}/contact`}><Button variant="outline" size="sm"><MessageCircle className="mr-1.5 h-4 w-4" /> Message</Button></Link>
-            <a href={mapsUrl} target="_blank" rel="noopener noreferrer"><Button variant="outline" size="sm"><Navigation className="mr-1.5 h-4 w-4" /> Directions</Button></a>
+            <a href={mapsUrl} target="_blank" rel="noopener noreferrer" onClick={() => trackAction("directions")}><Button variant="outline" size="sm"><Navigation className="mr-1.5 h-4 w-4" /> Directions</Button></a>
+            <Link href={`/business/${id}/book`}><Button variant="outline" size="sm"><CalendarDays className="mr-1.5 h-4 w-4" /> Book</Button></Link>
           </div>
         </div>
 
@@ -230,7 +239,7 @@ export default function BusinessDetailPage() {
                 <div className="flex items-start gap-3.5">
                   <Seal size={30} />
                   <div className="flex-1">
-                    <div className="t-h4" style={{ color: "var(--ink-900)" }}>{isFood ? "Halal verified by Manaakhah" : "Verified Muslim-owned"}</div>
+                    <div className="t-h4" style={{ color: "var(--ink-900)" }}>{isFood ? "Halal verified by Minara" : "Verified Muslim-owned"}</div>
                     <p className="t-body-sm" style={{ color: "var(--ink-700)", marginTop: 4 }}>
                       {isFood ? "We cross-checked this business's halal certification with the issuing body and confirmed ownership." : "Ownership has been confirmed by our verification team."}
                     </p>
@@ -326,7 +335,7 @@ export default function BusinessDetailPage() {
               <div className="mt-3 grid gap-3 t-body-sm">
                 <div className="flex items-start gap-2.5"><MapPin size={15} style={{ color: "var(--ink-400)", marginTop: 2 }} /><span style={{ color: "var(--ink-700)" }}>{business.address}<br />{business.city}, {business.state} {business.zipCode}</span></div>
                 {business.phone && <a href={`tel:${business.phone}`} className="flex items-center gap-2.5" style={{ color: "var(--ink-700)" }}><Phone size={15} style={{ color: "var(--ink-400)" }} /> {business.phone}</a>}
-                {business.website && <a href={business.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5" style={{ color: "var(--moss-700)" }}><Globe size={15} style={{ color: "var(--ink-400)" }} /> Visit website</a>}
+                {business.website && <a href={business.website} target="_blank" rel="noopener noreferrer" onClick={() => trackAction("website")} className="flex items-center gap-2.5" style={{ color: "var(--moss-700)" }}><Globe size={15} style={{ color: "var(--ink-400)" }} /> Visit website</a>}
               </div>
               <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="mt-3 block"><Button variant="outline" size="sm" className="w-full"><Navigation className="mr-1.5 h-4 w-4" /> Get Directions</Button></a>
             </ManCard>

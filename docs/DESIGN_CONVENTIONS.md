@@ -1,4 +1,4 @@
-# Manaakhah Design Conventions
+# Minara Design Conventions
 
 The single reference for how UI is built in this app. Follow it so new pages don't reintroduce the inconsistency ("vibe-coded") drift. `_legacy/` is exempt (archived).
 

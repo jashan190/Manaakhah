@@ -1,6 +1,7 @@
 # Button & Interactive-Control Consistency
 
 **Date:** 2026-06-16
+**Status:** IMPLEMENTED ✅ — P1-2 (button radius) and focus-state unification completed; merged in the P1 design polish cycle.
 **Parent:** Extends `2026-06-16-design-polish-consistency-audit.md` (P1-2 button radius + the "one focus treatment" work) and follows `2026-06-16-form-control-consistency-audit.md`.
 **Goal:** One coherent treatment for buttons and clickable controls — radius, focus state, and pill active color.
 

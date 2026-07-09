@@ -57,7 +57,7 @@ export default function ForBusinessPage() {
             <Tag>Not Yet Listed</Tag>
             <div className="t-h3" style={{ color: "var(--ink-900)", marginTop: 12 }}>Add a New Business</div>
             <p className="t-body" style={{ color: "var(--ink-500)", marginTop: 4 }}>
-              Brand new, recently moved, or just not on Manaakhah yet? Create the listing and we&apos;ll route it through verification.
+              Brand new, recently moved, or just not on Minara yet? Create the listing and we&apos;ll route it through verification.
             </p>
             <div style={{ marginTop: 16, padding: 16, background: "var(--paper-2)", borderRadius: 8 }}>
               <div className="t-eyebrow" style={{ color: "var(--ink-500)" }}>What you&apos;ll need</div>

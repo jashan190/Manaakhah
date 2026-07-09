@@ -3,6 +3,7 @@ import { db, isMockMode } from "@/lib/db";
 import { sendPasswordResetEmail } from "@/lib/email";
 import { z } from "zod";
 import crypto from "crypto";
+import { rateLimit } from "@/lib/rate-limit";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -10,6 +11,15 @@ const forgotPasswordSchema = z.object({
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "unknown";
+    const { limited, retryAfter } = rateLimit(`forgot:${ip}`, 5, 900_000);
+    if (limited) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429, headers: { "Retry-After": String(retryAfter) } }
+      );
+    }
+
     const body = await req.json();
     const { email } = forgotPasswordSchema.parse(body);
 

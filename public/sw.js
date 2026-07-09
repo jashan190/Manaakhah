@@ -1,6 +1,6 @@
-// Service Worker for Manaakhah PWA
-const CACHE_NAME = 'manaakhah-v1';
-const RUNTIME_CACHE = 'manaakhah-runtime';
+// Service Worker for Minara PWA
+const CACHE_NAME = 'minara-v1';
+const RUNTIME_CACHE = 'minara-runtime';
 
 // Resources to cache immediately
 const PRECACHE_URLS = [
@@ -207,7 +207,7 @@ self.addEventListener('push', (event) => {
 
   event.waitUntil(
     self.registration.showNotification(
-      data.title || 'Manaakhah',
+      data.title || 'Minara',
       options
     )
   );
@@ -238,7 +238,7 @@ self.addEventListener('notificationclick', (event) => {
 // Simple IndexedDB wrapper for offline storage
 function openIndexedDB() {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open('manaakhah-offline', 1);
+    const request = indexedDB.open('minara-offline', 1);
 
     request.onerror = () => reject(request.error);
     request.onsuccess = () => {

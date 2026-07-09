@@ -84,7 +84,7 @@ export default function ClaimBusinessPage() {
                     {i === 3 ? (
                       <Button variant="outline" size="sm">Dispute</Button>
                     ) : (
-                      <Link href="/register?role=owner&next=%2Fdashboard%2Fverification"><Button size="sm">Claim</Button></Link>
+                      <Link href={`/register?role=owner&next=${encodeURIComponent(`/dashboard/verification?businessId=${b.id}`)}`}><Button size="sm">Claim</Button></Link>
                     )}
                   </ManCard>
                 ))}

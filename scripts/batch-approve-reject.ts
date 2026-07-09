@@ -67,7 +67,7 @@ async function batchUpdate() {
     const newAdmin = await db.user.create({
       data: {
         id: "system-admin",
-        email: "admin@manaakhah.com",
+        email: "admin@minara.market",
         name: "System Admin",
         role: "ADMIN",
       },

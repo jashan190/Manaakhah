@@ -32,7 +32,7 @@ export default function NewListingPage() {
   return (
     <div style={{ background: "var(--paper)" }} className="px-6 py-8 md:px-14">
       <div className="mx-auto max-w-[820px]">
-        <Link href="/for-business" className="t-body-sm inline-flex items-center gap-1" style={{ color: "var(--ink-500)" }}><ArrowLeft size={14} /> Back to owner home</Link>
+        <Link href="/dashboard" className="t-body-sm inline-flex items-center gap-1" style={{ color: "var(--ink-500)" }}><ArrowLeft size={14} /> Back to dashboard</Link>
         <PH title="Add Your Business" sub="A few quick steps, then our team verifies you" />
 
         {/* Stepper */}
