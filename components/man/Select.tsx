@@ -5,7 +5,7 @@ import { ChevronDown, Check } from "lucide-react";
 
 export type SelectOption = { value: string; label: string };
 
-/** Manaakhah-designed dropdown — replaces the native <select> OS control. */
+/** Minara-designed dropdown — replaces the native <select> OS control. */
 export function Select({
   value, defaultValue, onChange, options, placeholder = "Select…", className = "", disabled,
 }: {

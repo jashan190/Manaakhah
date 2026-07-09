@@ -1,20 +1,14 @@
 import { NextResponse } from "next/server";
-import { db, isMockMode } from "@/lib/db";
+import { db } from "@/lib/db";
+import { getRequestUser } from "@/lib/api/auth-user";
+import { sendBookingConfirmationEmail } from "@/lib/email";
+import { generateTimeSlots } from "@/lib/availability";
 
 // GET /api/bookings - Get user's bookings
 export async function GET(req: Request) {
   try {
-    let userId: string | null = null;
-    let userRole: string | null = null;
-
-    if (isMockMode()) {
-      userId = req.headers.get("x-user-id");
-      userRole = req.headers.get("x-user-role");
-    }
-
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const user = await getRequestUser(req);
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const { searchParams } = new URL(req.url);
     const role = searchParams.get("role") || "customer";
@@ -23,59 +17,35 @@ export async function GET(req: Request) {
 
     const where: any = {};
 
-    if (role === "customer" || userRole === "CONSUMER") {
-      where.customerId = userId;
-    } else if (role === "business" || userRole === "BUSINESS_OWNER") {
-      // Get businesses owned by this user
+    if (role === "business" || user.role === "BUSINESS_OWNER") {
       const businesses = await db.business.findMany({
-        where: { ownerId: userId },
+        where: { ownerId: user.id },
+        select: { id: true },
       });
       const businessIds = businesses.map((b: any) => b.id);
 
-      if (businessIds.length === 0) {
-        return NextResponse.json({ bookings: [] });
-      }
+      if (businessIds.length === 0) return NextResponse.json({ bookings: [] });
 
-      // Filter bookings by business IDs
-      const allBookings = await db.booking.findMany({
-        include: {
-          business: true,
-          customer: true,
-        },
-        orderBy: { appointmentDate: "desc" },
+      const filter: any = { businessId: { in: businessIds } };
+      if (status) filter.status = status;
+      if (upcoming) filter.appointmentDate = { gte: new Date() };
+
+      const bookings = await db.booking.findMany({
+        where: filter,
+        include: { business: true, customer: true },
+        orderBy: { appointmentDate: "asc" },
       });
-
-      const filteredBookings = allBookings.filter((b: any) => businessIds.includes(b.businessId));
-
-      return NextResponse.json({ bookings: filteredBookings });
+      return NextResponse.json({ bookings });
     }
 
+    // Consumer: their own bookings
+    where.customerId = user.id;
     if (status) where.status = status;
-
-    if (upcoming) {
-      // Filter for future appointments in mock mode
-      const allBookings = await db.booking.findMany({
-        where,
-        include: {
-          business: true,
-          customer: true,
-        },
-        orderBy: { appointmentDate: "desc" },
-      });
-
-      const futureBookings = allBookings.filter(
-        (b: any) => new Date(b.appointmentDate) > new Date()
-      );
-
-      return NextResponse.json({ bookings: futureBookings });
-    }
+    if (upcoming) where.appointmentDate = { gte: new Date() };
 
     const bookings = await db.booking.findMany({
       where,
-      include: {
-        business: true,
-        customer: true,
-      },
+      include: { business: true, customer: true },
       orderBy: { appointmentDate: "desc" },
     });
 
@@ -89,27 +59,12 @@ export async function GET(req: Request) {
 // POST /api/bookings - Create a new booking
 export async function POST(req: Request) {
   try {
-    let userId: string | null = null;
-
-    if (isMockMode()) {
-      userId = req.headers.get("x-user-id");
-    }
-
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const user = await getRequestUser(req);
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const body = await req.json();
-    const {
-      businessId,
-      serviceType,
-      appointmentDate,
-      appointmentTime,
-      duration,
-      notes,
-    } = body;
+    const { businessId, serviceType, appointmentDate, appointmentTime, duration, notes } = body;
 
-    // Validation
     if (!businessId || !serviceType || !appointmentDate || !appointmentTime || !duration) {
       return NextResponse.json(
         { error: "businessId, serviceType, appointmentDate, appointmentTime, and duration are required" },
@@ -117,48 +72,76 @@ export async function POST(req: Request) {
       );
     }
 
-    // Check if appointment is in the future
     const aptDate = new Date(appointmentDate);
     if (aptDate < new Date()) {
-      return NextResponse.json(
-        { error: "Appointment must be in the future" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Appointment must be in the future" }, { status: 400 });
     }
 
-    // Check if user is trying to book their own business
     const business = await db.business.findUnique({
       where: { id: businessId },
+      include: { availability: true },
     });
 
-    if (business?.ownerId === userId) {
-      return NextResponse.json(
-        { error: "You cannot book your own business" },
-        { status: 400 }
-      );
+    if (!business) {
+      return NextResponse.json({ error: "Business not found" }, { status: 404 });
     }
 
-    // Create booking
+    if ((business as any).ownerId === user.id) {
+      return NextResponse.json({ error: "You cannot book your own business" }, { status: 400 });
+    }
+
+    // Conflict check: verify the requested slot is actually available
+    const dayOfWeek = aptDate.getDay();
+    const avail = (business as any).availability?.find((a: any) => a.dayOfWeek === dayOfWeek);
+    if (avail) {
+      const existingBookings = await db.booking.findMany({
+        where: {
+          businessId,
+          appointmentDate: aptDate,
+          status: { in: ["PENDING", "CONFIRMED"] },
+        },
+        select: { appointmentTime: true, duration: true },
+      });
+
+      const slots = generateTimeSlots(avail, existingBookings as any, aptDate, parseInt(duration));
+      const slot = slots.find((s) => s.time === appointmentTime);
+
+      if (slot && !slot.available) {
+        return NextResponse.json(
+          { error: "This time slot is no longer available. Please choose another." },
+          { status: 409 }
+        );
+      }
+    }
+
     const booking = await db.booking.create({
       data: {
         businessId,
-        customerId: userId,
+        customerId: user.id,
         serviceType,
-        appointmentDate: new Date(appointmentDate),
+        appointmentDate: aptDate,
         appointmentTime,
         duration: parseInt(duration),
         notes: notes || null,
         status: "PENDING",
-        statusHistory: [
-          { status: "PENDING", timestamp: new Date() },
-        ],
+        statusHistory: [{ status: "PENDING", timestamp: new Date() }],
       },
+      include: { customer: true },
     });
 
-    return NextResponse.json({
-      message: "Booking request submitted successfully",
-      booking,
-    });
+    // Fire confirmation email — non-blocking
+    const customer = (booking as any).customer;
+    if (customer?.email) {
+      sendBookingConfirmationEmail(customer.email, customer.name || "Guest", {
+        businessName: (business as any).name,
+        serviceName: serviceType,
+        date: aptDate.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }),
+        time: appointmentTime,
+        address: `${(business as any).address}, ${(business as any).city}, ${(business as any).state}`,
+      }).catch(() => {});
+    }
+
+    return NextResponse.json({ message: "Booking request submitted successfully", booking }, { status: 201 });
   } catch (error) {
     console.error("Error creating booking:", error);
     return NextResponse.json({ error: "Failed to create booking" }, { status: 500 });

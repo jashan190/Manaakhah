@@ -1,6 +1,7 @@
 # Form Control Consistency Audit & Convention
 
 **Date:** 2026-06-16
+**Status:** IMPLEMENTED ✅ — `man-field` / `man-field-wrap` / `man-focus` / `man-focusable` convention adopted; documented in `docs/DESIGN_CONVENTIONS.md`; merged in the P1 design polish cycle.
 **Parent:** Extends `2026-06-16-design-polish-consistency-audit.md` (this is the P1 "one component layer" work for inputs/controls).
 **Goal:** Eliminate the inconsistent input "selected/focus" states across the app by standardizing every form control on one convention.
 **Trigger:** The home search bar and the search-page field have visibly different selected states (no indicator vs. a moss ring).

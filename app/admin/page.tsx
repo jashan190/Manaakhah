@@ -17,7 +17,7 @@ export default function AdminHomePage() {
   return (
     <AdminShell active="home">
       <div className="px-6 py-7 md:px-8">
-        <PH title="Trust & Safety Overview" sub="The verification work keeping Manaakhah trustworthy" />
+        <PH title="Trust & Safety Overview" sub="The verification work keeping Minara trustworthy" />
 
         <div className="grid grid-cols-2 gap-3.5 lg:grid-cols-4">
           <StatCard label="Pending verification" value="12" Icon={Clock} />

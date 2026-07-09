@@ -18,14 +18,14 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Manaakhah - Connect with Muslim Businesses",
+  title: "Minara - Connect with Muslim Businesses",
   description: "Keep Muslim money within the Muslim community. Find halal services, Muslim-owned businesses, masjids, and community aid in Sacramento.",
   keywords: ["halal", "muslim business", "masjid", "islamic center", "sacramento", "halal food", "muslim owned"],
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Manaakhah",
+    title: "Minara",
   },
   formatDetection: {
     telephone: true,
@@ -33,22 +33,22 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://manaakhah.com",
-    siteName: "Manaakhah",
-    title: "Manaakhah - Connect with Muslim Businesses",
+    url: "https://minara.market",
+    siteName: "Minara",
+    title: "Minara - Connect with Muslim Businesses",
     description: "Keep Muslim money within the Muslim community. Find halal services, Muslim-owned businesses, masjids, and community aid in Sacramento.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Manaakhah - Muslim Business Directory",
+        alt: "Minara - Muslim Business Directory",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Manaakhah - Connect with Muslim Businesses",
+    title: "Minara - Connect with Muslim Businesses",
     description: "Find halal services, Muslim-owned businesses, and masjids in Sacramento.",
     images: ["/twitter-image.png"],
   },

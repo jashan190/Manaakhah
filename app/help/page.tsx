@@ -12,10 +12,10 @@ const cats = [
 ];
 
 const faqs: [string, string][] = [
-  ["How is a business verified halal on Manaakhah?", "We cross-reference active certifications from HFSAA, HMS, IFANCA, and Zabihah. Owners can also upload supplementary documentation reviewed by our team."],
+  ["How is a business verified halal on Minara?", "We cross-reference active certifications from HFSAA, HMS, IFANCA, and Zabihah. Owners can also upload supplementary documentation reviewed by our team."],
   ["What's the difference between 'Verified' and 'Claimed'?", "Claimed means an owner has verified they run the business. Verified means we've also confirmed an active halal certification with a recognised body."],
   ["How do I report a listing that's no longer halal?", "Open the business profile, tap the certification block, then 'Report issue'. Halal disputes are prioritised and reviewed within 48 hours."],
-  ["Is Manaakhah free for users?", "Yes, completely. Businesses can list for free; paid tiers add owner tools like analytics, lead inbox, and promotions."],
+  ["Is Minara free for users?", "Yes, completely. Businesses can list for free; paid tiers add owner tools like analytics, lead inbox, and promotions."],
   ["Which areas do you cover?", "We started in the Sacramento area and are expanding city by city across California."],
   ["Can I save businesses to share with family?", "Yes — sign in, save businesses to a list, and share the list with a public link."],
 ];
@@ -73,8 +73,8 @@ export default function HelpPage() {
             <div className="t-h4" style={{ color: "var(--ink-900)" }}>Still Need Help?</div>
             <p className="t-body-sm" style={{ color: "var(--ink-700)", marginTop: 4 }}>Our team replies within one business day.</p>
             <div className="mt-3.5 flex flex-wrap items-center gap-3">
-              <a href="mailto:support@manaakhah.com"><Button size="sm">Contact Support</Button></a>
-              <Link href="/register" className="t-body-sm" style={{ color: "var(--moss-700)", fontWeight: 600 }}>New to Manaakhah? Create a free account →</Link>
+              <a href="mailto:support@minara.market"><Button size="sm">Contact Support</Button></a>
+              <Link href="/register" className="t-body-sm" style={{ color: "var(--moss-700)", fontWeight: 600 }}>New to Minara? Create a free account →</Link>
             </div>
           </div>
         </div>

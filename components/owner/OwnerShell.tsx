@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutGrid, Store, Inbox, Star, Sparkles, Tag, Settings, Info } from "lucide-react";
+import { LayoutGrid, Store, Inbox, Star, Sparkles, Tag, Settings, Info, CalendarDays } from "lucide-react";
 
 type Item = { k: string; l: string; href: string; Icon: any; badge?: number };
 
@@ -11,6 +11,7 @@ const MAIN: Item[] = [
   { k: "profile", l: "Listing & Profile", href: "/dashboard/listing", Icon: Store },
   { k: "leads", l: "Lead Inbox", href: "/dashboard/leads", Icon: Inbox, badge: 3 },
   { k: "reviews", l: "Reviews", href: "/dashboard/reviews", Icon: Star, badge: 2 },
+  { k: "bookings", l: "Bookings", href: "/dashboard/bookings", Icon: CalendarDays },
   { k: "promos", l: "Promotions", href: "/dashboard/deals", Icon: Sparkles },
 ];
 

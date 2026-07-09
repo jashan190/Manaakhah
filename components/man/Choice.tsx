@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Check } from "lucide-react";
 
-/** Manaakhah-designed checkbox — replaces the native OS checkbox. Controlled or uncontrolled. */
+/** Minara-designed checkbox — replaces the native OS checkbox. Controlled or uncontrolled. */
 export function Checkbox({
   checked, defaultChecked, onChange, label, className = "", disabled,
 }: {
@@ -41,7 +41,7 @@ export function Checkbox({
   );
 }
 
-/** Manaakhah-designed radio — replaces the native OS radio button. */
+/** Minara-designed radio — replaces the native OS radio button. */
 export function Radio({
   checked, onChange, label, className = "", disabled,
 }: {

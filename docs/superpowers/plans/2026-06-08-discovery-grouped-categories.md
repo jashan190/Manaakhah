@@ -78,7 +78,7 @@ export function groupForCategory(category: string): CategoryGroup | undefined {
 
 Run:
 ```bash
-cd /Users/farhan/Developer/Manaakhah && node -e "
+cd /Users/farhan/Developer/Minara && node -e "
 const ts=require('fs').readFileSync('lib/constants.ts','utf8');
 const cats=[...ts.matchAll(/value: '([A-Z_]+)'/g)].map(m=>m[1]).filter(c=>c!=='OTHER');
 const grp=require('fs').readFileSync('lib/category-groups.ts','utf8');
@@ -383,7 +383,7 @@ function Tagish() {
 
 Run:
 ```bash
-cd /Users/farhan/Developer/Manaakhah
+cd /Users/farhan/Developer/Minara
 echo "status: $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/)"
 curl -s http://localhost:3000/ | grep -oE "Discover|Browse by category|Featured near you|List your business" | sort -u
 ```
@@ -393,7 +393,7 @@ Expected: `status: 200` and all four strings present.
 
 Run (write `./_v.js`, run, delete):
 ```bash
-cd /Users/farhan/Developer/Manaakhah && cat > ./_v.js <<'EOF'
+cd /Users/farhan/Developer/Minara && cat > ./_v.js <<'EOF'
 const p=require('puppeteer');(async()=>{const b=await p.launch();const pg=await b.newPage();
 const err=[];pg.on('pageerror',e=>err.push(e.message.slice(0,100)));
 await pg.setViewport({width:1280,height:1000});
@@ -453,7 +453,7 @@ window.location.href = formData.role === "BUSINESS_OWNER" ? "/business" : "/";
 
 Run:
 ```bash
-cd /Users/farhan/Developer/Manaakhah && grep -rn '"/home"' app components | grep -v "app/home/page.tsx"
+cd /Users/farhan/Developer/Minara && grep -rn '"/home"' app components | grep -v "app/home/page.tsx"
 ```
 Expected: no results (empty). If any appear, change those `href`/redirect targets to `"/"`.
 
@@ -503,7 +503,7 @@ Find the logo `Link` (currently `href={signedIn ? (role === "BUSINESS_OWNER" ? "
 
 ```tsx
 <Link href={signedIn && role === "BUSINESS_OWNER" ? "/dashboard" : "/"} className="t-h4" style={{ color: "var(--moss-700)", fontWeight: 600 }}>
-  Manaakhah
+  Minara
 </Link>
 ```
 
@@ -515,7 +515,7 @@ The existing `isActive` already special-cases `/` (`href === "/" ? pathname === 
 
 Run (write `./_nav.js`, run, delete):
 ```bash
-cd /Users/farhan/Developer/Manaakhah && cat > ./_nav.js <<'EOF'
+cd /Users/farhan/Developer/Minara && cat > ./_nav.js <<'EOF'
 const p=require('puppeteer');(async()=>{const b=await p.launch();const pg=await b.newPage();
 await pg.goto("http://localhost:3000/",{waitUntil:"domcontentloaded"});await new Promise(s=>setTimeout(s,500));
 console.log("signed-out:",await pg.evaluate(()=>[...document.querySelectorAll('header nav a')].map(a=>a.textContent.trim()+'→'+a.getAttribute('href')).join(' | ')));
@@ -737,7 +737,7 @@ The existing `loading / empty / results` block moves into the right `<div>`. The
 
 Run (write `./_b.js`, run, delete):
 ```bash
-cd /Users/farhan/Developer/Manaakhah && cat > ./_b.js <<'EOF'
+cd /Users/farhan/Developer/Minara && cat > ./_b.js <<'EOF'
 const p=require('puppeteer');(async()=>{const b=await p.launch({protocolTimeout:60000});const pg=await b.newPage();
 const err=[];pg.on('pageerror',e=>err.push(e.message.slice(0,100)));
 await pg.setViewport({width:1280,height:1000});
@@ -769,7 +769,7 @@ git commit -m "feat(browse): grid default + filter rail + group-param filtering"
 
 Run (write `./_audit.js`, run, delete):
 ```bash
-cd /Users/farhan/Developer/Manaakhah && cat > ./_audit.js <<'EOF'
+cd /Users/farhan/Developer/Minara && cat > ./_audit.js <<'EOF'
 const p=require('puppeteer');const routes=["/","/search","/search?group=food","/search?group=professional"];
 (async()=>{const b=await p.launch({protocolTimeout:60000});const pg=await b.newPage();
 for(const w of [390,1280]){await pg.setViewport({width:w,height:900});
@@ -786,7 +786,7 @@ Expected: only `audit done` (no `OVERFLOW` lines).
 
 Run (write `./_shots.js`, run, delete):
 ```bash
-cd /Users/farhan/Developer/Manaakhah && cat > ./_shots.js <<'EOF'
+cd /Users/farhan/Developer/Minara && cat > ./_shots.js <<'EOF'
 const p=require('puppeteer');(async()=>{const b=await p.launch({protocolTimeout:60000});const pg=await b.newPage();
 for(const[w,tag] of [[1280,"d"],[390,"m"]]){await pg.setViewport({width:w,height:1000});
  await pg.goto("http://localhost:3000/",{waitUntil:"networkidle2",timeout:30000});await new Promise(s=>setTimeout(s,1500));

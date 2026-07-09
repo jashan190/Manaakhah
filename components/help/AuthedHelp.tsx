@@ -37,7 +37,7 @@ const TICKETS = {
 export function AuthedHelp({ role }: { role: "consumer" | "owner" }) {
   const topics = TOPICS[role];
   const tickets = TICKETS[role];
-  const sub = role === "owner" ? "Get help running and growing your business on Manaakhah" : "Answers and support for your Manaakhah account";
+  const sub = role === "owner" ? "Get help running and growing your business on Minara" : "Answers and support for your Minara account";
 
   return (
     <div className="px-6 py-7 md:px-8">

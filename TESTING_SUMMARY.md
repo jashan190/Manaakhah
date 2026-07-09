@@ -1,7 +1,7 @@
-# Testing Summary - Manaakhah
+# Testing Summary - Minara
 
-**Updated:** 2026-04-05
-**Status:** All localStorage removed. Backend stable. UI complete for core flows.
+**Updated:** 2026-06-24 — see `ROADMAP_TO_PRODUCTION.md` for the authoritative current status with full audit detail.
+**Status:** All localStorage removed. Backend stable. UI complete for core flows except booking (see Known Issues).
 **Deployment:** Docker (self-hosted)
 
 ## Completed Work
@@ -69,16 +69,25 @@
 - `app/business/error.tsx` — business page-specific
 - `app/not-found.tsx` — custom 404 page
 
+### Prisma Migration - Complete
+Confirmed in sync via `prisma migrate diff` against the live Neon datasource (empty diff). `directUrl` wired up in `schema.prisma`.
+
+### Business Verification - Complete
+Verification request submission, admin approve/reject queue, and ownership transfer all tested against the live DB with real test accounts (created, exercised, and cleaned up via curl + one-off scripts).
+
+### Two-Factor Authentication - Complete
+TOTP and email-code 2FA tested end-to-end against the live DB: setup, QR/code confirmation, backup codes, login-time verification (including wrong-code and missing-code cases), and disable. Also verified visually via headless Chromium screenshots of `/login`'s code-entry step and `/account/settings`' enable/disable flow.
+
 ## Remaining Tasks
 
-### Prisma Migration - Manual Step Required
-```bash
-npx prisma db push
-npx prisma generate
-```
+### Auth Email Flows - Partially Untestable
+- Verification, reset, and 2FA-email codes are logic-tested (the code paths run correctly), but real delivery is unverified — `FROM_EMAIL` is empty, so sends fall back to an unverified default address that Resend may silently reject. Needs a verified `FROM_EMAIL` to confirm actual delivery.
 
-### Auth Email Flows - Untested
-- Verification, reset, 2FA require Resend API key
+### Booking System - Needs a Build, Not Just a Test
+- `POST /api/bookings` and `PUT /api/bookings/[id]/status` are gated to mock-mode-only auth and return 401 for every real user.
+- No reachable consumer booking UI or owner bookings dashboard exists in the live `app/` tree (only in the excluded `_legacy/` tree).
+- Confirmation email and waitlist promotion are unwired.
+- See `ROADMAP_TO_PRODUCTION.md` Phase 2.3 for the full audit and suggested scope split.
 
 ## Quick Test Commands
 
@@ -100,7 +109,7 @@ docker compose up --build
 - **Events:** 1 (test event created)
 
 ## Known Issues
-- Subscription UI not tested end-to-end (requires applying Prisma migration first)
-- Auth email flows untested (requires Resend API key)
+- Subscription UI not tested end-to-end (Prisma migration is applied now, but the UI flow itself hasn't been walked with a real account)
+- Real email delivery unverified (`FROM_EMAIL` not set — see Remaining Tasks)
 - Business owner analytics shows empty state (event tracking not yet integrated)
-- Booking system not tested end-to-end
+- Booking system is not reachable in the live app — needs new UI, not just testing (see Remaining Tasks)

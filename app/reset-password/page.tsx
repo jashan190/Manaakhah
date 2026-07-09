@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,8 +39,13 @@ function ResetPasswordContent() {
       });
 
       if (result?.ok) {
-        // Success! Redirect to home
-        router.push("/");
+        const session = await getSession();
+        const role = (session?.user as any)?.role as string | undefined;
+        const dest =
+          role === "ADMIN" || role === "SUPER_ADMIN" ? "/admin" :
+          role === "BUSINESS_OWNER" || role === "STAFF" || role === "MODERATOR" ? "/dashboard" :
+          "/";
+        router.push(dest);
         return;
       }
     } catch (error) {

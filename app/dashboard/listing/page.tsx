@@ -32,7 +32,7 @@ export default function ListingProfilePage() {
     <OwnerShell active="profile">
       <div className="px-6 py-7 md:px-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <PH title="Listing & Profile" sub="This is what the community sees on Manaakhah" />
+          <PH title="Listing & Profile" sub="This is what the community sees on Minara" />
           <Link href="/business/sac-famous-kabob"><Button variant="outline" size="sm"><ExternalLink className="mr-1.5 h-4 w-4" /> View Public Profile</Button></Link>
         </div>
 

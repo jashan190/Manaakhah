@@ -1,10 +1,12 @@
-# Manaakhah - Features & Technical Documentation
+# Minara - Features & Technical Documentation
 
 ## Overview
 
-Manaakhah is a directory platform for Muslim-owned and halal-certified businesses. The platform includes web scraping capabilities to automatically discover and import businesses from various halal certification directories.
+Minara is a directory platform for Muslim-owned and halal-certified businesses. The platform includes web scraping capabilities to automatically discover and import businesses from various halal certification directories.
 
-## Current Platform State (2026-04-05)
+## Current Platform State (2026-06-24)
+
+See `ROADMAP_TO_PRODUCTION.md` for the authoritative, fully-detailed status. Summary:
 
 - Primary focus is business discovery and service offerings.
 - Prayer-times feature fully removed from user-facing routes, APIs, and filesystem.
@@ -18,10 +20,12 @@ Manaakhah is a directory platform for Muslim-owned and halal-certified businesse
 - Cloudinary upload returns clear error when not configured (no placeholder URLs).
 - **Error boundaries** added at global, admin, dashboard, and business route levels plus custom 404.
 - **Deployment: Docker-based (self-hosted).** No Vercel dependency.
+- **Business verification** and **two-factor auth UI** are now real end-to-end (verification request → admin queue → ownership transfer; 2FA setup/login/disable) — both confirmed against the live DB.
+- Prisma schema confirmed in sync with the live DB; `directUrl` wired up.
 
 ### Remaining Work
-- Apply pending Prisma schema migration (`npx prisma db push`).
-- Test auth email flows end-to-end (verification, reset, 2FA) — requires Resend API key.
+- Generate missing credentials: `FROM_EMAIL` (Resend-verified sender), Cloudinary keys, `NEXT_PUBLIC_MAPTILER_KEY`.
+- **Booking system needs a real build** — the live app has no reachable booking UI (consumer or owner-facing), and the booking APIs are hard-gated to mock-mode auth so they 401 for every real user. Not a "test it" task; see `ROADMAP_TO_PRODUCTION.md` Phase 2.3.
 - Integrate event tracking for business owner analytics.
 
 ---

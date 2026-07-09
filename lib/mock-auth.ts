@@ -6,7 +6,7 @@
 import { mockStorage } from "./mock-data/storage";
 import type { MockUser, UserRole } from "./mock-data/types";
 
-const MOCK_SESSION_KEY = "manakhaah-mock-session";
+const MOCK_SESSION_KEY = "minara-mock-session";
 
 export interface MockSession {
   user: {
@@ -155,9 +155,9 @@ export function mockLogout() {
  * This allows you to quickly switch between consumer/business/admin
  */
 const ROLE_DEFAULTS: Record<UserRole, { name: string; email: string }> = {
-  CONSUMER: { name: "Aisha Rahman", email: "consumer@manaakhah.test" },
-  BUSINESS_OWNER: { name: "Yusuf Khan", email: "owner@manaakhah.test" },
-  ADMIN: { name: "Trust Team", email: "admin@manaakhah.test" },
+  CONSUMER: { name: "Aisha Rahman", email: "consumer@minara.test" },
+  BUSINESS_OWNER: { name: "Yusuf Khan", email: "owner@minara.test" },
+  ADMIN: { name: "Trust Team", email: "admin@minara.test" },
 };
 
 export function switchMockRole(role: UserRole) {

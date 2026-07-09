@@ -6,7 +6,7 @@
 
 **Architecture:** Add three reusable, token-styled components to the existing `man`/`business` component layer, then refactor `app/search/page.tsx` to consume them. The card is presentational (state stays in the page); loading uses skeletons that mirror the results grid; the no-results state uses a shared `EmptyState` with a lucide icon instead of an emoji.
 
-**Tech Stack:** Next.js (App Router), React, TypeScript (strict), Tailwind CSS, `lucide-react`, the Manaakhah token system in `app/globals.css`.
+**Tech Stack:** Next.js (App Router), React, TypeScript (strict), Tailwind CSS, `lucide-react`, the Minara token system in `app/globals.css`.
 
 **Verification model:** This codebase has **no test framework** (no Jest/Vitest, no test script). Adding one is out of scope for P0. Each task is verified by TypeScript typecheck (`npx tsc --noEmit`) + production build (`npm run build`), and the final task is a visual verification pass. Components are written to be pure/presentational so they're easy to reason about without a harness.
 

@@ -14,7 +14,7 @@ function fmt(v: string) {
 }
 const iso = (y: number, m: number, d: number) => `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 
-/** Manaakhah-designed date picker — replaces the native OS date input + calendar popup. */
+/** Minara-designed date picker — replaces the native OS date input + calendar popup. */
 export function DatePicker({
   value, defaultValue, onChange, placeholder = "Select a date", className = "", disabled,
 }: {

@@ -5,22 +5,8 @@ import Google from "next-auth/providers/google";
 import Apple from "next-auth/providers/apple";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import * as crypto from "crypto";
 import type { NextAuthConfig } from "next-auth";
-
-// Custom error for 2FA required
-export class TwoFactorRequiredError extends Error {
-  tempToken: string;
-  method: string;
-
-  constructor(tempToken: string, method: string) {
-    super("Two-factor authentication required");
-    this.name = "TwoFactorRequiredError";
-    this.tempToken = tempToken;
-    this.method = method;
-  }
-}
 
 export const authConfig: NextAuthConfig = {
   adapter: PrismaAdapter(prisma) as any,
@@ -130,6 +116,7 @@ export const authConfig: NextAuthConfig = {
             twoFactorEnabled: true,
             twoFactorMethod: true,
             twoFactorSecret: true,
+            twoFactorBackupCodes: true,
             isBanned: true,
             banReason: true,
             isShadowBanned: true,
@@ -165,27 +152,40 @@ export const authConfig: NextAuthConfig = {
           return null;
         }
 
-        // Check if 2FA is enabled
-        if (user.twoFactorEnabled && user.twoFactorSecret) {
+        // Check if 2FA is enabled — gate on twoFactorEnabled alone, not twoFactorSecret,
+        // since EMAIL-method 2FA users have no TOTP secret and would otherwise skip 2FA entirely.
+        if (user.twoFactorEnabled) {
           const twoFactorCode = credentials.twoFactorCode as string | undefined;
 
           if (!twoFactorCode) {
-            // Generate a temporary token for 2FA verification
-            const tempToken = jwt.sign(
-              { userId: user.id, email: user.email },
-              process.env.NEXTAUTH_SECRET!,
-              { expiresIn: "5m" }
-            );
-
-            throw new TwoFactorRequiredError(tempToken, user.twoFactorMethod || "AUTHENTICATOR");
+            // The login page calls /api/auth/login-precheck before this point to learn
+            // a code is needed; a direct/bypassing caller fails closed here.
+            return null;
           }
 
-          // Verify 2FA code
-          const { verifyTwoFactorToken } = await import("@/lib/auth/two-factor");
-          const isValidCode = verifyTwoFactorToken(twoFactorCode, user.twoFactorSecret);
+          const { verifyTwoFactorToken, verifyEmailCode, verifyBackupCode } = await import("@/lib/auth/two-factor");
+
+          let isValidCode = false;
+          if (user.twoFactorMethod === "EMAIL") {
+            isValidCode = await verifyEmailCode(user.id, twoFactorCode);
+          } else if (user.twoFactorSecret) {
+            isValidCode = verifyTwoFactorToken(twoFactorCode, user.twoFactorSecret);
+          }
+
+          if (!isValidCode && user.twoFactorBackupCodes.length > 0) {
+            const { valid, usedIndex } = await verifyBackupCode(twoFactorCode, user.twoFactorBackupCodes);
+            if (valid) {
+              isValidCode = true;
+              const remaining = [...user.twoFactorBackupCodes];
+              remaining.splice(usedIndex, 1);
+              await prisma.user.update({ where: { id: user.id }, data: { twoFactorBackupCodes: remaining } });
+            }
+          }
 
           if (!isValidCode) {
-            throw new Error("Invalid two-factor authentication code");
+            // Returning null (rather than throwing) keeps the client-facing error a clean
+            // CredentialsSignin instead of NextAuth's generic, unhelpful "Configuration" error.
+            return null;
           }
         }
 

@@ -85,7 +85,7 @@ export default function BusinessSettingsPage() {
           <ManCard style={{ padding: 24, border: "1px solid var(--err-500)" }}>
             <div className="flex items-center gap-2"><AlertTriangle size={18} style={{ color: "var(--err-500)" }} /><div className="t-h4" style={{ color: "var(--ink-900)" }}>Danger Zone</div></div>
             <div className="mt-3 flex items-center justify-between gap-4">
-              <div><div className="t-label-sm" style={{ color: "var(--ink-900)" }}>Deactivate listing</div><div className="t-body-xs" style={{ color: "var(--ink-500)" }}>Temporarily remove Famous Kabob from Manaakhah. You can restore it anytime.</div></div>
+              <div><div className="t-label-sm" style={{ color: "var(--ink-900)" }}>Deactivate listing</div><div className="t-body-xs" style={{ color: "var(--ink-500)" }}>Temporarily remove Famous Kabob from Minara. You can restore it anytime.</div></div>
               <Button variant="outline" size="sm" style={{ color: "var(--err-500)", borderColor: "var(--err-500)" }}>Deactivate</Button>
             </div>
             <div className="mt-3 flex items-center justify-between gap-4 pt-3" style={{ borderTop: "1px dashed var(--card-edge)" }}>

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db, isMockMode } from "@/lib/db";
 import { z } from "zod";
+import { rateLimit } from "@/lib/rate-limit";
 
 const verifySchema = z.object({
   token: z.string().min(1, "Verification token is required"),
@@ -8,6 +9,15 @@ const verifySchema = z.object({
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "unknown";
+    const { limited, retryAfter } = rateLimit(`verify-email:${ip}`, 10, 300_000);
+    if (limited) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429, headers: { "Retry-After": String(retryAfter) } }
+      );
+    }
+
     const body = await req.json();
     const { token } = verifySchema.parse(body);
 

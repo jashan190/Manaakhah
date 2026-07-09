@@ -36,7 +36,7 @@ export function AdminShell({ active, children }: { active: string; children: Rea
       <aside className="hidden w-[236px] flex-shrink-0 flex-col md:flex" style={{ background: "var(--ink-900)", color: "var(--bone)" }}>
         <Link href="/admin" className="flex items-center gap-2.5 px-5 py-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
           <span className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ background: "var(--moss-700)" }}><ShieldCheck size={17} style={{ color: "var(--bone)" }} /></span>
-          <div><div className="t-label-sm" style={{ color: "var(--bone)" }}>Admin Console</div><div className="t-body-xs" style={{ color: "rgba(255,255,255,0.5)" }}>Manaakhah Trust</div></div>
+          <div><div className="t-label-sm" style={{ color: "var(--bone)" }}>Admin Console</div><div className="t-body-xs" style={{ color: "rgba(255,255,255,0.5)" }}>Minara Trust</div></div>
         </Link>
         <nav className="flex-1 overflow-auto p-3">
           {GROUPS.map((g) => (

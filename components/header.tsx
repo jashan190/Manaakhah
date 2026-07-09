@@ -84,7 +84,7 @@ export function Header() {
       {/* Left: logo + tabs */}
       <div className="flex items-center gap-9">
         <Link href={homeHref} className="t-h4" style={{ color: "var(--moss-700)", fontWeight: 600 }}>
-          Manaakhah
+          Minara
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           {tabs.map((t) => (

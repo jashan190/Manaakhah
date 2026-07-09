@@ -1,7 +1,7 @@
-# Manaakhah Design Audit — Polish & Consistency
+# Minara Design Audit — Polish & Consistency
 
 **Date:** 2026-06-16
-**Goal:** Diagnose why Manaakhah reads as "vibe-coded" compared to Fiverr/Upwork, and produce a prioritized, approvable list of fixes.
+**Goal:** Diagnose why Minara reads as "vibe-coded" compared to Fiverr/Upwork, and produce a prioritized, approvable list of fixes.
 **Primary outcome chosen:** Polish & consistency (make it feel professionally built), not a brand-identity overhaul.
 **Scope:** All surfaces — consumer, owner dashboard, admin console.
 
@@ -9,15 +9,15 @@
 
 ## 1. Executive summary
 
-Manaakhah's design *system* is good. The token set (moss/clay/paper palette, Fraunces + Hanken Grotesk type, the `t-*` scale in `app/globals.css`), the `components/man/primitives.tsx` library, and the owner/admin shells are distinctive and intentional. Many pages — the homepage, About, business profile, the owner and admin shells — speak that language fluently and look bespoke.
+Minara's design *system* is good. The token set (moss/clay/paper palette, Fraunces + Hanken Grotesk type, the `t-*` scale in `app/globals.css`), the `components/man/primitives.tsx` library, and the owner/admin shells are distinctive and intentional. Many pages — the homepage, About, business profile, the owner and admin shells — speak that language fluently and look bespoke.
 
-The "vibe-coded" feeling does **not** come from a weak design. It comes from **inconsistency**: two design languages collide across the app. Some pages speak fluent "Manaakhah" (`ManCard`, `Tag`, `Rating`, `t-*` typography, raw `var(--*)` tokens). Others — the **search/results page above all** — fall back to generic, un-skinned shadcn + Tailwind defaults (`Card`, `text-muted-foreground`, emoji, spinners). When a user crosses from a polished page into a default-looking one, the eye reads "unfinished." That gap is the tell.
+The "vibe-coded" feeling does **not** come from a weak design. It comes from **inconsistency**: two design languages collide across the app. Some pages speak fluent "Minara" (`ManCard`, `Tag`, `Rating`, `t-*` typography, raw `var(--*)` tokens). Others — the **search/results page above all** — fall back to generic, un-skinned shadcn + Tailwind defaults (`Card`, `text-muted-foreground`, emoji, spinners). When a user crosses from a polished page into a default-looking one, the eye reads "unfinished." That gap is the tell.
 
-Fiverr and Upwork do not feel vibe-coded because they are *unique* — they feel solid because **every screen speaks one visual language with rigid discipline**. The work here is to bring that same discipline to Manaakhah: unify on one component layer, enforce a spacing scale, replace placeholder UI patterns (emoji, spinners) with real ones, and standardize the color/radius vocabulary — while keeping the good system intact.
+Fiverr and Upwork do not feel vibe-coded because they are *unique* — they feel solid because **every screen speaks one visual language with rigid discipline**. The work here is to bring that same discipline to Minara: unify on one component layer, enforce a spacing scale, replace placeholder UI patterns (emoji, spinners) with real ones, and standardize the color/radius vocabulary — while keeping the good system intact.
 
 ---
 
-## 2. What Fiverr/Upwork do that Manaakhah doesn't
+## 2. What Fiverr/Upwork do that Minara doesn't
 
 These are the *principles* behind their "professionally built" feel — not visual style, but discipline:
 
@@ -28,7 +28,7 @@ These are the *principles* behind their "professionally built" feel — not visu
 5. **Restraint and repetition.** A small number of patterns (one card, one list row, one empty state, one section header) repeated everywhere, rather than each page inventing its own treatment.
 6. **One color vocabulary.** Grays, borders, and surfaces are drawn from a single named set — never two near-identical grays from two different systems on the same screen.
 
-Manaakhah already has the raw materials for all six. They're just applied unevenly.
+Minara already has the raw materials for all six. They're just applied unevenly.
 
 ---
 
@@ -100,7 +100,7 @@ Organized by impact. P0 items are the ones most responsible for the vibe-coded f
 
 - [x] **P2-1. Audit remaining pages for the same tells.** ✅ The two un-skinned holdouts (`verify-email`, `reset-password`) brought onto the design system; auth role-toggle pills corrected (ink-900 → moss + `man-focus`). Inventory found no remaining emoji; magic-number spacing already handled in P1-1.
 - [x] **P2-2. Standardize loading/empty/error states.** ✅ Business profile now loads with a `Skeleton` screen instead of a spinner. Remaining spinners are legitimate transient states (auth verification, map controls) and were tokenized, not removed.
-- [x] **P2-3. Replace or clearly label demo content.** ✅ Public-facing fabricated claims made honest: hero stats → true descriptors, invented homepage testimonial → non-attributed "Why Manaakhah" statement, "110+" claim dropped, dashboard date made dynamic. Internal owner/admin mock data ("Famous Kabob" demo account) intentionally kept as sample data.
+- [x] **P2-3. Replace or clearly label demo content.** ✅ Public-facing fabricated claims made honest: hero stats → true descriptors, invented homepage testimonial → non-attributed "Why Minara" statement, "110+" claim dropped, dashboard date made dynamic. Internal owner/admin mock data ("Famous Kabob" demo account) intentionally kept as sample data.
 
 ---
 
